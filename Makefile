@@ -3,15 +3,15 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: fraalmei <fraalmei@student.42.fr>          +#+  +:+       +#+         #
+#    By: p <p@student.42.fr>                        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/30 19:06:15 by fraalmei          #+#    #+#              #
-#    Updated: 2024/11/30 21:03:29 by fraalmei         ###   ########.fr        #
+#    Updated: 2025/04/07 07:33:23 by p                ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 #	file's name
-NAME	= irc
+NAME	= ircserv
 
 #	compilation
 CXX			= c++
@@ -32,7 +32,9 @@ BIN_DIR		= bin
 HEADERS		= -I $(INCDIR)
 
 # Directories
-SRCS		= main.cpp $(PARSE) $(UTILS) $(CLASES)
+SRCS		= main.cpp $(PARSE) $(UTILS) $(CLASES) $(SERVER)
+
+SERVER		= srcs/server/server.cpp
 
 PARSE		=
 

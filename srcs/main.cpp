@@ -3,18 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fraalmei <fraalmei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 20:17:51 by fraalmei          #+#    #+#             */
-/*   Updated: 2024/11/30 20:38:21 by fraalmei         ###   ########.fr       */
+/*   Updated: 2025/04/07 07:30:16 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include <cstdio>
+#include "includes/server/server.hpp"
 
 int	main(void)
 {
-	printf ("Que comience la fiesta 😈\n");
+	Server server;
+	server.run();
 	return 0;
 }
