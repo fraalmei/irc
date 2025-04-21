@@ -95,3 +95,6 @@ Rol 3
 
 
 
+Pruebas conexión con servidor:
+	telnet 127.0.0.1 6667
+	nc -C 127.0.0.1 6667
