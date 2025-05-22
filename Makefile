@@ -6,7 +6,7 @@
 #    By: p <p@student.42.fr>                        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/30 19:06:15 by fraalmei          #+#    #+#              #
-#    Updated: 2025/04/07 07:33:23 by p                ###   ########.fr        #
+#    Updated: 2025/05/22 17:41:42 by p                ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,13 +32,13 @@ BIN_DIR		= bin
 HEADERS		= -I $(INCDIR)
 
 # Directories
-SRCS		= main.cpp $(PARSE) $(UTILS) $(CLASES) $(SERVER)
+SRCS		= main.cpp $(PARSE) $(UTILS) $(CHANN) $(SERVER)
 
 SERVER		= srcs/server/server.cpp
 
-PARSE		=
+PARSE		= srcs/message/msg_handler.cpp
 
-CLASES		=
+CHANN		= srcs/channels/channels.cpp
 
 UTILS		=
 

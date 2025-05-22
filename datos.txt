@@ -98,3 +98,11 @@ Rol 3
 Pruebas conexión con servidor:
 	telnet 127.0.0.1 6667
 	nc -C 127.0.0.1 6667
+
+	Estas funciones estan metidas en la clase server.cpp
+	sacarlo para que quede mejor
+Crear canal y unirse
+	JOIN <nombre canal>
+
+Mostrar canales y cantidad de usuarios
+	show

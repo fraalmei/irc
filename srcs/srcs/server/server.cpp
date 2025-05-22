@@ -6,11 +6,17 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/04/07 14:29:18 by p                ###   ########.fr       */
+/*   Updated: 2025/05/22 18:28:58 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/server/server.hpp"
+#include "../../includes/channels/channels.hpp"
+
+
+std::vector<int>					_clients;			// fd client list
+std::map<std::string, Channel>		_list_channel;		// map of the created channels
+
 
 // Constructors
 Server::Server() : _server_fd(-1), _fd_max(0)
@@ -101,8 +107,8 @@ fd_set	Server::get_read_fds()
 	return this->_read_fds;
 }
 
-// server socket initializer function
-// función para inicializar el socket del servidor
+/// @brief server socket initializer function
+/// función para inicializar el socket del servidor
 void	Server::init_server_socket()
 {
 
@@ -161,8 +167,8 @@ void	Server::init_server_socket()
 
 }
 
-// handle a new incoming conecction
-// manejar una nueva conexión entrante
+/// @brief handle a new incoming conecction
+/// manejar una nueva conexión entrante
 void	Server::handle_new_connection()
 {
 	sockaddr_in	client_addr;
@@ -191,8 +197,9 @@ void	Server::handle_new_connection()
 	}
 }
 
-// Read and process a message from a client
-// leer y procesar un mensaje de un cleinte
+/// @brief Read and process a message from a client
+///			leer y procesar un mensaje de un cleinte
+/// @param client_fd 
 void	Server::handle_client_message(int client_fd)
 {
 	char	buffer[BUFFER_SIZE];
@@ -218,6 +225,27 @@ void	Server::handle_client_message(int client_fd)
 		buffer[nbytes] = '\0';		// Ensure the message end at \0
 		std::cout << "Mensaje recibido de " << client_fd << ": " << buffer;
 
+		// andle the buffer
+		// tratar el buffer
+		//msg_andler::andle_buffer<int>(buffer);
+		//msg_andler::andle_buffer<std::string>(buffer);
+		std::string message(buffer);
+		if(message.find("JOIN" ) == 0)
+		{ 
+			std::string channelName = message.substr(5);
+			channelName.erase(channelName.find_last_not_of(" \n\r\t") + 1);
+			joinChannel(channelName, client_fd);
+		}
+
+		if(message.find("show") == 0)
+		{
+			std::cout << "Canales" << std::endl;
+			for (std::map<std::string, Channel>::iterator it = _list_channel.begin(); it != _list_channel.end(); ++it)
+			{
+				std::cout << it->first << " - " << it->second.members.size() << std::endl;
+			}
+		}
+
 		// send a eco response to the client
 		std::string response = "Mensaje recibido.\n";
 		send( client_fd, response.c_str(), response.size(), 0 );
@@ -225,8 +253,39 @@ void	Server::handle_client_message(int client_fd)
 	
 }
 
-// principal loop
-// bucle principal
+/// @brief join or create a channel
+///			entrar o crear un canal
+/// @param channelName 
+/// @param client_fd 
+void				Server::joinChannel(const std::string channelName, int client_fd)
+{
+	// if the channel dont exists, create it
+	if (_list_channel.find(channelName) == _list_channel.end())
+	{
+		Channel newChannel;
+		newChannel.name = channelName;
+		newChannel.members.push_back(client_fd);
+		_list_channel[channelName] = newChannel;
+		std::cout << "Created channel: " << channelName << std::endl;
+	}
+	else	// if the channel exists, the client its added
+	{
+		std::vector<int>& members = _list_channel[channelName].members;
+		if (std::find(members.begin(), members.end(), client_fd) == members.end())
+		{
+			members.push_back(client_fd);
+			std::cout << "Client " << client_fd << " added to channel " << channelName << std::endl;
+		}
+	}
+
+	// confirmation message
+	// mensaje de confirmación
+	std::string msg = "Joined channel " + channelName + "\n";
+	send(client_fd, msg.c_str(), msg.length(), 0);
+}
+
+/// @brief principal loop
+///			bucle principal
 void	Server::run()
 {
 	while (true)
@@ -234,7 +293,7 @@ void	Server::run()
 		set_read_fds(get_master_set());		// copy set from selec()
 
 		// wait for activity on any of the sockets
-		// esprar actividad en alguno de los sockets
+		// esperar actividad en alguno de los sockets
 		if(select(get_fd_max() + 1, &_read_fds, NULL, NULL, NULL ) == -1)
 		{
 			std::cerr << "Error en select()." << std::endl;
