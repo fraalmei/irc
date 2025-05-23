@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2025/05/23 12:48:08 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/05/23 13:57:44 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ class Server
 		void				run(void);
 
 
-		std::vector<int>					clients;			// fd client list
+		std::vector<Client>					clients;			// fd client list
 		std::map<std::string, AChannel>		list_channel;		// map of the created channels
 
 	private:

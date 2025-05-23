@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/05/23 13:05:46 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/05/23 16:38:21 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,9 @@ Server::~Server(void)
 
 	// iter all the clients closing the conexion
 	// itera por todos los clientes cerrando la conexión
-	for( std::vector<int>::iterator it = clients.begin(); it != clients.end(); ++it )
-		close( *it );
+	for( std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it )
+		//close( *it );
+		it->~Client();
 
 	std::cout << "Server destroyed." << std::endl;
 }
@@ -238,7 +239,7 @@ void	Server::handle_client_message(int client_fd)
 			std::cout << "Canales" << std::endl;
 			for (std::map<std::string, AChannel>::iterator it = list_channel.begin(); it != list_channel.end(); ++it)
 			{
-				std::cout << it->first << " - " << it->second.members.size() << std::endl;
+				std::cout << it->first << " - " << it->second.getMembers().size() << std::endl;
 			}
 		}
 
@@ -266,7 +267,7 @@ void				Server::joinChannel(const std::string channelName, int client_fd)
 	}
 	else	// if the channel exists, the client its added
 	{
-		std::vector<int>& members = list_channel[channelName].members;
+		std::vector<Client>& members = list_channel.find(channelName).getMembers();
 		if (std::find(members.begin(), members.end(), client_fd) == members.end())
 		{
 			members.push_back(client_fd);
