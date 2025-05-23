@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: p <p@student.42.fr>                        +#+  +:+       +#+         #
+#    By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/30 19:06:15 by fraalmei          #+#    #+#              #
-#    Updated: 2025/05/22 17:41:42 by p                ###   ########.fr        #
+#    Updated: 2025/05/23 11:44:37 by cagonzal         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,13 +32,17 @@ BIN_DIR		= bin
 HEADERS		= -I $(INCDIR)
 
 # Directories
-SRCS		= main.cpp $(PARSE) $(UTILS) $(CHANN) $(SERVER)
+SRCS		= main.cpp $(CHANNELS) $(CLIENT) $(SERVER) $(PARSE) $(UTILS)
+
+CHANNELS 	= srcs/channels/channels.cpp
+
+CLIENT		= srcs/client/client.cpp
+
+MESSAGES	= srcs/message/messages.cpp
 
 SERVER		= srcs/server/server.cpp
 
 PARSE		= srcs/message/msg_handler.cpp
-
-CHANN		= srcs/channels/channels.cpp
 
 UTILS		=
 

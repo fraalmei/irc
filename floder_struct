@@ -8,7 +8,7 @@
 │	│	├── utils.cpp			# Funciones utilitarias
 │	│	└── enums.cpp			# Definiciones de enumeraciones (nombres, respuestas, etc.)
 │	├──/channels				# Lógica para los canales
-│	│	├── achannel.cpp			# Clase base para canales (AChannel)
+│	│	├── achannel.cpp		# Clase base para canales (AChannel)
 │	│	├── private.cpp			# Implementación de canales privados
 │	│	└── collective.cpp		# Implementación de canales colectivos
 │	├──/parsers					# Parsers de comandos y mensajes

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   channels.hpp                                       :+:      :+:    :+:   */
+/*   AChannel.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 20:53:50 by p                 #+#    #+#             */
-/*   Updated: 2025/05/19 21:09:22 by p                ###   ########.fr       */
+/*   Updated: 2025/05/23 11:38:00 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,25 +16,19 @@
 # include <vector>
 # include <string>
 # include <map>
+# include "../User/user.hpp"
 
-// Structure of the channel
-// Estructura del canal
-struct	Channel
-{
-	std::string			name;
-	std::vector<int>	members;	//List of the users sokets
-};
-
-class	channels
+class	AChannel
 {
 	public:
 
-		channels(/* args */);
-		~channels();
+		AChannel(std::string name);
+		AChannel & operator=(const AChannel &assign);
+		~AChannel();
 	
 	private:
-
-
+		std::string			_name;
+		std::map<int, Client>	_members;	//List of the users sokets
 
 };
 
