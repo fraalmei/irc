@@ -6,7 +6,7 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2025/05/23 10:21:41 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/05/23 11:58:02 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-# include "../channels/channels.hpp"
-# include "../message/msg_handler.hpp"
+# include "achannel.hpp"
+# include "msg_handler.hpp"
 
 # include <iostream>
 # include <cstring>			// memset()
@@ -64,7 +64,7 @@ class Server
 
 
 		std::vector<int>					clients;			// fd client list
-		std::map<std::string, Channel>		list_channel;		// map of the created channels
+		std::map<std::string, AChannel>		list_channel;		// map of the created channels
 
 	private:
 		int									_server_fd;			//	server file descriptor

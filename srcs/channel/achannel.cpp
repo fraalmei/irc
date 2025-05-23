@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   AChannel.cpp                                       :+:      :+:    :+:   */
+/*   achannel.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 20:54:02 by p                 #+#    #+#             */
-/*   Updated: 2025/05/23 11:40:49 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/05/23 11:56:51 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/AChannel.hpp"
+#include "../../include/achannel.hpp"
 
 AChannel::AChannel(std::string name) : _name(name)
 {

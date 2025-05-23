@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   AChannel.hpp                                       :+:      :+:    :+:   */
+/*   achannel.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 20:53:50 by p                 #+#    #+#             */
-/*   Updated: 2025/05/23 11:38:00 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/05/23 11:57:12 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include <vector>
 # include <string>
 # include <map>
-# include "../User/user.hpp"
+# include "client.hpp"
 
 class	AChannel
 {

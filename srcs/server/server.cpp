@@ -6,12 +6,12 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/05/23 10:16:23 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/05/23 11:58:46 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/server/server.hpp"
-#include "../../includes/channels/channels.hpp"
+#include "../../include/server.hpp"
+#include "../../include/achannel.hpp"
 
 
 // std::vector<int>					clients;			// fd client list
@@ -240,7 +240,7 @@ void	Server::handle_client_message(int client_fd)
 		if(message.find("show") == 0)
 		{
 			std::cout << "Canales" << std::endl;
-			for (std::map<std::string, Channel>::iterator it = list_channel.begin(); it != list_channel.end(); ++it)
+			for (std::map<std::string, AChannel>::iterator it = list_channel.begin(); it != list_channel.end(); ++it)
 			{
 				std::cout << it->first << " - " << it->second.members.size() << std::endl;
 			}
@@ -262,7 +262,7 @@ void				Server::joinChannel(const std::string channelName, int client_fd)
 	// if the channel dont exists, create it
 	if (list_channel.find(channelName) == list_channel.end())
 	{
-		Channel newChannel;
+		AChannel newChannel;
 		newChannel.name = channelName;
 		newChannel.members.push_back(client_fd);
 		list_channel[channelName] = newChannel;
