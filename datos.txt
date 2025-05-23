@@ -32,7 +32,7 @@ Rol 2 - Yago
 		Definir como el servidor debe responder ante comandos válidos,
 		errores o situaciones especiales
 	
-	Validación y segurdad
+	Validación y seguridad
 		Asegurar que el parser gestione correctamente entradas inesperadas o maliciosas
 
 
