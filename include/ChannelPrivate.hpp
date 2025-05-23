@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Private.hpp                                        :+:      :+:    :+:   */
+/*   ChannelPrivate.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -18,15 +18,15 @@
 #include <string>
 #include <vector>
 
-class Private : public AChannel
+class ChannelPrivate : public AChannel
 {
 protected:
     std::string _password;
 
 public:
 
-    Private(const std::string& name, const std::string& password);
-    ~Private();
+    ChannelPrivate(const std::string& name, const std::string& password);
+    ~ChannelPrivate();
 
     int addMember(const Client& client, const std::string& password);
     void removeMember(const std::string& nickname);
