@@ -6,16 +6,12 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/05/23 11:58:46 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/05/23 13:05:46 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../include/server.hpp"
-#include "../../include/achannel.hpp"
-
-
-// std::vector<int>					clients;			// fd client list
-// std::map<std::string, Channel>		list_channel;		// map of the created channels
+#include "Server.hpp"
+#include "AChannel.hpp"
 
 
 // Constructors
