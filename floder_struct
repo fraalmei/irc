@@ -1,0 +1,44 @@
+/irc
+├── /src						# Código fuente principal
+│	├──/core					# Lógica principal del servidor
+│	│	├── main.cpp			# Punto de entrada del programa
+│	│	├── server.cpp			# Lógica de conexión y sockets
+│	│	├── client.cpp			# Manejo de clientes individuales
+│	│	├── commands.cpp		# Implementación de los comandos IRC
+│	│	├── utils.cpp			# Funciones utilitarias
+│	│	└── enums.cpp			# Definiciones de enumeraciones (nombres, respuestas, etc.)
+│	├──/channels				# Lógica para los canales
+│	│	├── achannel.cpp			# Clase base para canales (AChannel)
+│	│	├── private.cpp			# Implementación de canales privados
+│	│	└── collective.cpp		# Implementación de canales colectivos
+│	├──/parsers					# Parsers de comandos y mensajes
+│	│	├── command_parser.cpp	# Parseo de comandos (NICK, USER, etc.)
+│	│	├── message_parser.cpp	# Parseo de mensajes de texto
+│	│	└── config_parser.cpp	# Parseo de configuraciones iniciales
+│	└──/responses				# Respuestas del servidor
+│		├── replies.cpp			# Implementación de respuestas estándar (RPL_REPLY)
+│		└── errors.cpp			# Manejo de errores y respuestas de error
+├──/include						# Archivos de cabecera (.h)
+│	├── server.h				# Declaraciones para server.cpp
+│	├── client.h				# Declaraciones para client.cpp
+│	├── commands.h				# Declaraciones para commands.cpp
+│	├── channel.h				# Declaraciones para AChannel
+│	├── utils.h					# Declaraciones para utilidades comunes
+│	├── enums.h					# Declaraciones de enumeraciones
+│	├── parsers.h				# Declaraciones para parsers
+│	└── responses.h				# Declaraciones para respuestas
+├──/tests						# Pruebas unitarias y de integración
+│	├── test_server.cpp			# Pruebas para la lógica del servidor
+│	├── test_client.cpp			# Pruebas para la gestión de clientes
+│	├── test_channels.cpp		# Pruebas para los canales
+│	└── test_commands.cpp		# Pruebas para los comandos
+├──/docs						# Documentación del proyecto
+│	├── architecture.md			# Descripción de la arquitectura del servidor
+│	├── commands.md				# Detalle de los comandos implementados
+│	└── setup_guide.md			# Guía para configurar y ejecutar el proyecto
+├──/build						# Archivos generados por el compilador
+│	└──/						# (vacío al principio, generado automáticamente)
+├──/config						# Archivos de configuración
+│	└── server_config.cfg		# Configuración inicial del servidor
+├── Makefile					# Script de compilación
+└──	README.md					# Introducción y resumen del proyecto

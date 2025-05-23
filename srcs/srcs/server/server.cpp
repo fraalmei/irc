@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/05/22 18:28:58 by p                ###   ########.fr       */
+/*   Updated: 2025/05/23 10:16:23 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 #include "../../includes/channels/channels.hpp"
 
 
-std::vector<int>					_clients;			// fd client list
-std::map<std::string, Channel>		_list_channel;		// map of the created channels
+// std::vector<int>					clients;			// fd client list
+// std::map<std::string, Channel>		list_channel;		// map of the created channels
 
 
 // Constructors
@@ -51,7 +51,7 @@ Server::~Server(void)
 
 	// iter all the clients closing the conexion
 	// itera por todos los clientes cerrando la conexión
-	for( std::vector<int>::iterator it = _clients.begin(); it != _clients.end(); ++it )
+	for( std::vector<int>::iterator it = clients.begin(); it != clients.end(); ++it )
 		close( *it );
 
 	std::cout << "Server destroyed." << std::endl;
@@ -190,16 +190,16 @@ void	Server::handle_new_connection()
 		if (new_fd > get_fd_max())
 			set_fd_max(new_fd);				// refresch the higer fd
 
-		_clients.push_back( new_fd );		// save the client
+		clients.push_back( new_fd );		// save the client
 
 		std::cout << "Nueva conexión desde " << inet_ntoa( client_addr.sin_addr ) << " en socket " << new_fd << std::endl;
-	
+
 	}
 }
 
 /// @brief Read and process a message from a client
 ///			leer y procesar un mensaje de un cleinte
-/// @param client_fd 
+/// @param client_fd
 void	Server::handle_client_message(int client_fd)
 {
 	char	buffer[BUFFER_SIZE];
@@ -231,7 +231,7 @@ void	Server::handle_client_message(int client_fd)
 		//msg_andler::andle_buffer<std::string>(buffer);
 		std::string message(buffer);
 		if(message.find("JOIN" ) == 0)
-		{ 
+		{
 			std::string channelName = message.substr(5);
 			channelName.erase(channelName.find_last_not_of(" \n\r\t") + 1);
 			joinChannel(channelName, client_fd);
@@ -240,7 +240,7 @@ void	Server::handle_client_message(int client_fd)
 		if(message.find("show") == 0)
 		{
 			std::cout << "Canales" << std::endl;
-			for (std::map<std::string, Channel>::iterator it = _list_channel.begin(); it != _list_channel.end(); ++it)
+			for (std::map<std::string, Channel>::iterator it = list_channel.begin(); it != list_channel.end(); ++it)
 			{
 				std::cout << it->first << " - " << it->second.members.size() << std::endl;
 			}
@@ -250,27 +250,27 @@ void	Server::handle_client_message(int client_fd)
 		std::string response = "Mensaje recibido.\n";
 		send( client_fd, response.c_str(), response.size(), 0 );
 	}
-	
+
 }
 
 /// @brief join or create a channel
 ///			entrar o crear un canal
-/// @param channelName 
-/// @param client_fd 
+/// @param channelName
+/// @param client_fd
 void				Server::joinChannel(const std::string channelName, int client_fd)
 {
 	// if the channel dont exists, create it
-	if (_list_channel.find(channelName) == _list_channel.end())
+	if (list_channel.find(channelName) == list_channel.end())
 	{
 		Channel newChannel;
 		newChannel.name = channelName;
 		newChannel.members.push_back(client_fd);
-		_list_channel[channelName] = newChannel;
+		list_channel[channelName] = newChannel;
 		std::cout << "Created channel: " << channelName << std::endl;
 	}
 	else	// if the channel exists, the client its added
 	{
-		std::vector<int>& members = _list_channel[channelName].members;
+		std::vector<int>& members = list_channel[channelName].members;
 		if (std::find(members.begin(), members.end(), client_fd) == members.end())
 		{
 			members.push_back(client_fd);

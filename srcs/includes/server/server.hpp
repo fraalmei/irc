@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2025/05/22 17:55:23 by p                ###   ########.fr       */
+/*   Updated: 2025/05/23 10:21:41 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,22 +50,27 @@ class Server
 		// Operators
 		Server & operator=(const Server &assign);
 	
-		void				set_server_fd(int server_fd);
 		int					get_server_fd();
-		void				set_fd_max(int fd_max);
 		int					get_fd_max();
-		void				set_master_set(fd_set master_set);
 		fd_set				get_master_set();
-		void				set_read_fds(fd_set read_fds);
 		fd_set				get_read_fds();
+		
+		void				set_server_fd(int server_fd);
+		void				set_fd_max(int fd_max);
+		void				set_master_set(fd_set master_set);
+		void				set_read_fds(fd_set read_fds);
 
 		void				run(void);
 
+
+		std::vector<int>					clients;			// fd client list
+		std::map<std::string, Channel>		list_channel;		// map of the created channels
+
 	private:
-		int									_server_fd;		//ecrver file descriptor
-		fd_set								_master_set;	// set of file descriptors
-		fd_set								_read_fds;		// temporal set to read
-		int									_fd_max;		// high fd used
+		int									_server_fd;			//	server file descriptor
+		fd_set								_master_set;		//	set of file descriptors
+		fd_set								_read_fds;			//	temporal set to read
+		int									_fd_max;			//	high fd used
 
 		void				init_server_socket();
 		void				handle_new_connection();

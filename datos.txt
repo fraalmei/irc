@@ -3,7 +3,7 @@
 Ejecución
 	/ircserv <port> <password>
 
-Rol 1
+Rol 1 - Paco
 	Configuración del servidor
 		Creación de sokets, binding y escucha
 	
@@ -19,7 +19,7 @@ Rol 1
 		de la infraestructura
 
 
-Rol 2
+Rol 2 - Yago
 	Parseo de comandos
 		Desarrollar modulo encargado de interpretar los comandos enviados por 
 		los clientes y verificar que cumplan las especificaciones
@@ -36,7 +36,7 @@ Rol 2
 		Asegurar que el parser gestione correctamente entradas inesperadas o maliciosas
 
 
-Rol 3
+Rol 3 - Carlos
 	Gestión de datos
 		Diseñar e implementar las estructuras de datos para los usuarios, canales y estados de conexiones
 	
@@ -58,7 +58,7 @@ Rol 3
 
 		Asociar el socket a una direccion IP y puerto ( bind() )
 
-		Preparar el socket para escuchar conexiones ( liste() )
+		Preparar el socket para escuchar conexiones ( listen() )
 
 	Multiplexación (manejo de multiples conexiones)
 		Implementar select() o poll() para manejar multiples clientes simultaneamente
@@ -86,7 +86,7 @@ Rol 3
 	Permitir que el parse procese líneas completas de mensajes (\r\n o \n como delimitadores)
 
 
-3 -
+3 - 
 	Crear estructuras de datos para usuarios y canales
 
 	Implemensar comandos relacionados con los canales y mensajes privados
