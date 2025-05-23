@@ -1,22 +1,22 @@
 // filepath: /home/arksh/Documentos/42 Madrid/irc/srcs/channel/public.cpp
-#include "Public.hpp"
+#include "ChannelPublic.hpp"
 
-Public::Public(const std::string &name) : AChannel(name)
+ChannelPublic::ChannelPublic(const std::string &name) : AChannel(name)
 {
 }
 
-Public::~Public()
+ChannelPublic::~ChannelPublic()
 {
 }
 
-int Public::addMember(const Client &client, std::string password)
+int ChannelPublic::addMember(const Client &client, std::string password)
 {
     (void)password; // Unused parameters
     _members.push_back(client);
     return 0; // Success
 }
 
-void Public::removeMember(const std::string &nickname)
+void ChannelPublic::removeMember(const std::string &nickname)
 {
     for (std::vector<Client>::iterator it = _members.begin(); it != _members.end(); ++it) {
         if (it->getNickname() == nickname)
@@ -27,7 +27,7 @@ void Public::removeMember(const std::string &nickname)
     }
 }
 
-bool Public::isMember(const std::string &nickname) const
+bool ChannelPublic::isMember(const std::string &nickname) const
 {
     for (std::vector<Client>::const_iterator it = _members.begin(); it != _members.end(); ++it)
         if (it->getNickname() == nickname)
@@ -35,12 +35,12 @@ bool Public::isMember(const std::string &nickname) const
     return false;
 }
 
-const std::string &Public::getName() const
+const std::string &ChannelPublic::getName() const
 {
     return _name;
 }
 
-const std::vector<Client> &Public::getMembers() const
+const std::vector<Client> &ChannelPublic::getMembers() const
 {
     return _members;
 }

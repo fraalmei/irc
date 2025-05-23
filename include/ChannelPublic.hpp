@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Public.hpp                                         :+:      :+:    :+:   */
+/*   ChannelPublic.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -15,13 +15,13 @@
 
 #include "AChannel.hpp"
 
-class Public : public AChannel
+class ChannelPublic : public AChannel
 {
 
 public:
 
-    Public(const std::string &name);
-    virtual ~Public();
+    ChannelPublic(const std::string &name);
+    virtual ~ChannelPublic();
 
     virtual int addMember(const Client &client, std::string password);
     virtual void removeMember(const std::string &nickname);

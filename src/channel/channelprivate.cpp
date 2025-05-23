@@ -1,27 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   private.cpp                                        :+:      :+:    :+:   */
+/*   channelprivate.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/23 13:10:55 by cagonzal          #+#    #+#             */
-/*   Updated: 2025/05/23 13:10:56 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/05/23 14:04:24 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Private.hpp"
+#include "ChannelPrivate.hpp"
 
-Private::Private(const std::string& name, const std::string& password)
+ChannelPrivate::ChannelPrivate(const std::string& name, const std::string& password)
     : AChannel(name), _password(password)
 {
 }
 
-Private::~Private()
+ChannelPrivate::~ChannelPrivate()
 {
 }
 
-int Private::addMember(const Client& client, const std::string& password)
+int ChannelPrivate::addMember(const Client& client, const std::string& password)
 {
     if (password == this->_password)
     {
@@ -31,7 +31,7 @@ int Private::addMember(const Client& client, const std::string& password)
     return 1; // Return 1 to indicate failure
 }
 
-void Private::removeMember(const std::string& nickname)
+void ChannelPrivate::removeMember(const std::string& nickname)
 {
     for (std::vector<Client>::iterator it = _members.begin(); it != _members.end(); ++it)
     {
@@ -43,7 +43,7 @@ void Private::removeMember(const std::string& nickname)
     }
 }
 
-bool Private::isMember(const std::string& nickname) const
+bool ChannelPrivate::isMember(const std::string& nickname) const
 {
     for (std::vector<Client>::const_iterator it = _members.begin(); it != _members.end(); ++it)
     {
@@ -55,22 +55,22 @@ bool Private::isMember(const std::string& nickname) const
     return false;
 }
 
-const std::string& Private::getName() const
+const std::string& ChannelPrivate::getName() const
 {
     return _name;
 }
 
-const std::vector<Client>& Private::getMembers() const
+const std::vector<Client>& ChannelPrivate::getMembers() const
 {
     return _members;
 }
 
-const std::string& Private::getPassword() const
+const std::string& ChannelPrivate::getPassword() const
 {
     return _password;
 }
 
-void Private::setPassword(const std::string& pass)
+void ChannelPrivate::setPassword(const std::string& pass)
 {
     _password = pass;
 }
