@@ -1,5 +1,9 @@
 /irc
 ├── /src						# Código fuente principal
+│	├──/channels				# Lógica para los canales
+│	│	├── achannel.cpp		# Clase base para canales (AChannel)
+│	│	├── private.cpp			# Implementación de canales privados
+│	│	└── collective.cpp		# Implementación de canales colectivos
 │	├──/core					# Lógica principal del servidor
 │	│	├── main.cpp			# Punto de entrada del programa
 │	│	├── server.cpp			# Lógica de conexión y sockets
@@ -7,10 +11,6 @@
 │	│	├── commands.cpp		# Implementación de los comandos IRC
 │	│	├── utils.cpp			# Funciones utilitarias
 │	│	└── enums.cpp			# Definiciones de enumeraciones (nombres, respuestas, etc.)
-│	├──/channels				# Lógica para los canales
-│	│	├── achannel.cpp		# Clase base para canales (AChannel)
-│	│	├── private.cpp			# Implementación de canales privados
-│	│	└── collective.cpp		# Implementación de canales colectivos
 │	├──/parsers					# Parsers de comandos y mensajes
 │	│	├── command_parser.cpp	# Parseo de comandos (NICK, USER, etc.)
 │	│	├── message_parser.cpp	# Parseo de mensajes de texto

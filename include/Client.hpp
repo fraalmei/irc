@@ -3,13 +3,17 @@
 
 #include <string>
 
-class Client {
+class Client
+{
+
 private:
+
     std::string _username;
     std::string _nickname;
     bool _isAuthenticated;
 
 public:
+
     // Constructors
     Client();
     Client(const std::string& nickname, const std::string& username);
@@ -18,8 +22,8 @@ public:
     ~Client();
 
     // Getters
-    const std::string& getNickname() const;
-    const std::string& getUsername() const;
+    std::string getNickname() const;
+    std::string getUsername() const;
     bool isAuthenticated() const;
 
     // Setters

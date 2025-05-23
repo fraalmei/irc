@@ -6,7 +6,7 @@
 #    By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/30 19:06:15 by fraalmei          #+#    #+#              #
-#    Updated: 2025/05/23 12:43:13 by cagonzal         ###   ########.fr        #
+#    Updated: 2025/05/23 13:43:37 by cagonzal         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ LEAK_FLAGS	= -fsanitize=address -g3 -pedantic #-fsanitize=thread
 RM			= /bin/rm -f
 
 #	Directories
-SRC_DIR		= srcs
+SRC_DIR		= src
 INCDIR		= include
 BIN_DIR		= bin
 
@@ -32,17 +32,16 @@ BIN_DIR		= bin
 HEADERS		= -I $(INCDIR)
 
 # Directories
-SRCS		=	main.cpp $(CHANNELS) $(CLIENT) $(SERVER) $(PARSE) $(UTILS)
+SRCS		=	$(CORE) $(CHANNELS) $(MESSAGES) $(PARSE) $(UTILS)
+
+CORE		=	core/main.cpp \
+				core/client.cpp \
+				core/server.cpp
 
 CHANNELS 	=	channel/private.cpp \
 				channel/public.cpp
-			
-
-CLIENT		=	client/client.cpp
 
 MESSAGES	=	message/messages.cpp
-
-SERVER		=	server/server.cpp
 
 PARSE		=	message/msg_handler.cpp
 

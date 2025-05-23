@@ -1,30 +1,25 @@
 // filepath: /home/arksh/Documentos/42 Madrid/irc/srcs/srcs/Client/client.cpp
-#include <client.hpp>
+#include "Client.hpp"
 
 // Constructors
-Client::Client() : _username(""), _nickname(""), _isAuthenticated(false) 
+Client::Client() : _username(""), _nickname(""), _isAuthenticated(false)
 {
-    // Default constructor implementation
-    // Initialize members or any other necessary setup
 }
-
-Client::Client(const std::string& nickname, const std::string& username)
-    : _username(username), _nickname(nickname), _isAuthenticated(false)
+Client::Client(const std::string& nickname, const std::string& username) : 
+    _username(username), _nickname(nickname), _isAuthenticated(false)
 {
-    // Parameterized constructor implementation
-    // Initialize members or any other necessary setup
 }
 
 // Destructor
 Client::~Client() {}
 
 // Getters
-const std::string& Client::getNickname() const
+std::string Client::getNickname() const
 {
     return _nickname;
 }
 
-const std::string& Client::getUsername() const
+std::string Client::getUsername() const
 {
     return _username;
 }
