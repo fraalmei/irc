@@ -2,11 +2,11 @@
 #include "Client.hpp"
 
 // Constructors
-Client::Client() : _username(""), _nickname(""), _isAuthenticated(false)
+Client::Client(int fd ) : _fd(fd), _username(""), _nickname(""), _isAuthenticated(false)
 {
 }
-Client::Client(const std::string& nickname, const std::string& username) : 
-    _username(username), _nickname(nickname), _isAuthenticated(false)
+Client::Client(int fd, const std::string& nickname, const std::string& username) : 
+    _fd(fd), _username(username), _nickname(nickname), _isAuthenticated(false)
 {
 }
 
@@ -27,6 +27,11 @@ std::string Client::getUsername() const
 bool Client::isAuthenticated() const
 {
     return _isAuthenticated;
+}
+
+int Client::getFd() const
+{
+    return _fd;
 }
 
 // Setters

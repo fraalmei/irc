@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2025/05/23 13:57:44 by p                ###   ########.fr       */
+/*   Updated: 2025/05/29 14:45:09 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,20 +62,25 @@ class Server
 
 		void				run(void);
 
+		Client				*getClientByFd(int fd);
 
-		std::vector<Client>					clients;			// fd client list
-		std::map<std::string, AChannel>		list_channel;		// map of the created channels
+		AChannel			*getChannelByName(const std::string &channelName);
 
 	private:
+
 		int									_server_fd;			//	server file descriptor
 		fd_set								_master_set;		//	set of file descriptors
 		fd_set								_read_fds;			//	temporal set to read
 		int									_fd_max;			//	high fd used
 
+		//std::map<int, Client*>					clients;			// fd client list
+		std::vector<Client*>					_clients;			// vector of clients
+		std::map<std::string, AChannel*>		_channel_list;		// map of the created channels
+
 		void				init_server_socket();
 		void				handle_new_connection();
-		void				handle_client_message(int client_fd);
-		void				joinChannel(const std::string channelName, int client_fd);
+		void				handle_client_message(Client *client);
+		void				joinChannel(const std::string channelName, Client *new_client);
 
 };
 

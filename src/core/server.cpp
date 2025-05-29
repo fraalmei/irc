@@ -6,12 +6,13 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/05/23 16:38:21 by p                ###   ########.fr       */
+/*   Updated: 2025/05/29 22:23:58 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
-#include "AChannel.hpp"
+#include "ChannelPrivate.hpp"
+#include "ChannelPublic.hpp"
 
 
 // Constructors
@@ -47,9 +48,9 @@ Server::~Server(void)
 
 	// iter all the clients closing the conexion
 	// itera por todos los clientes cerrando la conexión
-	for( std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it )
+	for( std::vector<Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it )
 		//close( *it );
-		it->~Client();
+		delete *it;
 
 	std::cout << "Server destroyed." << std::endl;
 }
@@ -102,6 +103,32 @@ void	Server::set_read_fds(fd_set read_fds)
 fd_set	Server::get_read_fds()
 {
 	return this->_read_fds;
+}
+
+Client	*Server::getClientByFd(int fd)
+{
+	// Search for the client by its file descriptor
+	// Buscar el cliente por su descriptor de archivo
+	for(std::vector<Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it)
+	{
+		if ((*it)->getFd() == fd)
+		{
+			return *it; // Return the found client
+		}
+	}
+	std::cerr << "Client with fd " << fd << " not found." << std::endl;
+	return NULL; // Exit if the client is not found
+}
+
+AChannel	*Server::getChannelByName(const std::string &channelName)
+{
+	// Search for the channel by its name
+	// Buscar el canal por su nombre
+	std::map<std::string, AChannel*>::iterator it = _channel_list.find(channelName);
+	if (it != _channel_list.end())
+		return it->second; // Return the found channel
+	std::cerr << "Channel not found: " << channelName << std::endl;
+	return NULL; // Exit if the channel is not found
 }
 
 /// @brief server socket initializer function
@@ -185,9 +212,10 @@ void	Server::handle_new_connection()
 		// añadir el nuevo cliente al conjunto
 		FD_SET( new_fd, &_master_set );
 		if (new_fd > get_fd_max())
-			set_fd_max(new_fd);				// refresch the higer fd
+			set_fd_max(new_fd);					// refresch the higer fd
 
-		clients.push_back( new_fd );		// save the client
+		Client* new_client = new Client(new_fd);				// create a new client object
+		_clients.push_back(new_client);		// add the new client to the vector
 
 		std::cout << "Nueva conexión desde " << inet_ntoa( client_addr.sin_addr ) << " en socket " << new_fd << std::endl;
 
@@ -197,55 +225,56 @@ void	Server::handle_new_connection()
 /// @brief Read and process a message from a client
 ///			leer y procesar un mensaje de un cleinte
 /// @param client_fd
-void	Server::handle_client_message(int client_fd)
+void	Server::handle_client_message(Client *client)
 {
 	char	buffer[BUFFER_SIZE];
-	int		nbytes = recv( client_fd, buffer, BUFFER_SIZE - 1, 0 ); // data receiv
+	int		nbytes = recv( client->getFd(), buffer, BUFFER_SIZE - 1, 0 ); // data receiv
 
 	if (nbytes < 0)
 	{
 		perror("recv");		// mostrar error exacto
-		close( client_fd );
-		FD_CLR( client_fd, &_master_set );
+		close( client->getFd() );
+		FD_CLR( client->getFd(), &_master_set );
 	}
 	else if(nbytes == 0)
 	{
 		// if an error ocurr or the client desconetion
-		std::cout << "Socket " << client_fd << " disconected for the client." << std::endl;
+		std::cout << "Socket " << client->getUsername() << " disconected for the client." << std::endl;
 
 		// close the client socket and remove it from the set
-		close( client_fd );
-		FD_CLR( client_fd, &_master_set );
+		close( client->getFd() );
+		FD_CLR( client->getFd(), &_master_set );
 	}
 	else
 	{
 		buffer[nbytes] = '\0';		// Ensure the message end at \0
-		std::cout << "Mensaje recibido de " << client_fd << ": " << buffer;
+		std::cout << "Mensaje recibido de " << client->getUsername() << ": " << buffer;
 
-		// andle the buffer
+		// handle the buffer
 		// tratar el buffer
-		//msg_andler::andle_buffer<int>(buffer);
+		//msg_handler::handle_buffer<int>(buffer);
 		//msg_andler::andle_buffer<std::string>(buffer);
 		std::string message(buffer);
 		if(message.find("JOIN" ) == 0)
 		{
 			std::string channelName = message.substr(5);
 			channelName.erase(channelName.find_last_not_of(" \n\r\t") + 1);
-			joinChannel(channelName, client_fd);
+			joinChannel(channelName, client);
 		}
 
 		if(message.find("show") == 0)
 		{
 			std::cout << "Canales" << std::endl;
-			for (std::map<std::string, AChannel>::iterator it = list_channel.begin(); it != list_channel.end(); ++it)
+			for (std::map<std::string, AChannel*>::iterator it = _channel_list.begin(); it != _channel_list.end(); ++it)
 			{
-				std::cout << it->first << " - " << it->second.getMembers().size() << std::endl;
+				int i = it->second->getMembers().size();
+				std::cout << it->first << " - " << i << std::endl;
 			}
 		}
 
 		// send a eco response to the client
 		std::string response = "Mensaje recibido.\n";
-		send( client_fd, response.c_str(), response.size(), 0 );
+		send( client->getFd(), response.c_str(), response.size(), 0 );
 	}
 
 }
@@ -253,32 +282,38 @@ void	Server::handle_client_message(int client_fd)
 /// @brief join or create a channel
 ///			entrar o crear un canal
 /// @param channelName
-/// @param client_fd
-void				Server::joinChannel(const std::string channelName, int client_fd)
+/// @param new_client
+void				Server::joinChannel(const std::string channelName, Client *new_client)
 {
-	// if the channel dont exists, create it
-	if (list_channel.find(channelName) == list_channel.end())
-	{
-		AChannel newChannel;
-		newChannel.name = channelName;
-		newChannel.members.push_back(client_fd);
-		list_channel[channelName] = newChannel;
+	AChannel* channel = getChannelByName(channelName);
+
+	std::string msg;
+	if (!channel) {
+		// Crear nuevo canal público
+		AChannel* newChannel = new ChannelPublic(channelName);
+		newChannel->addMember(new_client, "");  // primer miembro
+		_channel_list[channelName] = newChannel;
+		msg = "Joined channel " + channelName + "\n";
 		std::cout << "Created channel: " << channelName << std::endl;
 	}
-	else	// if the channel exists, the client its added
+	else
 	{
-		std::vector<Client>& members = list_channel.find(channelName).getMembers();
-		if (std::find(members.begin(), members.end(), client_fd) == members.end())
+
+		if (channel->isMember(new_client->getNickname()))
 		{
-			members.push_back(client_fd);
-			std::cout << "Client " << client_fd << " added to channel " << channelName << std::endl;
+			channel->addMember(new_client, ""); // Agregar al canal existente
+			std::cout << "Client " << new_client->getFd() << " joined " << channelName << std::endl;
+			msg = "Joined channel " + channelName + "\n";
+		}
+		else
+		{
+			std::cerr << "Error: Client already in channel " << channelName << std::endl;
+			msg = "Error: Client already in channel " + channelName + "\n";
 		}
 	}
 
-	// confirmation message
-	// mensaje de confirmación
-	std::string msg = "Joined channel " + channelName + "\n";
-	send(client_fd, msg.c_str(), msg.length(), 0);
+	// Mensaje de confirmación
+	send(new_client->getFd(), msg.c_str(), msg.length(), 0);
 }
 
 /// @brief principal loop
@@ -301,6 +336,7 @@ void	Server::run()
 		// recorrer todos los fd posibles
 		for(int i = 0; i <= get_fd_max(); ++i)
 		{
+
 			if(FD_ISSET(i, &_read_fds))
 			{
 				if(i == get_server_fd())		// if there is activity on socket i
@@ -309,7 +345,14 @@ void	Server::run()
 				}
 				else
 				{
-					handle_client_message(i);	// message of a client
+					Client *client = getClientByFd(i);
+					
+					if (client == NULL)
+					{
+						std::cerr << "Client with fd " << i << " not found." << std::endl;
+						continue; // Skip if client not found
+					}
+					handle_client_message(client);	// message of a client
 				}
 			}
 		}

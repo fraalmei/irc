@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+         #
+#    By: p <p@student.42.fr>                        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/30 19:06:15 by fraalmei          #+#    #+#              #
-#    Updated: 2025/05/23 13:43:37 by cagonzal         ###   ########.fr        #
+#    Updated: 2025/05/29 17:40:56 by p                ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,12 +38,12 @@ CORE		=	core/main.cpp \
 				core/client.cpp \
 				core/server.cpp
 
-CHANNELS 	=	channel/private.cpp \
-				channel/public.cpp
+CHANNELS 	=	channel/channelprivate.cpp \
+				channel/channelpublic.cpp
 
-MESSAGES	=	message/messages.cpp
+MESSAGES	=	message/msg_handler.cpp
 
-PARSE		=	message/msg_handler.cpp
+PARSE		=
 
 UTILS		=
 

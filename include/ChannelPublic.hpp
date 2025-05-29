@@ -20,15 +20,16 @@ class ChannelPublic : public AChannel
 
 public:
 
-    ChannelPublic(const std::string &name);
-    virtual ~ChannelPublic();
+	ChannelPublic(const std::string &name);
+	virtual ~ChannelPublic();
 
-    virtual int addMember(const Client &client, std::string password);
-    virtual void removeMember(const std::string &nickname);
-    virtual bool isMember(const std::string &nickname) const;
+	virtual int							addMember(const Client* client, std::string password);
+	virtual void						removeMember(const std::string &nickname);
+	virtual bool						isMember(const std::string &nickname) const;
+	virtual bool						isMember(const int &fd) const;
 
-    virtual const std::string &getName() const;
-    virtual const std::vector<Client> &getMembers() const;
+	virtual const std::string			&getName() const;
+	virtual const std::vector<Client*>	&getMembers() const;
 
 };
 

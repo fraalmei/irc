@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 22:39:01 by p                 #+#    #+#             */
-/*   Updated: 2025/05/22 11:51:43 by p                ###   ########.fr       */
+/*   Updated: 2025/05/29 17:36:00 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,20 @@
 # define MSG_HANDLER_HPP
 
 #include <string>
+#include <iostream>
+#include <ostream>
 
-class	msg_andler
+class	msg_handler
 {
 	public:
 
 		template<typename T>
-		static T		andle_buffer(char* buffer);
+		static T		handle_buffer(char* buffer);
 	
 	private:
-	
-		msg_andler(void);
-		~msg_andler();
+
+		msg_handler(void);
+		~msg_handler();
 
 };
 
