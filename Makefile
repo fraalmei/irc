@@ -6,7 +6,7 @@
 #    By: p <p@student.42.fr>                        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/30 19:06:15 by fraalmei          #+#    #+#              #
-#    Updated: 2025/05/29 17:40:56 by p                ###   ########.fr        #
+#    Updated: 2025/06/12 17:27:24 by p                ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,9 +36,12 @@ SRCS		=	$(CORE) $(CHANNELS) $(MESSAGES) $(PARSE) $(UTILS)
 
 CORE		=	core/main.cpp \
 				core/client.cpp \
-				core/server.cpp
+				core/server.cpp \
+				core/server_getters.cpp \
+				core/server_setters.cpp \
+				core/server_orthodox_funcs.cpp
 
-CHANNELS 	=	channel/channelprivate.cpp \
+CHANNELS	=	channel/channelprivate.cpp \
 				channel/channelpublic.cpp
 
 MESSAGES	=	message/msg_handler.cpp

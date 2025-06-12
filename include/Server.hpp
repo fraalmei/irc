@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2025/05/29 14:45:09 by p                ###   ########.fr       */
+/*   Updated: 2025/06/12 17:02:16 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 
 # include "AChannel.hpp"
 # include "msg_handler.hpp"
+# include "ChannelPrivate.hpp"
+# include "ChannelPublic.hpp"
 
 # include <iostream>
 # include <cstring>			// memset()
@@ -50,11 +52,21 @@ class Server
 		// Operators
 		Server & operator=(const Server &assign);
 	
+		// Getters
 		int					get_server_fd();
 		int					get_fd_max();
 		fd_set				get_master_set();
 		fd_set				get_read_fds();
-		
+
+		const std::map<std::string, AChannel*>&		getConstChannelList() const;
+		std::map<std::string, AChannel*>&			getChannelList();
+		const std::map<int, Client*>&		getConstClientList() const;
+		std::map<int, Client*>&				getClientList();
+
+		Client				*getClientByFd(int fd);
+		AChannel			*getChannelByName(const std::string &channelName);
+
+		// Setters
 		void				set_server_fd(int server_fd);
 		void				set_fd_max(int fd_max);
 		void				set_master_set(fd_set master_set);
@@ -62,9 +74,7 @@ class Server
 
 		void				run(void);
 
-		Client				*getClientByFd(int fd);
-
-		AChannel			*getChannelByName(const std::string &channelName);
+		void				joinChannel(const std::string channelName, Client *new_client);
 
 	private:
 
@@ -73,14 +83,13 @@ class Server
 		fd_set								_read_fds;			//	temporal set to read
 		int									_fd_max;			//	high fd used
 
-		//std::map<int, Client*>					clients;			// fd client list
-		std::vector<Client*>					_clients;			// vector of clients
+		std::map<int, Client*>					_client_list;			// fd client list
+		//std::vector<Client*>					_clients;			// vector of clients
 		std::map<std::string, AChannel*>		_channel_list;		// map of the created channels
 
 		void				init_server_socket();
 		void				handle_new_connection();
 		void				handle_client_message(Client *client);
-		void				joinChannel(const std::string channelName, Client *new_client);
 
 };
 

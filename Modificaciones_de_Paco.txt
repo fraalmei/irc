@@ -4,6 +4,8 @@ Server.hpp y cpp
 - Modificadas todas las nominaciones de servidor y cliente a clases
 - Agregado un metodo para devolver el vector de clientes
 - Agregado un metodo para buscar un puntero de cliente por fd
+- agregados getters para las listas de canales y clientes tanto de solo lectura como para modificar
+	- creados dos archivos mas para los getters, los setters y las funcioens ortodoxas
 
 
 Client.hpp
@@ -13,6 +15,3 @@ Client.hpp
 AChannel.hpp
 - cambiadas referencias a los clientes por punteros
 
-
-Habré cambiado algo más para adaptarlo a punteros, pero seguro que me he dejado algo
-Seguro que he agregado algo mas que no me acuerdo es tarde

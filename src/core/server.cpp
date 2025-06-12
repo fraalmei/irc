@@ -6,130 +6,11 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/05/29 22:23:58 by p                ###   ########.fr       */
+/*   Updated: 2025/06/12 17:25:09 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
-#include "ChannelPrivate.hpp"
-#include "ChannelPublic.hpp"
-
-
-// Constructors
-Server::Server() : _server_fd(-1), _fd_max(0)
-{
-	init_server_socket();
-	std::cout << "Server created." << std::endl;
-}
-
-Server::Server(int server_fd, int fd_max)
-{
-	set_server_fd(server_fd);
-	set_fd_max(fd_max);
-	init_server_socket();
-	std::cout << "Server created." << std::endl;
-}
-
-Server::Server(const Server &copy)
-{
-	this->set_fd_max(copy._fd_max);
-	this->set_master_set(copy._master_set);
-	this->set_read_fds(copy._read_fds);
-	this->set_server_fd(copy._fd_max);
-	std::cout << "Server copied." << std::endl;
-}
-
-// Destructor
-Server::~Server(void)
-{
-	// close the server
-	// cierra el servidor
-	close(get_server_fd());
-
-	// iter all the clients closing the conexion
-	// itera por todos los clientes cerrando la conexión
-	for( std::vector<Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it )
-		//close( *it );
-		delete *it;
-
-	std::cout << "Server destroyed." << std::endl;
-}
-
-// Operators
-Server & Server::operator=(const Server &assign)
-{
-	this->set_fd_max(assign._fd_max);
-	this->set_master_set(assign._master_set);
-	this->set_read_fds(assign._read_fds);
-	this->set_server_fd(assign._fd_max);
-	return *this;
-}
-
-void	Server::set_server_fd(int server_fd)
-{
-	this->_server_fd = server_fd;
-}
-
-int		Server::get_server_fd()
-{
-	return this->_server_fd;
-}
-
-void	Server::set_fd_max(int fd_max)
-{
-	this->_fd_max = fd_max;
-}
-
-int		Server::get_fd_max()
-{
-	return this->_fd_max;
-}
-
-void	Server::set_master_set(fd_set master_set)
-{
-	this->_master_set = master_set;
-}
-
-fd_set	Server::get_master_set()
-{
-	return this->_master_set;
-}
-
-void	Server::set_read_fds(fd_set read_fds)
-{
-	this->_read_fds = read_fds;
-}
-
-fd_set	Server::get_read_fds()
-{
-	return this->_read_fds;
-}
-
-Client	*Server::getClientByFd(int fd)
-{
-	// Search for the client by its file descriptor
-	// Buscar el cliente por su descriptor de archivo
-	for(std::vector<Client*>::iterator it = _clients.begin(); it != _clients.end(); ++it)
-	{
-		if ((*it)->getFd() == fd)
-		{
-			return *it; // Return the found client
-		}
-	}
-	std::cerr << "Client with fd " << fd << " not found." << std::endl;
-	return NULL; // Exit if the client is not found
-}
-
-AChannel	*Server::getChannelByName(const std::string &channelName)
-{
-	// Search for the channel by its name
-	// Buscar el canal por su nombre
-	std::map<std::string, AChannel*>::iterator it = _channel_list.find(channelName);
-	if (it != _channel_list.end())
-		return it->second; // Return the found channel
-	std::cerr << "Channel not found: " << channelName << std::endl;
-	return NULL; // Exit if the channel is not found
-}
 
 /// @brief server socket initializer function
 /// función para inicializar el socket del servidor
@@ -144,6 +25,8 @@ void	Server::init_server_socket()
 		std::cerr << "Error al crear el socket." << std::endl;
 		exit (1);
 	}
+
+	std::cout << "Socket creado con fd " << get_server_fd() << " ." << std::endl;
 
 	// server address scrtuct
 	// Estructura para la dirección del servidor
@@ -163,7 +46,7 @@ void	Server::init_server_socket()
 		exit (1);
 	}
 
-	// Associate the socket yo an IP / port
+	// Associate the socket to an IP / port
 	// Asociar el socket a una IP / puerto
 	if ( bind( get_server_fd(), ( struct sockaddr* ) &server_addr, sizeof( server_addr )) < 0 )
 	{
@@ -215,9 +98,14 @@ void	Server::handle_new_connection()
 			set_fd_max(new_fd);					// refresch the higer fd
 
 		Client* new_client = new Client(new_fd);				// create a new client object
-		_clients.push_back(new_client);		// add the new client to the vector
+		//_clients.push_back(new_client);		// add the new client to the vector
+		getClientList()[new_fd] = new_client;		// add the new client to the vector
 
 		std::cout << "Nueva conexión desde " << inet_ntoa( client_addr.sin_addr ) << " en socket " << new_fd << std::endl;
+
+		// Envía mensaje solicitando el nickname
+		std::string welcome = "Bienvenido. Por favor, envía tu nickname con: NICK <nickname>\n";
+		send(new_fd, welcome.c_str(), welcome.size(), 0);
 
 	}
 }
@@ -239,7 +127,7 @@ void	Server::handle_client_message(Client *client)
 	else if(nbytes == 0)
 	{
 		// if an error ocurr or the client desconetion
-		std::cout << "Socket " << client->getUsername() << " disconected for the client." << std::endl;
+		std::cout << "Socket " << client->getNickname() << " disconected for the client." << std::endl;
 
 		// close the client socket and remove it from the set
 		close( client->getFd() );
@@ -248,7 +136,23 @@ void	Server::handle_client_message(Client *client)
 	else
 	{
 		buffer[nbytes] = '\0';		// Ensure the message end at \0
-		std::cout << "Mensaje recibido de " << client->getUsername() << ": " << buffer;
+				std::cout << "Mensaje recibido de " << client->getNickname() << ": " << buffer;
+		if (client->getNickname().empty())
+		{
+			// Esperar mensaje tipo: NICK <nickname>
+			std::string message(buffer);
+			if (message.find("NICK ") == 0) {
+				std::string nickname = message.substr(5);
+				nickname.erase(nickname.find_last_not_of(" \n\r\t") + 1);
+				client->setNickname(nickname);
+				std::string response = "Nickname registrado como " + nickname + "\n";
+				send(client->getFd(), response.c_str(), response.size(), 0);
+			} else {
+				std::string response = "Por favor, envía tu nickname con: NICK <nickname>\n";
+				send(client->getFd(), response.c_str(), response.size(), 0);
+			}
+			return; // No procesar más hasta tener nickname
+		}
 
 		// handle the buffer
 		// tratar el buffer
@@ -265,7 +169,7 @@ void	Server::handle_client_message(Client *client)
 		if(message.find("show") == 0)
 		{
 			std::cout << "Canales" << std::endl;
-			for (std::map<std::string, AChannel*>::iterator it = _channel_list.begin(); it != _channel_list.end(); ++it)
+			for (std::map<std::string, AChannel*>::const_iterator it = getConstChannelList().begin(); it != getConstChannelList().end(); ++it)
 			{
 				int i = it->second->getMembers().size();
 				std::cout << it->first << " - " << i << std::endl;
@@ -276,7 +180,6 @@ void	Server::handle_client_message(Client *client)
 		std::string response = "Mensaje recibido.\n";
 		send( client->getFd(), response.c_str(), response.size(), 0 );
 	}
-
 }
 
 /// @brief join or create a channel
@@ -288,22 +191,26 @@ void				Server::joinChannel(const std::string channelName, Client *new_client)
 	AChannel* channel = getChannelByName(channelName);
 
 	std::string msg;
-	if (!channel) {
+	if (channel == NULL)
+	{
+		std::cout << channelName << " not found" << std::endl;
 		// Crear nuevo canal público
 		AChannel* newChannel = new ChannelPublic(channelName);
-		newChannel->addMember(new_client, "");  // primer miembro
-		_channel_list[channelName] = newChannel;
-		msg = "Joined channel " + channelName + "\n";
+		newChannel->addMember(new_client);	// primer miembro
+		getChannelList()[channelName] = newChannel;
+		msg = "Joined channel " + newChannel->getName() + "\n";
 		std::cout << "Created channel: " << channelName << std::endl;
 	}
 	else
 	{
-
-		if (channel->isMember(new_client->getNickname()))
+		std::cout << "Founded channel: " << channel->getName() << std::endl;
+		std::cout << channel->isMember(new_client->getFd()) << std::endl;
+		if (!channel->isMember(new_client->getFd()))
 		{
-			channel->addMember(new_client, ""); // Agregar al canal existente
+			if (channel->addMember(new_client) != 0 ) // Agregar al canal existente
+				std::cerr << "Error: Client already in channel " << channelName << std::endl;
 			std::cout << "Client " << new_client->getFd() << " joined " << channelName << std::endl;
-			msg = "Joined channel " + channelName + "\n";
+			msg = "Joined channel " + channel->getName() + "\n";
 		}
 		else
 		{
@@ -316,7 +223,7 @@ void				Server::joinChannel(const std::string channelName, Client *new_client)
 	send(new_client->getFd(), msg.c_str(), msg.length(), 0);
 }
 
-/// @brief principal loop
+///			principal loop
 ///			bucle principal
 void	Server::run()
 {
@@ -324,8 +231,22 @@ void	Server::run()
 	{
 		set_read_fds(get_master_set());		// copy set from selec()
 
-		// wait for activity on any of the sockets
-		// esperar actividad en alguno de los sockets
+		// select() is used to wait for activity on any of the sockets
+		// int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
+		// nfds: highest file descriptor + 1
+		// readfds: set of file descriptors to be monitored for reading
+		// writefds: set of file descriptors to be monitored for writing
+		// exceptfds: set of file descriptors to be monitored for exceptional conditions
+		// timeout: maximum time to wait for activity (NULL means wait indefinitely)
+		
+		// select() se usa para esperar actividad en alguno de los sockets
+		// int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
+		// nfds: el mayor descriptor de archivo + 1
+		// readfds: conjunto de descriptores de archivo a monitorear para lectura
+		// writefds: conjunto de descriptores de archivo a monitorear para escritura
+		// exceptfds: conjunto de descriptores de archivo a monitorear para condiciones excepcionales
+		// timeout: tiempo máximo de espera para actividad (NULL significa esperar indefinidamente)
+
 		if(select(get_fd_max() + 1, &_read_fds, NULL, NULL, NULL ) == -1)
 		{
 			std::cerr << "Error en select()." << std::endl;
