@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/06/12 17:25:09 by p                ###   ########.fr       */
+/*   Updated: 2025/07/11 12:23:06 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ void	Server::handle_new_connection()
 		if (new_fd > get_fd_max())
 			set_fd_max(new_fd);					// refresch the higer fd
 
-		Client* new_client = new Client(new_fd);				// create a new client object
+		User* new_client = new User(new_fd);				// create a new client object
 		//_clients.push_back(new_client);		// add the new client to the vector
 		getClientList()[new_fd] = new_client;		// add the new client to the vector
 
@@ -113,7 +113,7 @@ void	Server::handle_new_connection()
 /// @brief Read and process a message from a client
 ///			leer y procesar un mensaje de un cleinte
 /// @param client_fd
-void	Server::handle_client_message(Client *client)
+void	Server::handle_client_message(User *client)
 {
 	char	buffer[BUFFER_SIZE];
 	int		nbytes = recv( client->getFd(), buffer, BUFFER_SIZE - 1, 0 ); // data receiv
@@ -159,9 +159,9 @@ void	Server::handle_client_message(Client *client)
 		//msg_handler::handle_buffer<int>(buffer);
 		//msg_andler::andle_buffer<std::string>(buffer);
 		std::string message(buffer);
-		if(message.find("JOIN" ) == 0)
+		if(message.find("JOIN ") == 0)
 		{
-			std::string channelName = message.substr(5);
+			std::string channelName = message.substr(6);
 			channelName.erase(channelName.find_last_not_of(" \n\r\t") + 1);
 			joinChannel(channelName, client);
 		}
@@ -178,7 +178,7 @@ void	Server::handle_client_message(Client *client)
 
 		// send a eco response to the client
 		std::string response = "Mensaje recibido.\n";
-		send( client->getFd(), response.c_str(), response.size(), 0 );
+		send(client->getFd(), response.c_str(), response.size(), 0);
 	}
 }
 
@@ -186,7 +186,7 @@ void	Server::handle_client_message(Client *client)
 ///			entrar o crear un canal
 /// @param channelName
 /// @param new_client
-void				Server::joinChannel(const std::string channelName, Client *new_client)
+void				Server::joinChannel(const std::string channelName, User *new_client)
 {
 	AChannel* channel = getChannelByName(channelName);
 
@@ -196,7 +196,7 @@ void				Server::joinChannel(const std::string channelName, Client *new_client)
 		std::cout << channelName << " not found" << std::endl;
 		// Crear nuevo canal público
 		AChannel* newChannel = new ChannelPublic(channelName);
-		newChannel->addMember(new_client);	// primer miembro
+		newChannel->addMember(new_client, "01234");	// primer miembro
 		getChannelList()[channelName] = newChannel;
 		msg = "Joined channel " + newChannel->getName() + "\n";
 		std::cout << "Created channel: " << channelName << std::endl;
@@ -207,15 +207,15 @@ void				Server::joinChannel(const std::string channelName, Client *new_client)
 		std::cout << channel->isMember(new_client->getFd()) << std::endl;
 		if (!channel->isMember(new_client->getFd()))
 		{
-			if (channel->addMember(new_client) != 0 ) // Agregar al canal existente
-				std::cerr << "Error: Client already in channel " << channelName << std::endl;
-			std::cout << "Client " << new_client->getFd() << " joined " << channelName << std::endl;
+			if (channel->addMember(new_client, "01234") != 0 ) // Agregar al canal existente
+				std::cerr << "Error: User already in channel " << channelName << std::endl;
+			std::cout << "User " << new_client->getFd() << " joined " << channelName << std::endl;
 			msg = "Joined channel " + channel->getName() + "\n";
 		}
 		else
 		{
-			std::cerr << "Error: Client already in channel " << channelName << std::endl;
-			msg = "Error: Client already in channel " + channelName + "\n";
+			std::cerr << "Error: User already in channel " << channelName << std::endl;
+			msg = "Error: User already in channel " + channelName + "\n";
 		}
 	}
 
@@ -266,7 +266,7 @@ void	Server::run()
 				}
 				else
 				{
-					Client *client = getClientByFd(i);
+					User *client = getClientByFd(i);
 					
 					if (client == NULL)
 					{

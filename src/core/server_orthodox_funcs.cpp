@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server_orthodox_funcs.cpp                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:05:36 by p                 #+#    #+#             */
-/*   Updated: 2025/06/12 17:08:11 by p                ###   ########.fr       */
+/*   Updated: 2025/07/11 12:23:06 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,11 @@ Server::~Server(void)
 	// iter all the clients closing the conexion
 	// itera por todos los clientes cerrando la conexión
 
-	for(std::map<int, Client*>::iterator it = _client_list.begin(); it != _client_list.end(); ++it )
+	for(std::map<int, User*>::iterator it = _client_list.begin(); it != _client_list.end(); ++it )
 		delete it->second; // delete each client
 	_client_list.clear(); // clear the map of clients
 
-	for(std::map<int, Client*>::iterator it = _client_list.begin(); it != _client_list.end(); ++it)
+	for(std::map<int, User*>::iterator it = _client_list.begin(); it != _client_list.end(); ++it)
 		delete it->second; // delete each channel
 	_channel_list.clear(); // clear the map of channels
 

@@ -1,63 +1,63 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client.cpp                                         :+:      :+:    :+:   */
+/*   user.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:28:00 by p                 #+#    #+#             */
-/*   Updated: 2025/06/12 17:28:03 by p                ###   ########.fr       */
+/*   Updated: 2025/07/11 12:23:41 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // filepath: /home/arksh/Documentos/42 Madrid/irc/srcs/srcs/Client/client.cpp
-#include "Client.hpp"
+#include "User.hpp"
 
 // Constructors
-Client::Client(int fd ) : _fd(fd), _username(""), _nickname(""), _isAuthenticated(false)
+User::User(int fd ) : _fd(fd), _username(""), _nickname(""), _isAuthenticated(false)
 {
 }
-Client::Client(int fd, const std::string& nickname, const std::string& username) : 
+User::User(int fd, const std::string& nickname, const std::string& username) : 
 	_fd(fd), _username(username), _nickname(nickname), _isAuthenticated(false)
 {
 }
 
 // Destructor
-Client::~Client() {}
+User::~User() {}
 
 // Getters
-std::string Client::getNickname() const
+std::string User::getNickname() const
 {
 	return _nickname;
 }
 
-std::string Client::getUsername() const
+std::string User::getUsername() const
 {
 	return _username;
 }
 
-bool Client::isAuthenticated() const
+bool User::isAuthenticated() const
 {
 	return _isAuthenticated;
 }
 
-int Client::getFd() const
+int User::getFd() const
 {
 	return _fd;
 }
 
 // Setters
-void Client::setNickname(const std::string& nickname)
+void User::setNickname(const std::string& nickname)
 {
 	_nickname = nickname;
 }
 
-void Client::setUsername(const std::string& username)
+void User::setUsername(const std::string& username)
 {
 	_username = username;
 }
 
-void Client::setAuthenticated(bool isAuthenticated)
+void User::setAuthenticated(bool isAuthenticated)
 {
 	_isAuthenticated = isAuthenticated;
 }

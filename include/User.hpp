@@ -3,7 +3,7 @@
 
 #include <string>
 
-class Client
+class User
 {
 
 private:
@@ -17,11 +17,11 @@ private:
 public:
 
 	// Constructors
-	Client(int fd);
-	Client(int fd, const std::string& nickname, const std::string& username);
+	User(int fd);
+	User(int fd, const std::string& nickname, const std::string& username);
 
 	// Destructor
-	~Client();
+	~User();
 
 	// Getters
 	std::string				getNickname() const;

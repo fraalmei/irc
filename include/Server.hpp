@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2025/06/12 17:02:16 by p                ###   ########.fr       */
+/*   Updated: 2025/07/11 12:23:06 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,10 @@ class Server
 
 		const std::map<std::string, AChannel*>&		getConstChannelList() const;
 		std::map<std::string, AChannel*>&			getChannelList();
-		const std::map<int, Client*>&		getConstClientList() const;
-		std::map<int, Client*>&				getClientList();
+		const std::map<int, User*>&		getConstClientList() const;
+		std::map<int, User*>&				getClientList();
 
-		Client				*getClientByFd(int fd);
+		User				*getClientByFd(int fd);
 		AChannel			*getChannelByName(const std::string &channelName);
 
 		// Setters
@@ -74,7 +74,7 @@ class Server
 
 		void				run(void);
 
-		void				joinChannel(const std::string channelName, Client *new_client);
+		void				joinChannel(const std::string channelName, User *new_client);
 
 	private:
 
@@ -83,13 +83,13 @@ class Server
 		fd_set								_read_fds;			//	temporal set to read
 		int									_fd_max;			//	high fd used
 
-		std::map<int, Client*>					_client_list;			// fd client list
+		std::map<int, User*>					_client_list;			// fd client list
 		//std::vector<Client*>					_clients;			// vector of clients
 		std::map<std::string, AChannel*>		_channel_list;		// map of the created channels
 
 		void				init_server_socket();
 		void				handle_new_connection();
-		void				handle_client_message(Client *client);
+		void				handle_client_message(User *client);
 
 };
 

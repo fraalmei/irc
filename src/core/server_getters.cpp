@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server_getters.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 16:31:13 by p                 #+#    #+#             */
-/*   Updated: 2025/06/12 16:54:38 by p                ###   ########.fr       */
+/*   Updated: 2025/07/11 12:23:06 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,28 +42,28 @@ std::map<std::string, AChannel*>&			Server::getChannelList()
 	return this->_channel_list;
 }
 
-const std::map<int, Client*>&				Server::getConstClientList() const
+const std::map<int, User*>&				Server::getConstClientList() const
 {
 	return this->_client_list;
 }
 
-std::map<int, Client*>&						Server::getClientList()
+std::map<int, User*>&						Server::getClientList()
 {
 	return this->_client_list;
 }
 
-Client	*Server::getClientByFd(int fd)
+User	*Server::getClientByFd(int fd)
 {
 	// Search for the client by its file descriptor
 	// Buscar el cliente por su descriptor de archivo
-	for(std::map<int, Client*>::const_iterator it = getConstClientList().begin(); it != getConstClientList().end(); ++it)
+	for(std::map<int, User*>::const_iterator it = getConstClientList().begin(); it != getConstClientList().end(); ++it)
 	{
 		if (it->first == fd)
 		{
 			return it->second; // Return the found client
 		}
 	}
-	std::cerr << "Client with fd " << fd << " not found." << std::endl;
+	std::cerr << "User with fd " << fd << " not found." << std::endl;
 	return NULL; // Exit if the client is not found
 }
 
