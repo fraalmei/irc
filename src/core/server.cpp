@@ -6,7 +6,7 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/07/11 12:23:06 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/07/11 12:52:47 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,15 +91,15 @@ void	Server::handle_new_connection()
 	}
 	else
 	{
-		// add the new client to the set
+		// add the new user to the set
 		// añadir el nuevo cliente al conjunto
 		FD_SET( new_fd, &_master_set );
 		if (new_fd > get_fd_max())
 			set_fd_max(new_fd);					// refresch the higer fd
 
-		User* new_client = new User(new_fd);				// create a new client object
-		//_clients.push_back(new_client);		// add the new client to the vector
-		getClientList()[new_fd] = new_client;		// add the new client to the vector
+		User* new_client = new User(new_fd);				// create a new user object
+		//_clients.push_back(new_client);		// add the new user to the vector
+		getClientList()[new_fd] = new_client;		// add the new user to the vector
 
 		std::cout << "Nueva conexión desde " << inet_ntoa( client_addr.sin_addr ) << " en socket " << new_fd << std::endl;
 
@@ -110,46 +110,46 @@ void	Server::handle_new_connection()
 	}
 }
 
-/// @brief Read and process a message from a client
+/// @brief Read and process a message from a user
 ///			leer y procesar un mensaje de un cleinte
 /// @param client_fd
-void	Server::handle_client_message(User *client)
+void	Server::handle_client_message(User *user)
 {
 	char	buffer[BUFFER_SIZE];
-	int		nbytes = recv( client->getFd(), buffer, BUFFER_SIZE - 1, 0 ); // data receiv
+	int		nbytes = recv( user->getFd(), buffer, BUFFER_SIZE - 1, 0 ); // data receiv
 
 	if (nbytes < 0)
 	{
 		perror("recv");		// mostrar error exacto
-		close( client->getFd() );
-		FD_CLR( client->getFd(), &_master_set );
+		close( user->getFd() );
+		FD_CLR( user->getFd(), &_master_set );
 	}
 	else if(nbytes == 0)
 	{
 		// if an error ocurr or the client desconetion
-		std::cout << "Socket " << client->getNickname() << " disconected for the client." << std::endl;
+		std::cout << "Socket " << user->getNickname() << " disconected for the user." << std::endl;
 
-		// close the client socket and remove it from the set
-		close( client->getFd() );
-		FD_CLR( client->getFd(), &_master_set );
+		// close the user socket and remove it from the set
+		close( user->getFd() );
+		FD_CLR( user->getFd(), &_master_set );
 	}
 	else
 	{
 		buffer[nbytes] = '\0';		// Ensure the message end at \0
-				std::cout << "Mensaje recibido de " << client->getNickname() << ": " << buffer;
-		if (client->getNickname().empty())
+				std::cout << "Mensaje recibido de " << user->getNickname() << ": " << buffer;
+		if (user->getNickname().empty())
 		{
 			// Esperar mensaje tipo: NICK <nickname>
 			std::string message(buffer);
 			if (message.find("NICK ") == 0) {
 				std::string nickname = message.substr(5);
 				nickname.erase(nickname.find_last_not_of(" \n\r\t") + 1);
-				client->setNickname(nickname);
+				user->setNickname(nickname);
 				std::string response = "Nickname registrado como " + nickname + "\n";
-				send(client->getFd(), response.c_str(), response.size(), 0);
+				send(user->getFd(), response.c_str(), response.size(), 0);
 			} else {
 				std::string response = "Por favor, envía tu nickname con: NICK <nickname>\n";
-				send(client->getFd(), response.c_str(), response.size(), 0);
+				send(user->getFd(), response.c_str(), response.size(), 0);
 			}
 			return; // No procesar más hasta tener nickname
 		}
@@ -163,7 +163,7 @@ void	Server::handle_client_message(User *client)
 		{
 			std::string channelName = message.substr(6);
 			channelName.erase(channelName.find_last_not_of(" \n\r\t") + 1);
-			joinChannel(channelName, client);
+			joinChannel(channelName, user);
 		}
 
 		if(message.find("show") == 0)
@@ -176,9 +176,9 @@ void	Server::handle_client_message(User *client)
 			}
 		}
 
-		// send a eco response to the client
+		// send a eco response to the user
 		std::string response = "Mensaje recibido.\n";
-		send(client->getFd(), response.c_str(), response.size(), 0);
+		send(user->getFd(), response.c_str(), response.size(), 0);
 	}
 }
 
@@ -266,14 +266,14 @@ void	Server::run()
 				}
 				else
 				{
-					User *client = getClientByFd(i);
+					User *user = getClientByFd(i);
 					
-					if (client == NULL)
+					if (user == NULL)
 					{
 						std::cerr << "Client with fd " << i << " not found." << std::endl;
-						continue; // Skip if client not found
+						continue; // Skip if user not found
 					}
-					handle_client_message(client);	// message of a client
+					handle_client_message(user);	// message of a user
 				}
 			}
 		}
