@@ -6,7 +6,7 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 20:53:50 by p                 #+#    #+#             */
-/*   Updated: 2025/07/11 12:23:06 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/07/11 12:32:25 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,14 @@
 
 # include <vector>
 # include <string>
-# include "Client.hpp"
+# include "User.hpp"
 
 class AChannel
 {
 public:
 	
-	virtual int			addMember(const User* client, std::string password) = 0;
+	virtual int			addMember(const User* user) = 0;
+	virtual int			addMember(const User* user, std::string password) = 0;
 	virtual void		removeMember(const std::string &nickname) = 0;
 	virtual bool		isMember(const std::string &nickname) const = 0;
 	virtual bool		isMember(const int &fd) const = 0;

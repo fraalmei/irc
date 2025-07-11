@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   channelprivate.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:26:42 by p                 #+#    #+#             */
-/*   Updated: 2025/06/12 17:26:50 by p                ###   ########.fr       */
+/*   Updated: 2025/07/11 12:36:59 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,25 @@ ChannelPrivate::~ChannelPrivate()
 {
 }
 
-int ChannelPrivate::addMember(const Client* client, const std::string& password)
+int ChannelPrivate::addMember(const User* user)
+{
+	(void)user; // Ignore user for private channels
+	return -1;
+}
+
+int ChannelPrivate::addMember(const User* user, const std::string& password)
 {
 	if (password == this->_password)
 	{
-		_members.push_back(const_cast<Client*>(client)); // Add the client to the members list
-		for (std::vector<Client*>::iterator it = _members.begin(); it != _members.end(); ++it)
+		_members.push_back(const_cast<User*>(user)); // Add the user to the members list
+		for (std::vector<User*>::iterator it = _members.begin(); it != _members.end(); ++it)
 		{
-			if ((*it)->getNickname() == client->getNickname())
+			if ((*it)->getNickname() == user->getNickname())
 			{
-				return -1; // Return -1 to indicate that the client is already a member
+				return -1; // Return -1 to indicate that the user is already a member
 			}
 		}
-		_members.push_back(const_cast<Client*>(client)); // Add the client to the members list
+		_members.push_back(const_cast<User*>(user)); // Add the user to the members list
 		return 0; // Success
 	}
 	return 1; // Return 1 to indicate failure
@@ -42,7 +48,7 @@ int ChannelPrivate::addMember(const Client* client, const std::string& password)
 
 void ChannelPrivate::removeMember(const std::string& nickname)
 {
-	for (std::vector<Client*>::iterator it = _members.begin(); it != _members.end(); ++it)
+	for (std::vector<User*>::iterator it = _members.begin(); it != _members.end(); ++it)
 	{
 		if ((*it)->getNickname() == nickname)
 		{
@@ -54,7 +60,7 @@ void ChannelPrivate::removeMember(const std::string& nickname)
 
 bool ChannelPrivate::isMember(const std::string& nickname) const
 {
-	for (std::vector<Client*>::const_iterator it = _members.begin(); it != _members.end(); ++it)
+	for (std::vector<User*>::const_iterator it = _members.begin(); it != _members.end(); ++it)
 	{
 		if ((*it)->getNickname() == nickname)
 		{
@@ -66,7 +72,7 @@ bool ChannelPrivate::isMember(const std::string& nickname) const
 
 bool ChannelPrivate::isMember(const int &fd) const
 {
-	for (std::vector<Client*>::const_iterator it = _members.begin(); it != _members.end(); ++it)
+	for (std::vector<User*>::const_iterator it = _members.begin(); it != _members.end(); ++it)
 		if ((*it)->getFd() == fd)
 			return true;
 	return false;
@@ -77,7 +83,7 @@ const std::string& ChannelPrivate::getName() const
 	return _name;
 }
 
-const std::vector<Client*>& ChannelPrivate::getMembers() const
+const std::vector<User*>& ChannelPrivate::getMembers() const
 {
 	return _members;
 }

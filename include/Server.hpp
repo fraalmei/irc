@@ -6,7 +6,7 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2025/07/11 12:23:06 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/07/11 12:46:01 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ class Server
 		fd_set								_read_fds;			//	temporal set to read
 		int									_fd_max;			//	high fd used
 
-		std::map<int, User*>					_client_list;			// fd client list
+		std::map<int, User*>					_client_list;		// fd client list
 		//std::vector<Client*>					_clients;			// vector of clients
 		std::map<std::string, AChannel*>		_channel_list;		// map of the created channels
 
