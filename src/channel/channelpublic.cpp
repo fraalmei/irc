@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   channelpublic.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:27:10 by p                 #+#    #+#             */
-/*   Updated: 2025/07/11 12:51:53 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/07/24 13:36:45 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ int ChannelPublic::addMember(const User* user, std::string password)
 {
 	(void)password; // Ignore password for public channels
 	(void)user; // Ignore user for public channels
+	return 0;
 }
 
 void ChannelPublic::removeMember(const std::string &nickname)
