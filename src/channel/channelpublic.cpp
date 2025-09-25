@@ -6,7 +6,7 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:27:10 by p                 #+#    #+#             */
-/*   Updated: 2025/07/11 12:51:53 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/09/25 09:59:05 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ int ChannelPublic::addMember(const User* user, std::string password)
 {
 	(void)password; // Ignore password for public channels
 	(void)user; // Ignore user for public channels
+	return 0; // Success
 }
 
 void ChannelPublic::removeMember(const std::string &nickname)
@@ -46,6 +47,12 @@ void ChannelPublic::removeMember(const std::string &nickname)
 		if ((*it)->getNickname() == nickname)
 		{
 			_members.erase(it);
+
+			for (std::vector<User*>::iterator it = _adminMembers.begin(); it != _adminMembers.end(); ++it)
+			{
+				if ((*it)->getNickname() == nickname)
+					_adminMembers.erase(it);
+			}
 			return;
 		}
 	}
