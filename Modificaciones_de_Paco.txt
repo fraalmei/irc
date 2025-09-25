@@ -15,3 +15,5 @@ Client.hpp
 AChannel.hpp
 - cambiadas referencias a los clientes por punteros
 
+24/07/2025
+ - msg_handler preparado para que le lleguen los datos y gestionar el buffer

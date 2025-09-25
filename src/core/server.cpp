@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/07/11 12:52:47 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/07/24 13:55:43 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,45 +136,9 @@ void	Server::handle_client_message(User *user)
 	else
 	{
 		buffer[nbytes] = '\0';		// Ensure the message end at \0
-				std::cout << "Mensaje recibido de " << user->getNickname() << ": " << buffer;
-		if (user->getNickname().empty())
-		{
-			// Esperar mensaje tipo: NICK <nickname>
-			std::string message(buffer);
-			if (message.find("NICK ") == 0) {
-				std::string nickname = message.substr(5);
-				nickname.erase(nickname.find_last_not_of(" \n\r\t") + 1);
-				user->setNickname(nickname);
-				std::string response = "Nickname registrado como " + nickname + "\n";
-				send(user->getFd(), response.c_str(), response.size(), 0);
-			} else {
-				std::string response = "Por favor, envía tu nickname con: NICK <nickname>\n";
-				send(user->getFd(), response.c_str(), response.size(), 0);
-			}
-			return; // No procesar más hasta tener nickname
-		}
-
-		// handle the buffer
-		// tratar el buffer
-		//msg_handler::handle_buffer<int>(buffer);
-		//msg_andler::andle_buffer<std::string>(buffer);
-		std::string message(buffer);
-		if(message.find("JOIN ") == 0)
-		{
-			std::string channelName = message.substr(6);
-			channelName.erase(channelName.find_last_not_of(" \n\r\t") + 1);
-			joinChannel(channelName, user);
-		}
-
-		if(message.find("show") == 0)
-		{
-			std::cout << "Canales" << std::endl;
-			for (std::map<std::string, AChannel*>::const_iterator it = getConstChannelList().begin(); it != getConstChannelList().end(); ++it)
-			{
-				int i = it->second->getMembers().size();
-				std::cout << it->first << " - " << i << std::endl;
-			}
-		}
+		std::cout << "Mensaje recibido de " << user->getNickname() << ": " << buffer;
+		if (msg_handler::handle_buffer<int>(buffer, user, this)) // handle the buffer
+			std::cout << "Mensaje tratado incorrectamente." << std::endl;
 
 		// send a eco response to the user
 		std::string response = "Mensaje recibido.\n";
