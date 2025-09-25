@@ -6,7 +6,7 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:27:10 by p                 #+#    #+#             */
-/*   Updated: 2025/09/25 10:01:25 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/09/25 10:09:51 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,4 +82,9 @@ const std::string &ChannelPublic::getName() const
 const std::vector<User*> &ChannelPublic::getMembers() const
 {
 	return _members;
+}
+
+const std::vector<User*> &ChannelPublic::getAdminMembers() const
+{
+	return _adminMembers;
 }

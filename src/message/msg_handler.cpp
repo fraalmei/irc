@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 22:39:07 by p                 #+#    #+#             */
-/*   Updated: 2025/07/24 13:53:31 by p                ###   ########.fr       */
+/*   Updated: 2025/09/25 10:16:13 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int				msg_handler::handle_buffer<int>(char* buffer, User *user, Server *Server)
 	std::string message(buffer);
 	if(message.find("JOIN ") == 0)
 	{
-		std::string channelName = message.substr(6);
+		std::string channelName = message.substr(5);
 		channelName.erase(channelName.find_last_not_of(" \n\r\t") + 1);
 		Server->joinChannel(channelName, user);
 	}

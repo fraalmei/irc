@@ -31,6 +31,7 @@ public:
 
 	virtual const std::string			&getName() const;
 	virtual const std::vector<User*>	&getMembers() const;
+	virtual const std::vector<User*>	&getAdminMembers() const;
 
 };
 
