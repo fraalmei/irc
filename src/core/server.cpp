@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/09/25 10:09:04 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/10/03 12:41:33 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,9 @@ void	Server::handle_new_connection()
 	}
 	else
 	{
+
+		std::cout << "Nuevo cliente con fd " << new_fd << " aceptado y direccion " << client_addr.sin_addr.s_addr << "." << std::endl;
+
 		// add the new user to the set
 		// añadir el nuevo cliente al conjunto
 		FD_SET( new_fd, &_master_set );
@@ -98,6 +101,7 @@ void	Server::handle_new_connection()
 			set_fd_max(new_fd);					// refresch the higer fd
 
 		User* new_client = new User(new_fd);				// create a new user object
+		
 		//_clients.push_back(new_client);		// add the new user to the vector
 		getClientList()[new_fd] = new_client;		// add the new user to the vector
 
@@ -117,6 +121,7 @@ void	Server::handle_client_message(User *user)
 {
 	char	buffer[BUFFER_SIZE];
 	int		nbytes = recv( user->getFd(), buffer, BUFFER_SIZE - 1, 0 ); // data receiv
+	std::cout << "Se ha recibido mensaje de " << user->getNickname() << ": " << buffer << "." << std::endl;
 
 	if (nbytes < 0)
 	{
@@ -191,6 +196,8 @@ void				Server::joinChannel(const std::string channelName, User *new_client)
 ///			bucle principal
 void	Server::run()
 {
+
+	std::cout << "Running server." << std::endl;
 	while (true)
 	{
 		set_read_fds(get_master_set());		// copy set from selec()
