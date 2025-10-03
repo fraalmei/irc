@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 22:39:07 by p                 #+#    #+#             */
-/*   Updated: 2025/09/25 10:16:13 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/10/03 13:37:27 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,10 @@ std::string		msg_handler::handle_buffer<std::string>(char* buffer, User *user, S
 template<>
 int				msg_handler::handle_buffer<int>(char* buffer, User *user, Server *Server)
 {
+	std::cout << "Se ha recibido un mensaje." << std::endl;
+	std::cout << "Usuario: " << user->getFd() << std::endl;
+	std::cout << "Buffer: " << buffer << "." << std::endl;
+
 	if (user->getNickname().empty())
 	{
 		// Esperar mensaje tipo: NICK <nickname>
