@@ -23,15 +23,15 @@ public:
 	ChannelPublic(const std::string &name);
 	virtual ~ChannelPublic();
 
-	virtual int							addMember(const User* user);
-	virtual int							addMember(const User* user, std::string password);
-	virtual void						removeMember(const std::string &nickname);
-	virtual bool						isMember(const std::string &nickname) const;
-	virtual bool						isMember(const int &fd) const;
+	int							addMember(const User* user);
+	int							addMember(const User* user, const std::string& password);
+	void						removeMember(const std::string &nickname);
+	bool						isMember(const std::string &nickname) const;
+	bool						isMember(const int &fd) const;
 
-	virtual const std::string			&getName() const;
-	virtual const std::vector<User*>	&getMembers() const;
-	virtual const std::vector<User*>	&getAdminMembers() const;
+	const std::string			&getName() const;
+	const std::vector<User*>	&getMembers() const;
+	const std::vector<User*>	&getAdminMembers() const;
 
 };
 

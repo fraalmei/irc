@@ -6,7 +6,7 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:27:10 by p                 #+#    #+#             */
-/*   Updated: 2025/09/25 10:09:51 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/10/03 14:15:11 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int ChannelPublic::addMember(const User* user)
 	return 0; // Success
 }
 
-int ChannelPublic::addMember(const User* user, std::string password)
+int ChannelPublic::addMember(const User* user, const std::string& password)
 {
 	(void)password; // Ignore password for public channels
 	(void)user; // Ignore user for public channels
