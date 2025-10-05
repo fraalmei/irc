@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 22:39:07 by p                 #+#    #+#             */
-/*   Updated: 2025/10/03 13:37:27 by p                ###   ########.fr       */
+/*   Updated: 2025/10/03 15:12:21 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/msg_handler.hpp"
+#include "../include/validNames.hpp"
 
 msg_handler::msg_handler() {}
 
@@ -57,9 +58,16 @@ int				msg_handler::handle_buffer<int>(char* buffer, User *user, Server *Server)
 	std::string message(buffer);
 	if(message.find("JOIN ") == 0)
 	{
-		std::string channelName = message.substr(5);
+		std::string channelName = message.substr(4);
+		channelName.erase(0, channelName.find_first_not_of(" \n\r\t") - 1);
 		channelName.erase(channelName.find_last_not_of(" \n\r\t") + 1);
-		Server->joinChannel(channelName, user);
+		if (channelName.find_first_of(CHNAMEINVALID) != std::string::npos || (channelName[0] != REGCH && channelName[0] != REGCH))
+		{
+			std::string response = "Channel name not valid. Must not contain whitespace and comma and must start with `#` or `&`.";
+			send(user->getFd(), response.c_str(), response.size(), 0);
+		}
+		else
+			Server->joinChannel(channelName, user);
 	}
 
 	if(message.find("show") == 0)

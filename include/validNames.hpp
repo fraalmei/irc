@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validNames.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 14:10:48 by samartin          #+#    #+#             */
-/*   Updated: 2025/07/11 14:39:04 by samartin         ###   ########.fr       */
+/*   Updated: 2025/10/03 15:09:12 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,10 @@
 #  define CHNAMEINVALID " \7,"
 # endif
 # ifndef REGCH
-#  define REGCH "#"
+#  define REGCH '#'
 # endif
 # ifndef LOCCH
-#  define LOCCH "&"
+#  define LOCCH '&'
 # endif
 
 #endif

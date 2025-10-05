@@ -109,5 +109,4 @@ Mostrar canales y cantidad de usuarios
 
 
 Protocol specifications:
-https://www.rfc-editor.org/rfc/rfc1459.html
 https://modern.ircdocs.horse/
