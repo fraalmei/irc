@@ -18,15 +18,13 @@
 
 int	read_args(char** argv)
 {
-	int	port;
-	port = atoi(argv[1]);
-	if (argv[1] < 1024 || argv[1] > 65535)
+	if (atoi(argv[1]) < 1024 || atoi(argv[1]) > 65535)
 	{
 		std::cerr << "Invalid port number. Please use a port between 1024 and 65535." << std::endl;
 		return 1;
 	}
 	std::cout << "Using port: " << argv[1] << std::endl;
-	if (argv[2]);
+	if (argv[2])
 		std::cout << "Using password: " << argv[2] << std::endl;
 	return 0;
 }
@@ -36,7 +34,7 @@ int	main(int argc, char **argv)
 	if (argc != 3 && !read_args(argv))
 		return 1;
 	std::cout << "Initiating server." << std::endl;
-	Server server(argv[1], atoi(argv[2]));
+	Server server(argv[2], atoi(argv[1]));
 	server.run();
 	std::cout << "Server distroyed." << std::endl;
 	return 0;
