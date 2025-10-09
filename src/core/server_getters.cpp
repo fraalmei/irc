@@ -32,6 +32,16 @@ fd_set	Server::get_read_fds()
 	return this->_read_fds;
 }
 
+int		Server::get_port()
+{
+	return this->_port;
+}
+
+std::string	Server::get_password()
+{
+	return this->_password;
+}
+
 const std::map<std::string, AChannel*>&		Server::getConstChannelList() const
 {
 	return this->_channel_list;

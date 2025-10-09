@@ -44,6 +44,7 @@ class Server
 		// Constructors
 		Server(void);
 		Server(int server_fd, int fd_max);
+		Server(std::string password, int port);
 		Server(const Server &copy);
 
 		// Destructor
@@ -57,6 +58,8 @@ class Server
 		int					get_fd_max();
 		fd_set				get_master_set();
 		fd_set				get_read_fds();
+		int					get_port();
+		std::string			get_password();
 
 		const std::map<std::string, AChannel*>&		getConstChannelList() const;
 		std::map<std::string, AChannel*>&			getChannelList();
@@ -82,6 +85,9 @@ class Server
 		fd_set								_master_set;		//	set of file descriptors
 		fd_set								_read_fds;			//	temporal set to read
 		int									_fd_max;			//	high fd used
+
+		int									_port;				//	port number	
+		std::string							_password;			//	server password
 
 		std::map<int, User*>					_client_list;		// fd client list
 		//std::vector<Client*>					_clients;			// vector of clients
