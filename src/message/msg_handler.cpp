@@ -6,7 +6,7 @@
 /*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 22:39:07 by p                 #+#    #+#             */
-/*   Updated: 2025/10/05 16:37:24 by samartin         ###   ########.fr       */
+/*   Updated: 2025/10/09 11:36:46 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int				msg_handler::handle_buffer<int>(char* buffer, User *user, Server *Server)
 		std::string message(buffer);
 		if (message.find("NICK ") == 0) {
 			std::string nickname = message.substr(5);
-			nickname.erase(nickname.find_last_not_of(" \n\r\t") + 1);
+			nickname.erase(nickname.find_last_not_of(WS) + 1);
 			user->setNickname(nickname);
 			std::string response = "Nickname registrado como " + nickname + "\n";
 			send(user->getFd(), response.c_str(), response.size(), 0);
@@ -59,8 +59,8 @@ int				msg_handler::handle_buffer<int>(char* buffer, User *user, Server *Server)
 	if(message.find("JOIN ") == 0)
 	{
 		std::string channelName = message.substr(4);
-		channelName.erase(0, channelName.find_first_not_of(" \n\r\t"));
-		channelName.erase(channelName.find_last_not_of(" \n\r\t") + 1);
+		channelName.erase(0, channelName.find_first_not_of(WS));
+		channelName.erase(channelName.find_last_not_of(WS) + 1);
 		if (channelName.find_first_of(CHNAMEINVALID) != std::string::npos || (channelName[0] != REGCH && channelName[0] != LOCCH))
 		{
 			std::string response = "Channel name not valid. Must not contain whitespace and comma and must start with `#` or `&`.\n";

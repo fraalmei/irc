@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/10/03 12:41:33 by p                ###   ########.fr       */
+/*   Updated: 2025/10/05 17:46:20 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,7 @@ void				Server::joinChannel(const std::string channelName, User *new_client)
 	}
 	else
 	{
-		std::cout << "Founded channel: " << channel->getName() << std::endl;
+		std::cout << "Found channel: " << channel->getName() << std::endl;
 		std::cout << channel->isMember(new_client->getFd()) << std::endl;
 		if (!channel->isMember(new_client->getFd()))
 		{

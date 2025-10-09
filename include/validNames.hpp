@@ -6,12 +6,20 @@
 /*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 14:10:48 by samartin          #+#    #+#             */
-/*   Updated: 2025/10/03 15:09:12 by samartin         ###   ########.fr       */
+/*   Updated: 2025/10/09 11:35:54 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VALIDNAMES_HPP
 # define VALIDNAMES_HPP
+
+/*
+ Whitespace alias.
+*/
+# ifndef WS
+#  define WS " \n\r\t"
+# endif
+
 /*
  Client nicknames must not contain any of the single characters included in the
  NICKINVALID string and must not start with any of the single characters
