@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/10/05 17:46:20 by samartin         ###   ########.fr       */
+/*   Updated: 2025/10/09 11:49:11 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ void				Server::joinChannel(const std::string channelName, User *new_client)
 		std::cout << channelName << " not found" << std::endl;
 		// Crear nuevo canal público
 		ChannelPublic* newChannel = new ChannelPublic(channelName);
-		newChannel->addMember(new_client, "01234");	// primer miembro
+		newChannel->addMember(new_client);	// primer miembro
 		getChannelList()[channelName] = newChannel;
 		msg = "Joined channel " + newChannel->getName() + "\n";
 		std::cout << "Created channel: " << channelName << std::endl;
@@ -176,7 +176,7 @@ void				Server::joinChannel(const std::string channelName, User *new_client)
 		std::cout << channel->isMember(new_client->getFd()) << std::endl;
 		if (!channel->isMember(new_client->getFd()))
 		{
-			if (channel->addMember(new_client, "01234") != 0 ) // Agregar al canal existente
+			if (channel->addMember(new_client) != 0 ) // Agregar al canal existente
 				std::cerr << "Error: User already in channel " << channelName << std::endl;
 			std::cout << "User " << new_client->getFd() << " joined " << channelName << std::endl;
 			msg = "Joined channel " + channel->getName() + "\n";

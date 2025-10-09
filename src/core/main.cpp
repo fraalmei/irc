@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 20:17:51 by fraalmei          #+#    #+#             */
-/*   Updated: 2025/10/03 12:21:52 by p                ###   ########.fr       */
+/*   Updated: 2025/10/09 11:51:16 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,12 @@ int	read_args(char** argv)
 	std::cout << "Using port: " << port << std::endl;
 	std::string password = argv[2];
 	std::cout << "Using password: " << password << std::endl;
+	return 0;
 }
 
 int	main(int argc, char **argv)
 {
-	if (argc != 3 &&!read_args(argv))
+	if (argc != 3 && !read_args(argv))
 		return 1;
 	std::cout << "Initiating server." << std::endl;
 	Server server;
