@@ -6,7 +6,7 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/10/09 11:49:11 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/10/09 14:00:37 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,14 +157,14 @@ void	Server::handle_client_message(User *user)
 /// @param new_client
 void				Server::joinChannel(const std::string channelName, User *new_client)
 {
-	AChannel* channel = getChannelByName(channelName);
+	OChannel* channel = getChannelByName(channelName);
 
 	std::string msg;
 	if (channel == NULL)
 	{
 		std::cout << channelName << " not found" << std::endl;
 		// Crear nuevo canal público
-		ChannelPublic* newChannel = new ChannelPublic(channelName);
+		OChannel* newChannel = new OChannel(channelName);
 		newChannel->addMember(new_client);	// primer miembro
 		getChannelList()[channelName] = newChannel;
 		msg = "Joined channel " + newChannel->getName() + "\n";

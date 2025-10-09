@@ -6,7 +6,7 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 16:31:13 by p                 #+#    #+#             */
-/*   Updated: 2025/07/11 12:23:06 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/10/09 13:44:59 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,12 @@ std::string	Server::get_password()
 	return this->_password;
 }
 
-const std::map<std::string, AChannel*>&		Server::getConstChannelList() const
+const std::map<std::string, OChannel*>&		Server::getConstChannelList() const
 {
 	return this->_channel_list;
 }
 
-std::map<std::string, AChannel*>&			Server::getChannelList()
+std::map<std::string, OChannel*>&			Server::getChannelList()
 {
 	return this->_channel_list;
 }
@@ -77,7 +77,7 @@ User	*Server::getClientByFd(int fd)
 	return NULL; // Exit if the client is not found
 }
 
-AChannel	*Server::getChannelByName(const std::string &channelName)
+OChannel	*Server::getChannelByName(const std::string &channelName)
 {
 	// Search for the channel by its name
 	// Buscar el canal por su nombre

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 22:39:07 by p                 #+#    #+#             */
-/*   Updated: 2025/10/09 11:36:46 by samartin         ###   ########.fr       */
+/*   Updated: 2025/10/09 13:44:59 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ int				msg_handler::handle_buffer<int>(char* buffer, User *user, Server *Server)
 	if(message.find("show") == 0)
 	{
 		std::cout << "Canales" << std::endl;
-		for (std::map<std::string, AChannel*>::const_iterator it = Server->getConstChannelList().begin(); it != Server->getConstChannelList().end(); ++it)
+		for (std::map<std::string, OChannel*>::const_iterator it = Server->getConstChannelList().begin(); it != Server->getConstChannelList().end(); ++it)
 		{
 			int i = it->second->getMembers().size();
 			std::cout << it->first << " - " << i << std::endl;

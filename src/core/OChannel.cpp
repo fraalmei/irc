@@ -1,27 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   channelpublic.cpp                                  :+:      :+:    :+:   */
+/*   OChannel.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:27:10 by p                 #+#    #+#             */
-/*   Updated: 2025/10/03 14:15:11 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/10/09 13:50:08 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // filepath: /home/arksh/Documentos/42 Madrid/irc/srcs/channel/public.cpp
-#include "ChannelPublic.hpp"
+#include "OChannel.hpp"
 
-ChannelPublic::ChannelPublic(const std::string &name) : AChannel(name)
-{
-}
-
-ChannelPublic::~ChannelPublic()
-{
-}
-
-int ChannelPublic::addMember(const User* user)
+int OChannel::addMember(const User* user)
 {
 	if (isMember(user->getNickname()))
 		return -1; // Error: User is already a member
@@ -33,14 +25,23 @@ int ChannelPublic::addMember(const User* user)
 	return 0; // Success
 }
 
-int ChannelPublic::addMember(const User* user, const std::string& password)
+int OChannel::addMember(const User* user, const std::string& password)
 {
-	(void)password; // Ignore password for public channels
-	(void)user; // Ignore user for public channels
-	return 0; // Success
+	if (password == this->_password)
+	{
+		_members.push_back(const_cast<User*>(user)); // Add the user to the members list
+		for (std::vector<User*>::iterator it = _members.begin(); it != _members.end(); ++it)
+		{
+			if ((*it)->getNickname() == user->getNickname())
+				return -1; // Return -1 to indicate that the user is already a member
+		}
+		_members.push_back(const_cast<User*>(user)); // Add the user to the members list
+		return 0; // Success
+	}
+	return 1; // Return 1 to indicate failure
 }
 
-void ChannelPublic::removeMember(const std::string &nickname)
+void OChannel::removeMember(const std::string &nickname)
 {
 	for (std::vector<User*>::iterator it = _members.begin(); it != _members.end(); ++it)
 	{
@@ -58,7 +59,7 @@ void ChannelPublic::removeMember(const std::string &nickname)
 	}
 }
 
-bool ChannelPublic::isMember(const std::string &nickname) const
+bool OChannel::isMember(const std::string &nickname) const
 {
 	for (std::vector<User*>::const_iterator it = _members.begin(); it != _members.end(); ++it)
 		if ((*it)->getNickname() == nickname)
@@ -66,7 +67,7 @@ bool ChannelPublic::isMember(const std::string &nickname) const
 	return false;
 }
 
-bool ChannelPublic::isMember(const int &fd) const
+bool OChannel::isMember(const int &fd) const
 {
 	for (std::vector<User*>::const_iterator it = _members.begin(); it != _members.end(); ++it)
 		if ((*it)->getFd() == fd)
@@ -74,17 +75,17 @@ bool ChannelPublic::isMember(const int &fd) const
 	return false;
 }
 
-const std::string &ChannelPublic::getName() const
+const std::string &OChannel::getName() const
 {
 	return _name;
 }
 
-const std::vector<User*> &ChannelPublic::getMembers() const
+const std::vector<User*> &OChannel::getMembers() const
 {
 	return _members;
 }
 
-const std::vector<User*> &ChannelPublic::getAdminMembers() const
+const std::vector<User*> &OChannel::getAdminMembers() const
 {
 	return _adminMembers;
 }

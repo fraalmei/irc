@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2025/07/24 13:38:14 by p                ###   ########.fr       */
+/*   Updated: 2025/10/09 13:58:48 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,8 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-# include "AChannel.hpp"
+# include "OChannel.hpp"
 # include "msg_handler.hpp"
-# include "ChannelPrivate.hpp"
-# include "ChannelPublic.hpp"
 
 # include <iostream>
 # include <cstring>			// memset()
@@ -61,13 +59,13 @@ class Server
 		int					get_port();
 		std::string			get_password();
 
-		const std::map<std::string, AChannel*>&		getConstChannelList() const;
-		std::map<std::string, AChannel*>&			getChannelList();
+		const std::map<std::string, OChannel*>&		getConstChannelList() const;
+		std::map<std::string, OChannel*>&			getChannelList();
 		const std::map<int, User*>&		getConstClientList() const;
 		std::map<int, User*>&				getClientList();
 
 		User				*getClientByFd(int fd);
-		AChannel			*getChannelByName(const std::string &channelName);
+		OChannel			*getChannelByName(const std::string &channelName);
 
 		// Setters
 		void				set_server_fd(int server_fd);
@@ -91,7 +89,7 @@ class Server
 
 		std::map<int, User*>					_client_list;		// fd client list
 		//std::vector<Client*>					_clients;			// vector of clients
-		std::map<std::string, AChannel*>		_channel_list;		// map of the created channels
+		std::map<std::string, OChannel*>		_channel_list;		// map of the created channels
 
 		void				init_server_socket();
 		void				handle_new_connection();
