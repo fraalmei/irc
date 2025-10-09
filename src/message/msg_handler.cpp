@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 22:39:07 by p                 #+#    #+#             */
-/*   Updated: 2025/10/09 13:44:59 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/10/09 14:06:07 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ std::string		msg_handler::handle_buffer<std::string>(char* buffer, User *user, S
 template<>
 int				msg_handler::handle_buffer<int>(char* buffer, User *user, Server *Server)
 {
+	std::string response;
+
 	std::cout << "Se ha recibido un mensaje." << std::endl;
 	std::cout << "Usuario: " << user->getFd() << std::endl;
 	std::cout << "Buffer: " << buffer << "." << std::endl;
@@ -42,12 +44,11 @@ int				msg_handler::handle_buffer<int>(char* buffer, User *user, Server *Server)
 			std::string nickname = message.substr(5);
 			nickname.erase(nickname.find_last_not_of(WS) + 1);
 			user->setNickname(nickname);
-			std::string response = "Nickname registrado como " + nickname + "\n";
-			send(user->getFd(), response.c_str(), response.size(), 0);
+			response = "Nickname registrado como " + nickname + "\n";
 		} else {
-			std::string response = "Por favor, envía tu nickname con: NICK <nickname>\n";
-			send(user->getFd(), response.c_str(), response.size(), 0);
+			response = "Por favor, envía tu nickname con: NICK <nickname>\n";
 		}
+		send(user->getFd(), response.c_str(), response.size(), 0);
 		return 1; // No procesar más hasta tener nickname
 	}
 
@@ -63,7 +64,7 @@ int				msg_handler::handle_buffer<int>(char* buffer, User *user, Server *Server)
 		channelName.erase(channelName.find_last_not_of(WS) + 1);
 		if (channelName.find_first_of(CHNAMEINVALID) != std::string::npos || (channelName[0] != REGCH && channelName[0] != LOCCH))
 		{
-			std::string response = "Channel name not valid. Must not contain whitespace and comma and must start with `#` or `&`.\n";
+			response = "Channel name not valid. Must not contain whitespace and comma and must start with `#` or `&`.\n";
 			send(user->getFd(), response.c_str(), response.size(), 0);
 		}
 		else
