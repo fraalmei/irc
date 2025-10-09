@@ -1,11 +1,12 @@
 # Prerequisites
 *.d
 
-# Object files
+# Object files and folder
 *.o
 *.ko
 *.obj
 *.elf
+bin
 
 # Linker output
 *.ilk
@@ -53,5 +54,8 @@ dkms.conf
 .vscode
 ircserv
 
-#Personal notes
+# Third party client for tests
+bircd
+
+# Personal notes
 todo.txt
