@@ -6,7 +6,7 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2025/10/09 13:58:48 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/10/31 13:19:33 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,26 +52,26 @@ class Server
 		Server & operator=(const Server &assign);
 	
 		// Getters
-		int					get_server_fd();
-		int					get_fd_max();
-		fd_set				get_master_set();
-		fd_set				get_read_fds();
-		int					get_port();
-		std::string			get_password();
+		int					get_server_fd() { return this->_server_fd; }
+		int					get_fd_max() { return this->_fd_max; }
+		fd_set				get_master_set() { return this->_master_set; }
+		fd_set				get_read_fds() { return this->_read_fds; }
+		int					get_port() { return this->_port; }
+		std::string			get_password() { return this->_password; }
 
-		const std::map<std::string, OChannel*>&		getConstChannelList() const;
-		std::map<std::string, OChannel*>&			getChannelList();
-		const std::map<int, User*>&		getConstClientList() const;
-		std::map<int, User*>&				getClientList();
+		const std::map<std::string, OChannel*>&		getConstChannelList() const { return this->_channel_list; }
+		std::map<std::string, OChannel*>&			getChannelList() { return this->_channel_list; }
+		const std::map<int, User*>&					getConstClientList() const { return this->_client_list; }
+		std::map<int, User*>&						getClientList() { return this->_client_list; }
 
 		User				*getClientByFd(int fd);
 		OChannel			*getChannelByName(const std::string &channelName);
 
 		// Setters
-		void				set_server_fd(int server_fd);
-		void				set_fd_max(int fd_max);
-		void				set_master_set(fd_set master_set);
-		void				set_read_fds(fd_set read_fds);
+		void				set_server_fd(int server_fd) { this->_server_fd = server_fd; }
+		void				set_fd_max(int fd_max) { this->_fd_max = fd_max; }
+		void				set_master_set(fd_set master_set) { this->_master_set = master_set; }
+		void				set_read_fds(fd_set read_fds) { this->_read_fds = read_fds; }
 
 		void				run(void);
 

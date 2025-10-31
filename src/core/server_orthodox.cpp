@@ -6,7 +6,7 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:05:36 by p                 #+#    #+#             */
-/*   Updated: 2025/07/11 12:23:06 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/10/31 13:19:40 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,8 @@ Server::Server() : _server_fd(-1), _fd_max(0)
 	std::cout << "Server created." << std::endl;
 }
 
-Server::Server(int server_fd, int fd_max)
+Server::Server(int server_fd, int fd_max) : _server_fd(server_fd), _fd_max(fd_max)
 {
-	set_server_fd(server_fd);
-	set_fd_max(fd_max);
 	init_server_socket();
 	std::cout << "Server created." << std::endl;
 }
