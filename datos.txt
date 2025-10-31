@@ -93,7 +93,8 @@ Rol 3 - Carlos
 
 	Probar que los mensajes se distribuyan adecuadamente entre los clientes conectados
 
-
+	TO DO:	función addToBuffer(). Concatena el string recibido como parámetro con lo que ya hubiera en el _buffer del objeto usuario. Retorna el tamaño final si el string ya termina en \r\n, 0 si no es así.
+			función clearBuffer(). Cambia el contenido del _buffer por string vacío "".
 
 Pruebas conexión con servidor:
 	telnet 127.0.0.1 6667
