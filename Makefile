@@ -6,7 +6,7 @@
 #    By: p <p@student.42.fr>                        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/30 19:06:15 by fraalmei          #+#    #+#              #
-#    Updated: 2025/07/24 13:43:16 by p                ###   ########.fr        #
+#    Updated: 2025/10/31 13:07:40 by p                ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,8 +41,7 @@ CORE		=	core/main.cpp \
 				core/server_setters.cpp \
 				core/server_orthodox_funcs.cpp
 
-CHANNELS	=	channel/channelprivate.cpp \
-				channel/channelpublic.cpp
+CHANNELS	=	core/OChannel.cpp
 
 MESSAGES	=	message/msg_handler.cpp
 
