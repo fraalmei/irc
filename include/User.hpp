@@ -12,6 +12,7 @@ private:
 
 	std::string		_username;
 	std::string		_nickname;
+	std::string		_buffer;
 	bool			_isAuthenticated;
 
 public:
@@ -33,9 +34,10 @@ public:
 	void					setNickname(const std::string& nickname);
 	void					setUsername(const std::string& username);
 	void					setAuthenticated(bool isAuthenticated);
-
 	int						setClient();
 
+	// Add to buffer
+	int						addToBuffer(const std::string& message);
 };
 
 #endif // USER_HPP
