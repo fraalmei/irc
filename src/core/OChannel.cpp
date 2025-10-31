@@ -6,7 +6,7 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:27:10 by p                 #+#    #+#             */
-/*   Updated: 2025/10/09 13:50:08 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/10/31 14:29:50 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,19 +73,4 @@ bool OChannel::isMember(const int &fd) const
 		if ((*it)->getFd() == fd)
 			return true;
 	return false;
-}
-
-const std::string &OChannel::getName() const
-{
-	return _name;
-}
-
-const std::vector<User*> &OChannel::getMembers() const
-{
-	return _members;
-}
-
-const std::vector<User*> &OChannel::getAdminMembers() const
-{
-	return _adminMembers;
 }
