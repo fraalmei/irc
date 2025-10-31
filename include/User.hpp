@@ -26,22 +26,22 @@ public:
 	~User() {}
 
 	// Getters
-	std::string				getNickname() const { return _nickname; }
-	std::string				getUsername() const { return _username; }
-	std::string				getBuffer() const { return _buffer; }
-	bool					isAuthenticated() const { return _isAuthenticated; }
-	int						getFd() const { return _fd; }
+	std::string		getNickname() const { return _nickname; }
+	std::string		getUsername() const { return _username; }
+	std::string		getBuffer() const { return _buffer; }
+	bool			isAuthenticated() const { return _isAuthenticated; }
+	int				getFd() const { return _fd; }
 
 	// Setters
-	void					setNickname(const std::string& nickname);
-	void					setUsername(const std::string& username);
-	void					setAuthenticated(bool isAuthenticated);
-	void					setBuffer(const std::string& buffer);
-	int						setClient(){ return 0; }
+	void			setNickname(const std::string& nickname) { _nickname = nickname; }
+	void			setUsername(const std::string& username) { _username = username; }
+	void			setAuthenticated(bool isAuthenticated) { _isAuthenticated = isAuthenticated; }
+	void			setBuffer(const std::string& buffer) { _buffer = buffer; }
+	int				setClient(){ return 0; }
 
 	// Buffer management
-	void				addToBuffer(const std::string& message);
-	void				clearBuffer(){ _buffer=""; }
+	int				addToBuffer(const std::string& message);
+	void			clearBuffer(){ _buffer.clear(); }
 };
 
 #endif // USER_HPP
