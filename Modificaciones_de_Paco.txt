@@ -17,3 +17,8 @@ AChannel.hpp
 
 24/07/2025
  - msg_handler preparado para que le lleguen los datos y gestionar el buffer
+
+1/11/2025
+ - agregado inicio con puerto a eleccion y contraseña
+ - agregados handle_nickname, handle_username y handle_password
+ - no se controla la contrsseña por que el buffer llega con salto de linea

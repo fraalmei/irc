@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server_orthodox_funcs.cpp                          :+:      :+:    :+:   */
+/*   server_orthodox.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: fraalmei <fraalmei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:05:36 by p                 #+#    #+#             */
-/*   Updated: 2025/10/31 13:19:40 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/11/02 15:01:54 by fraalmei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@ Server::Server() : _server_fd(-1), _fd_max(0)
 	std::cout << "Server created." << std::endl;
 }
 
-Server::Server(int server_fd, int fd_max) : _server_fd(server_fd), _fd_max(fd_max)
+Server::Server(char *password, int port) : _server_fd(-1), _fd_max(0), _port(port), _password(password)
 {
 	init_server_socket();
-	std::cout << "Server created." << std::endl;
+	std::cout << "Server created with password and port." << std::endl;
 }
 
 Server::Server(const Server &copy)

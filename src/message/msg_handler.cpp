@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: fraalmei <fraalmei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 22:39:07 by p                 #+#    #+#             */
-/*   Updated: 2025/10/09 14:06:07 by samartin         ###   ########.fr       */
+/*   Updated: 2025/11/02 15:37:44 by fraalmei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,8 @@ msg_handler::msg_handler() {}
 
 msg_handler::~msg_handler() {}
 
-template<>
-std::string		msg_handler::handle_buffer<std::string>(char* buffer, User *user, Server *Server)
-{
-	(void) buffer;
-	(void) user;
-	(void) Server;
-	std::cout << "Handling buffer, return string." << std::endl;
-	return "";
-}
 
-template<>
-int				msg_handler::handle_buffer<int>(char* buffer, User *user, Server *Server)
+int				msg_handler::handle_buffer(char* buffer, User *user, Server *Server)
 {
 	std::string response;
 
@@ -81,5 +71,42 @@ int				msg_handler::handle_buffer<int>(char* buffer, User *user, Server *Server)
 		}
 	}
 	std::cout << "Handling buffer, return int." << std::endl;
+	return 0;
+}
+
+int				msg_handler::handle_nickname(char* buffer, User *user)
+{
+	std::cout << "Dentro de handle_nickname." << std::endl;
+	if (buffer == NULL || user == NULL || buffer[0] == '\0')
+		return 1;
+	user->setNickname(std::string(buffer));
+	std::cout << "Handling nickname, return int." << std::endl;
+	return 0;
+}
+
+int				msg_handler::handle_username(char* buffer, User *user)
+{
+	std::cout << "Dentro de handle_username." << std::endl;
+	if (buffer == NULL || user == NULL || buffer[0] == '\0')
+		return 1;
+	user->setUsername(std::string(buffer));
+	std::cout << "Handling username, return int." << std::endl;
+	return 0;
+}
+
+int				msg_handler::handle_password(char* buffer, User *user, Server *Server)
+{
+	std::cout << "Dentro de handle_password." << std::endl;
+	if (buffer == NULL || user == NULL || buffer[0] == '\0')
+		return 1;
+	if (Server->get_password() != buffer)
+	{
+		std::cout << "Invalid password from user " << user->getFd() << "." << std::endl;
+		std::cout << "Server password " << Server->get_password() << "." << std::endl;
+		std::cout << "User password " << buffer << "." << std::endl;
+		return 2;
+	}
+	user->setAuthenticated(true);
+	std::cout << "Handling password, return int." << std::endl;
 	return 0;
 }

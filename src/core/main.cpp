@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: fraalmei <fraalmei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 20:17:51 by fraalmei          #+#    #+#             */
-/*   Updated: 2025/10/31 13:10:10 by p                ###   ########.fr       */
+/*   Updated: 2025/11/02 14:50:02 by fraalmei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ int	main(int argc, char **argv)
 	if (argc != 3 && !read_args(argv))
 		return 1;
 	std::cout << "Initiating server." << std::endl;
-	//Server server(argv[2], atoi(argv[1]));
-	Server server;
+	Server server(argv[2], atoi(argv[1]));
+	//Server server;
 	server.run();
 	std::cout << "Server distroyed." << std::endl;
 	return 0;
