@@ -6,7 +6,7 @@
 /*   By: fraalmei <fraalmei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/11/02 15:47:16 by fraalmei         ###   ########.fr       */
+/*   Updated: 2025/11/02 17:43:45 by fraalmei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,15 +109,8 @@ void	Server::handle_new_connection()
 
 		std::cout << "Nueva conexión desde " << inet_ntoa( client_addr.sin_addr ) << " en socket " << new_fd << std::endl;
 
-		std::string welcomeP = "Contraseña. Por favor.\n";
-		send(new_fd, welcomeP.c_str(), welcomeP.size(), 0);
-
-		// Envía mensaje solicitando el nickname
-		std::string welcomeN = "Bienvenido. Por favor, envía tu nickname\n";
-		send(new_fd, welcomeN.c_str(), welcomeN.size(), 0);
-
-		std::string welcomeU = "Bienvenido. Por favor, envía tu username\n";
-		send(new_fd, welcomeU.c_str(), welcomeU.size(), 0);
+		std::string welcome = "Contraseña. Por favor.\n";
+		send(new_fd, welcome.c_str(), welcome.size(), 0);
 
 	}
 }
@@ -127,57 +120,63 @@ void	Server::handle_new_connection()
 /// @param client_fd
 void	Server::handle_client_message(User *user)
 {
-	char	buffer[BUFFER_SIZE];
-	int		nbytes = recv( user->getFd(), buffer, BUFFER_SIZE - 1, 0 ); // data receiv
-	std::cout << "Se ha recibido mensaje de " << user->getNickname() << ": '" << buffer <<  "' con " << nbytes << " chars." << std::endl;
+	std::string	buffer;
+	buffer.resize(BUFFER_SIZE);
+	int			nbytes = recv( user->getFd(), &buffer[0], BUFFER_SIZE - 1, 0 ); // data receiv
+	std::cout << "Se ha recibido mensaje de " << user->getNickname() << ": '" << buffer <<  "' con " << buffer.size() << " chars and " << nbytes << " bytes." << std::endl;
 
-	if (nbytes < 0)
-	{
-		perror("recv");		// mostrar error exacto
-		close( user->getFd() );
-		FD_CLR( user->getFd(), &_master_set );
-	}
-	else if(nbytes == 0)
-	{
-		// if an error ocurr or the client desconetion
-		std::cout << "Socket " << user->getNickname() << " disconected for the user." << std::endl;
+if (nbytes < 0)
+    {
+        perror("recv");		// mostrar error exacto
+        close( user->getFd() );
+        FD_CLR( user->getFd(), &_master_set );
+    }
+    else if(nbytes == 0)
+    {
+        // if an error ocurr or the client desconetion
+        std::cout << "Socket " << user->getNickname() << " disconected for the user." << std::endl;
 
-		// close the user socket and remove it from the set
-		close( user->getFd() );
-		FD_CLR( user->getFd(), &_master_set );
-	}
-	else if (!user->isAuthenticated())
-	{
-		buffer[nbytes] = '\0';		// Ensure the message end at \0
-		std::cout << "Mensaje recibido de " << user->getFd() << ": " << buffer;
-		if (msg_handler::handle_password(buffer, user, this)) // handle the buffer
-			std::cout << "Mensaje tratado incorrectamente." << std::endl;
-	}
-	else if (user->isAuthenticated() && user->getNickname().empty())
-	{
-		buffer[nbytes] = '\0';		// Ensure the message end at \0
-		std::cout << "Mensaje recibido de " << user->getFd() << ": " << buffer;
-		if (msg_handler::handle_nickname(buffer, user)) // handle the buffer
-			std::cout << "Mensaje tratado incorrectamente." << std::endl;
-	}
-	else if (user->isAuthenticated() && user->getUsername().empty())
-	{
-		buffer[nbytes] = '\0';		// Ensure the message end at \0
-		std::cout << "Mensaje recibido de " << user->getFd() << ": " << buffer;
-		if (msg_handler::handle_username(buffer, user)) // handle the buffer
-			std::cout << "Mensaje tratado incorrectamente." << std::endl;
-	}
-	else
-	{
-		buffer[nbytes] = '\0';		// Ensure the message end at \0
-		std::cout << "Mensaje recibido de " << user->getNickname() << ": " << buffer;
-		if (msg_handler::handle_buffer(buffer, user, this)) // handle the buffer
-			std::cout << "Mensaje tratado incorrectamente." << std::endl;
+        // close the user socket and remove it from the set
+        close( user->getFd() );
+        FD_CLR( user->getFd(), &_master_set );
+    }
+    else
+    {
+        buffer.resize(nbytes);                      // ajustar al tamaño real recibido
+        buffer.push_back('\0');                      // asegurar terminador si lo necesita el código siguiente
 
-		// send a eco response to the user
-		std::string response = "Mensaje recibido.\n";
-		send(user->getFd(), response.c_str(), response.size(), 0);
-	}
+        std::cout << "Se ha recibido mensaje de " << user->getNickname() << ": '" << buffer <<  "' con " << buffer.size() << " chars and " << nbytes << " bytes." << std::endl;
+
+        if (!user->isAuthenticated())
+        {
+            std::string	message = buffer.substr(0, buffer.size() - 3);
+            std::cout << "Mensaje recibido de " << user->getFd() << ": " << message;
+            if (msg_handler::handle_password(message, user, this)) // handle the buffer
+                std::cout << "Mensaje tratado incorrectamente." << std::endl;
+        }
+        else if (user->isAuthenticated() && user->getNickname().empty())
+        {
+            std::cout << "Mensaje recibido de " << user->getFd() << ": " << buffer;
+            if (msg_handler::handle_nickname(buffer, user)) // handle the buffer
+                std::cout << "Mensaje tratado incorrectamente." << std::endl;
+        }
+        else if (user->isAuthenticated() && user->getUsername().empty())
+        {
+            std::cout << "Mensaje recibido de " << user->getFd() << ": " << buffer;
+            if (msg_handler::handle_username(buffer, user)) // handle the buffer
+                std::cout << "Mensaje tratado incorrectamente." << std::endl;
+        }
+        else
+        {
+            std::cout << "Mensaje recibido de " << user->getNickname() << ": " << buffer;
+            if (msg_handler::handle_buffer(buffer, user, this)) // handle the buffer
+                std::cout << "Mensaje tratado incorrectamente." << std::endl;
+
+            // send a eco response to the user
+            std::string response = "Mensaje recibido.\n";
+            send(user->getFd(), response.c_str(), response.size(), 0);
+        }
+    }
 }
 
 /// @brief join or create a channel

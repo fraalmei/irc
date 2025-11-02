@@ -19,6 +19,10 @@ AChannel.hpp
  - msg_handler preparado para que le lleguen los datos y gestionar el buffer
 
 1/11/2025
+Primer commit
  - agregado inicio con puerto a eleccion y contraseña
  - agregados handle_nickname, handle_username y handle_password
  - no se controla la contrsseña por que el buffer llega con salto de linea
+Segundo commit
+ - cambiado el tipo del buffer a string, con el buffer en char* aparecian chars de más
+ - siguen entrando chars de más pero almenos se pide password, nick y username antes de entrar
