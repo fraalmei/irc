@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/10/09 14:00:37 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/11/04 15:48:43 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,19 +110,20 @@ void	Server::handle_new_connection()
 		// Envía mensaje solicitando el nickname
 		std::string welcome = "Bienvenido. Por favor, envía tu nickname con: NICK <nickname>\n";
 		send(new_fd, welcome.c_str(), welcome.size(), 0);
-
 	}
 }
 
 /// @brief Read and process a message from a user
-///			leer y procesar un mensaje de un cleinte
+///			leer y procesar un mensaje de un cliente
 /// @param client_fd
 void	Server::handle_client_message(User *user)
 {
-	char	buffer[BUFFER_SIZE];
-	int		nbytes = recv( user->getFd(), buffer, BUFFER_SIZE - 1, 0 ); // data receiv
-	std::cout << "Se ha recibido mensaje de " << user->getNickname() << ": " << buffer << "." << std::endl;
+	char		buffer[BUFFER_SIZE];
+	int			nbytes = recv( user->getFd(), buffer, BUFFER_SIZE - 1, 0 ); // data receiv
+	std::string	response = "";
 
+	if (user->getNickname() != "")
+		std::cout << "Se ha recibido mensaje de " << user->getNickname() << ": " << buffer << "." << std::endl;
 	if (nbytes < 0)
 	{
 		perror("recv");		// mostrar error exacto
@@ -132,8 +133,8 @@ void	Server::handle_client_message(User *user)
 	else if(nbytes == 0)
 	{
 		// if an error ocurr or the client desconetion
-		std::cout << "Socket " << user->getNickname() << " disconected for the user." << std::endl;
-
+		if (user->getNickname() != "")
+			std::cout << "Socket " << user->getNickname() << " disconected for the user." << std::endl;
 		// close the user socket and remove it from the set
 		close( user->getFd() );
 		FD_CLR( user->getFd(), &_master_set );
@@ -142,12 +143,21 @@ void	Server::handle_client_message(User *user)
 	{
 		buffer[nbytes] = '\0';		// Ensure the message end at \0
 		std::cout << "Mensaje recibido de " << user->getNickname() << ": " << buffer;
-		if (msg_handler::handle_buffer<int>(buffer, user, this)) // handle the buffer
-			std::cout << "Mensaje tratado incorrectamente." << std::endl;
-
+		if (!msg_handler::handle_buffer(buffer, user)) // handle the buffer
+			std::cout << "Mensaje parcial." << std::endl;
 		// send a eco response to the user
-		std::string response = "Mensaje recibido.\n";
-		send(user->getFd(), response.c_str(), response.size(), 0);
+		else if (msg_handler::parse_msg(user)) // parse the message
+		{
+			std::cout << "Mensaje parcial." << std::endl;
+			response = "Mensaje recibido.\n";
+			send(user->getFd(), response.c_str(), response.size(), 0);
+		}
+		else
+		{
+			std::cout << "Mensaje parcial." << std::endl;
+			response = "Mensaje mal formateado.\n";
+			send(user->getFd(), response.c_str(), response.size(), 0);
+		}
 	}
 }
 
@@ -245,6 +255,7 @@ void	Server::run()
 						continue; // Skip if user not found
 					}
 					handle_client_message(user);	// message of a user
+
 				}
 			}
 		}

@@ -6,7 +6,7 @@
 /*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 22:39:07 by p                 #+#    #+#             */
-/*   Updated: 2025/10/09 14:06:07 by samartin         ###   ########.fr       */
+/*   Updated: 2025/11/01 12:58:27 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,29 +17,32 @@ msg_handler::msg_handler() {}
 
 msg_handler::~msg_handler() {}
 
-template<>
-std::string		msg_handler::handle_buffer<std::string>(char* buffer, User *user, Server *Server)
+int msg_handler::handle_buffer(char* buffer, User *user)
 {
-	(void) buffer;
-	(void) user;
-	(void) Server;
-	std::cout << "Handling buffer, return string." << std::endl;
-	return "";
-}
+	std::string	response;
+	std::string	message(buffer);
 
-template<>
-int				msg_handler::handle_buffer<int>(char* buffer, User *user, Server *Server)
-{
-	std::string response;
+	if (user->addToBuffer(message) == 0)
+	{
+		std::cout << "Se ha recibido un mensaje cortado sin fin de línea." << std::endl;
+		std::cout << "Usuario: " << user->getFd() << std::endl;
+		std::cout << "Buffer: " << buffer << "." << std::endl;
+		return 0;
+	}
+	else
+	{
+		std::cout << "Se ha recibido un mensaje y está completo para parsear." << std::endl;
+		std::cout << "Usuario: " << user->getFd() << std::endl;
+		std::cout << "Buffer: " << buffer << "." << std::endl;
+		return 1;
+	}
 
-	std::cout << "Se ha recibido un mensaje." << std::endl;
-	std::cout << "Usuario: " << user->getFd() << std::endl;
-	std::cout << "Buffer: " << buffer << "." << std::endl;
+	
 
+/*
 	if (user->getNickname().empty())
 	{
 		// Esperar mensaje tipo: NICK <nickname>
-		std::string message(buffer);
 		if (message.find("NICK ") == 0) {
 			std::string nickname = message.substr(5);
 			nickname.erase(nickname.find_last_not_of(WS) + 1);
@@ -56,10 +59,14 @@ int				msg_handler::handle_buffer<int>(char* buffer, User *user, Server *Server)
 	// tratar el buffer
 	//msg_handler::handle_buffer<int>(buffer);
 	//msg_andler::andle_buffer<std::string>(buffer);
-	std::string message(buffer);
+
+	if(message.find("KICK ") == 0)
+	{
+		
+	}
 	if(message.find("JOIN ") == 0)
 	{
-		std::string channelName = message.substr(4);
+		channelName = message.substr(4);
 		channelName.erase(0, channelName.find_first_not_of(WS));
 		channelName.erase(channelName.find_last_not_of(WS) + 1);
 		if (channelName.find_first_of(CHNAMEINVALID) != std::string::npos || (channelName[0] != REGCH && channelName[0] != LOCCH))
@@ -80,6 +87,5 @@ int				msg_handler::handle_buffer<int>(char* buffer, User *user, Server *Server)
 			std::cout << it->first << " - " << i << std::endl;
 		}
 	}
-	std::cout << "Handling buffer, return int." << std::endl;
-	return 0;
+*/
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 22:39:01 by p                 #+#    #+#             */
-/*   Updated: 2025/07/24 13:37:20 by p                ###   ########.fr       */
+/*   Updated: 2025/11/04 15:41:56 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,10 @@ class User;
 class	msg_handler
 {
 	public:
-
-		template<typename T>
-		static T		handle_buffer(char* buffer, User *user, Server *Server);
+		static int	handle_buffer(char* buffer, User *user);
+		static int	parse_msg(User *user);
 	
 	private:
-
 		msg_handler(void);
 		~msg_handler();
 
