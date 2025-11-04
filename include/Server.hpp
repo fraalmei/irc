@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: fraalmei <fraalmei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2025/10/31 13:19:33 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/11/02 15:01:51 by fraalmei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@
 # include <map>
 # include <algorithm>
 
-# define PORT 6667		// listening port (IRC standard port)
 # define BACKLOG 10		// Max number of waiting conetions
 # define BUFFER_SIZE 512	// size of the buffer to receive messages
 
@@ -41,8 +40,7 @@ class Server
 
 		// Constructors
 		Server(void);
-		Server(int server_fd, int fd_max);
-		Server(std::string password, int port);
+		Server(char *password, int port);
 		Server(const Server &copy);
 
 		// Destructor

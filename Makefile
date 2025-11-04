@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+         #
+#    By: fraalmei <fraalmei@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/30 19:06:15 by fraalmei          #+#    #+#              #
-#    Updated: 2025/10/31 13:48:14 by cagonzal         ###   ########.fr        #
+#    Updated: 2025/11/02 14:46:50 by fraalmei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,9 +36,9 @@ SRCS		=	$(CORE) $(CHANNELS) $(MESSAGES) $(PARSE) $(UTILS)
 
 CORE		=	core/main.cpp \
 				core/server.cpp \
-				core/user.cpp \
 				core/server_getset.cpp \
-				core/server_orthodox.cpp
+				core/server_orthodox.cpp \
+#				core/User.cpp
 
 CHANNELS	=	core/OChannel.cpp
 

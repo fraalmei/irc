@@ -6,7 +6,7 @@
 /*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 22:39:01 by p                 #+#    #+#             */
-/*   Updated: 2025/11/04 15:41:56 by samartin         ###   ########.fr       */
+/*   Updated: 2025/11/04 15:57:22 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,12 @@ class User;
 class	msg_handler
 {
 	public:
-		static int	handle_buffer(char* buffer, User *user);
-		static int	parse_msg(User *user);
+
+		static int		handle_buffer(std::string buffer, User *user);
+		static int		handle_password(std::string buffer, User *user, Server *Server);
+		static int		handle_nickname(std::string buffer, User *user);
+		static int		handle_username(std::string buffer, User *user);
+		static int		parse_msg(User *user);
 	
 	private:
 		msg_handler(void);
