@@ -6,17 +6,17 @@
 /*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 22:39:07 by p                 #+#    #+#             */
-/*   Updated: 2025/11/04 16:22:18 by samartin         ###   ########.fr       */
+/*   Updated: 2025/11/06 17:02:30 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/msg_handler.hpp"
+#include "../include/User.hpp"
 #include "../include/validNames.hpp"
 
 msg_handler::msg_handler() {}
 
 msg_handler::~msg_handler() {}
-
 
 int msg_handler::handle_buffer(std::string buffer, User *user)
 {
@@ -55,6 +55,14 @@ int msg_handler::handle_buffer(std::string buffer, User *user)
 	// tratar el buffer
 	//msg_handler::handle_buffer<int>(buffer);
 	//msg_andler::andle_buffer<std::string>(buffer);
+	return 1;
+}
+
+int msg_handler::parse_msg(User *user)
+{
+	std::cout << user->getBuffer() << std::endl;
+	return 1;
+}
 /*
 	if(message.find("KICK ") == 0)
 	{
@@ -83,7 +91,7 @@ int msg_handler::handle_buffer(std::string buffer, User *user)
 			std::cout << it->first << " - " << i << std::endl;
 		}
 	}
-*/
+
 }
 
 int				msg_handler::handle_password(std::string buffer, User *user, Server *Server)
@@ -131,3 +139,4 @@ int				msg_handler::handle_username(std::string buffer, User *user)
 	std::cout << "Handling username, return int." << std::endl;
 	return 0;
 }
+*/
