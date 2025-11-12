@@ -17,6 +17,8 @@
 # include <string>
 # include "User.hpp"
 
+class User;
+
 class Channel
 {
 	private:
