@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/11/04 16:17:35 by samartin         ###   ########.fr       */
+/*   Updated: 2025/11/06 18:49:15 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,45 +147,22 @@ void	Server::handle_client_message(User *user)
         buffer.push_back('\0');                      // asegurar terminador si lo necesita el código siguiente
 
         std::cout << "Se ha recibido mensaje de " << user->getNickname() << ": '" << buffer <<  "' con " << buffer.size() << " chars and " << nbytes << " bytes." << std::endl;
-
-        if (!user->isAuthenticated())
-        {
-            std::string	message = buffer.substr(0, buffer.size() - 3);
-            std::cout << "Mensaje recibido de " << user->getFd() << ": " << message;
-            if (msg_handler::handle_password(message, user, this)) // handle the password
-                std::cout << "Mensaje tratado incorrectamente." << std::endl;
-        }
-        else if (user->isAuthenticated() && user->getNickname().empty())
-        {
-            std::cout << "Mensaje recibido de " << user->getFd() << ": " << buffer;
-            if (msg_handler::handle_nickname(buffer, user)) // handle the nickname
-                std::cout << "Mensaje tratado incorrectamente." << std::endl;
-        }
-        else if (user->isAuthenticated() && user->getUsername().empty())
-        {
-            std::cout << "Mensaje recibido de " << user->getFd() << ": " << buffer;
-            if (msg_handler::handle_username(buffer, user)) // handle the username
-                std::cout << "Mensaje tratado incorrectamente." << std::endl;
-        }
-        else
-        {
-			std::cout << "Mensaje recibido de " << user->getNickname() << ": " << buffer;
-			if (!msg_handler::handle_buffer(buffer, user)) // handle the buffer
-				std::cout << "Mensaje parcial." << std::endl;
-			// send a eco response to the user
-			else if (msg_handler::parse_msg(user)) // parse the message
-			{
-				std::cout << "Mensaje recibido." << std::endl;
-				response = "Mensaje recibido.\n";
-				send(user->getFd(), response.c_str(), response.size(), 0);
-			}
-			else
-			{
-				std::cout << "Mensaje mal formateado." << std::endl;
-				response = "Mensaje mal formateado.\n";
-				send(user->getFd(), response.c_str(), response.size(), 0);
-			}
-        }
+		
+		if (!msg_handler::handle_buffer(buffer, user)) // handle the buffer
+			std::cout << "Mensaje parcial." << std::endl;
+		// send a eco response to the user
+		else if (msg_handler::parse_msg(user)) // parse the message
+		{
+			std::cout << "Mensaje recibido." << std::endl;
+			response = "Mensaje recibido.\n";
+			send(user->getFd(), response.c_str(), response.size(), 0);
+		}
+		else
+		{
+			std::cout << "Mensaje mal formateado." << std::endl;
+			response = "Mensaje mal formateado.\n";
+			send(user->getFd(), response.c_str(), response.size(), 0);
+		}
     }
 }
 
@@ -195,14 +172,14 @@ void	Server::handle_client_message(User *user)
 /// @param new_client
 void				Server::joinChannel(const std::string channelName, User *new_client)
 {
-	OChannel* channel = getChannelByName(channelName);
+	Channel* channel = getChannelByName(channelName);
 
 	std::string msg;
 	if (channel == NULL)
 	{
 		std::cout << channelName << " not found" << std::endl;
 		// Crear nuevo canal público
-		OChannel* newChannel = new OChannel(channelName);
+		Channel* newChannel = new Channel(channelName);
 		newChannel->addMember(new_client);	// primer miembro
 		getChannelList()[channelName] = newChannel;
 		msg = "Joined channel " + newChannel->getName() + "\n";
@@ -282,7 +259,19 @@ void	Server::run()
 						std::cerr << "Client with fd " << i << " not found." << std::endl;
 						continue; // Skip if user not found
 					}
-					handle_client_message(user);	// message of a user
+					else if (!user->isAuthenticated())
+					{
+						msg_handler::handle_login_parse(user, this);
+						/* METERLO EN LA FUNCION DE ARRIBA
+						std::cout << "Buffer recibido de " << user->getFd() << ": " << buffer;
+						std::string	message = buffer.substr(0, buffer.size() - 3); // remove \n\r
+						std::cout << "Mensaje recibido de " << user->getFd() << ": " << message;
+						if (user->parse_user(message, this)) // handle the password
+							std::cout << "Mensaje tratado incorrectamente." << std::endl;
+						*/
+					}
+					else
+						handle_client_message(user);	// message of a user
 
 				}
 			}

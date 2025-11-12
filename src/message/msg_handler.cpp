@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 22:39:07 by p                 #+#    #+#             */
-/*   Updated: 2025/11/06 17:02:30 by samartin         ###   ########.fr       */
+/*   Updated: 2025/11/06 18:39:19 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ int msg_handler::parse_msg(User *user)
 	if(message.find("show") == 0)
 	{
 		std::cout << "Canales" << std::endl;
-		for (std::map<std::string, OChannel*>::const_iterator it = Server->getConstChannelList().begin(); it != Server->getConstChannelList().end(); ++it)
+		for (std::map<std::string, Channel*>::const_iterator it = Server->getConstChannelList().begin(); it != Server->getConstChannelList().end(); ++it)
 		{
 			int i = it->second->getMembers().size();
 			std::cout << it->first << " - " << i << std::endl;
@@ -94,49 +94,4 @@ int msg_handler::parse_msg(User *user)
 
 }
 
-int				msg_handler::handle_password(std::string buffer, User *user, Server *Server)
-{
-	std::cout << "Dentro de handle_password con buffer '" << buffer << "'." << std::endl;
-	if (buffer.empty() || user == NULL || buffer[0] == '\0')
-	{
-		std::cout << "Buffer erroneo." << std::endl;
-		return 1;
-	}
-	if (Server->get_password() != buffer)
-	{
-		std::cout << "Invalid password from user " << user->getFd() << "." << std::endl;
-		std::cout << "Server password '" << Server->get_password() << "'." << std::endl;
-		std::cout << "User password '" << buffer << "'." << std::endl;
-		return 2;
-	}
-	user->setAuthenticated(true);
-	std::string welcome = "Bienvenido. Por favor, envía tu nickname\n";
-	send(user->getFd(), welcome.c_str(), welcome.size(), 0);
-	std::cout << "Handling password, return int." << std::endl;
-	return 0;
-}
-
-int				msg_handler::handle_nickname(std::string buffer, User *user)
-{
-	std::cout << "Dentro de handle_nickname." << std::endl;
-	if (buffer.empty() || user == NULL || buffer[0] == '\0')
-		return 1;
-	user->setNickname(std::string(buffer));
-	std::string welcome = "Bienvenido. Por favor, envía tu username\n";
-	send(user->getFd(), welcome.c_str(), welcome.size(), 0);
-	std::cout << "Handling nickname, return int." << std::endl;
-	return 0;
-}
-
-int				msg_handler::handle_username(std::string buffer, User *user)
-{
-	std::cout << "Dentro de handle_username." << std::endl;
-	if (buffer.empty() || user == NULL || buffer[0] == '\0')
-		return 1;
-	user->setUsername(std::string(buffer));
-	std::string welcome = "Usuario completo. Bienvenido\n";
-	send(user->getFd(), welcome.c_str(), welcome.size(), 0);
-	std::cout << "Handling username, return int." << std::endl;
-	return 0;
-}
 */

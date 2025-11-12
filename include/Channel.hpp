@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   OChannel.hpp                                       :+:      :+:    :+:   */
+/*   Channel.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -17,7 +17,7 @@
 # include <string>
 # include "User.hpp"
 
-class OChannel
+class Channel
 {
 	private:
 	
@@ -37,10 +37,10 @@ class OChannel
 	public:
 
 		// Constructors and Destructor
-		OChannel(std::string name) : _name(name), _topic(""), _password(""), _userLimit(0) {} // Public channel
-		OChannel(std::string name, std::string topic) : _name(name), _topic(topic), _password(""), _userLimit(0) {} // Public channel
-		OChannel(std::string name, std::string topic, std::string password) : _name(name), _topic(topic), _password(password), _userLimit(0) {} // Private channel
-		~OChannel() {}
+		Channel(std::string name) : _name(name), _topic(""), _password(""), _userLimit(0) {} // Public channel
+		Channel(std::string name, std::string topic) : _name(name), _topic(topic), _password(""), _userLimit(0) {} // Public channel
+		Channel(std::string name, std::string topic, std::string password) : _name(name), _topic(topic), _password(password), _userLimit(0) {} // Private channel
+		~Channel() {}
 		
 		// Member management
 		int			addMember(const User* user);

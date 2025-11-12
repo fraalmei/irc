@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   OChannel.cpp                                       :+:      :+:    :+:   */
+/*   Channel.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,9 +11,9 @@
 /* ************************************************************************** */
 
 // filepath: /home/arksh/Documentos/42 Madrid/irc/srcs/channel/public.cpp
-#include "OChannel.hpp"
+#include "Channel.hpp"
 
-int OChannel::addMember(const User* user)
+int Channel::addMember(const User* user)
 {
 	if (isMember(user->getNickname()))
 		return -1; // Error: User is already a member
@@ -25,7 +25,7 @@ int OChannel::addMember(const User* user)
 	return 0; // Success
 }
 
-int OChannel::addMember(const User* user, const std::string& password)
+int Channel::addMember(const User* user, const std::string& password)
 {
 	if (password == this->_password)
 	{
@@ -41,7 +41,7 @@ int OChannel::addMember(const User* user, const std::string& password)
 	return 1; // Return 1 to indicate failure
 }
 
-void OChannel::removeMember(const std::string &nickname)
+void Channel::removeMember(const std::string &nickname)
 {
 	for (std::vector<User*>::iterator it = _members.begin(); it != _members.end(); ++it)
 	{
@@ -59,7 +59,7 @@ void OChannel::removeMember(const std::string &nickname)
 	}
 }
 
-bool OChannel::isMember(const std::string &nickname) const
+bool Channel::isMember(const std::string &nickname) const
 {
 	for (std::vector<User*>::const_iterator it = _members.begin(); it != _members.end(); ++it)
 		if ((*it)->getNickname() == nickname)
@@ -67,7 +67,7 @@ bool OChannel::isMember(const std::string &nickname) const
 	return false;
 }
 
-bool OChannel::isMember(const int &fd) const
+bool Channel::isMember(const int &fd) const
 {
 	for (std::vector<User*>::const_iterator it = _members.begin(); it != _members.end(); ++it)
 		if ((*it)->getFd() == fd)

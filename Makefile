@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: fraalmei <fraalmei@student.42.fr>          +#+  +:+       +#+         #
+#    By: p <p@student.42.fr>                        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/30 19:06:15 by fraalmei          #+#    #+#              #
-#    Updated: 2025/11/02 14:46:50 by fraalmei         ###   ########.fr        #
+#    Updated: 2025/11/06 18:51:15 by p                ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,9 +40,10 @@ CORE		=	core/main.cpp \
 				core/server_orthodox.cpp \
 #				core/User.cpp
 
-CHANNELS	=	core/OChannel.cpp
+CHANNELS	=	core/Channel.cpp
 
-MESSAGES	=	message/msg_handler.cpp
+MESSAGES	=	message/msg_handler.cpp \
+				message/login_handler.cpp
 
 PARSE		=
 

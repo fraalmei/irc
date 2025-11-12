@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server_getset.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 16:31:13 by p                 #+#    #+#             */
-/*   Updated: 2025/10/31 13:47:32 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/11/06 18:13:45 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ User	*Server::getClientByFd(int fd)
 	return NULL; // Exit if the client is not found
 }
 
-OChannel	*Server::getChannelByName(const std::string &channelName)
+Channel	*Server::getChannelByName(const std::string &channelName)
 {
 	// Search for the channel by its name
 	// Buscar el canal por su nombre
