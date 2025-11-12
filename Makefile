@@ -6,7 +6,7 @@
 #    By: p <p@student.42.fr>                        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/30 19:06:15 by fraalmei          #+#    #+#              #
-#    Updated: 2025/11/06 18:51:15 by p                ###   ########.fr        #
+#    Updated: 2025/11/12 16:35:20 by p                ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,7 @@ CORE		=	core/main.cpp \
 				core/server.cpp \
 				core/server_getset.cpp \
 				core/server_orthodox.cpp \
-#				core/User.cpp
+				core/User.cpp
 
 CHANNELS	=	core/Channel.cpp
 
