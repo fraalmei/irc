@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: p <p@student.42.fr>                        +#+  +:+       +#+         #
+#    By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/30 19:06:15 by fraalmei          #+#    #+#              #
-#    Updated: 2025/11/12 16:35:20 by p                ###   ########.fr        #
+#    Updated: 2025/11/13 10:57:58 by cagonzal         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,6 +19,8 @@ CXX			= c++
 CXXFLAGS 	= -Wall -Wextra -Werror -std=c++98 #-MD
 
 LEAK_FLAGS	= -fsanitize=address -g3 -pedantic #-fsanitize=thread
+
+DEBUG_FLAGS	= -g -O0 -fno-omit-frame-pointer
 
 #	options to force the remove
 RM			= /bin/rm -f
@@ -72,6 +74,12 @@ leaks: $(BIN) $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LEAK_FLAGS) $(OBJS) -o $(NAME)
 	@echo "\n\033[0mDone !"
 
+debug: $(BIN) $(OBJS)
+	@echo "$(GREEN)Compiling $(NAME) with debug flags...$(RESET)"
+	@mkdir -p $(BIN_DIR)/core $(BIN_DIR)/message
+	@$(CXX) $(CXXFLAGS) $(DEBUG_FLAGS) $(HEADERS) $(OBJS) -o $(NAME)	
+	@echo "\n$(RESET)Done ! Use: gdb ./$(NAME)"
+
 clean:
 	@echo "\nRemoving binaries..."
 	@$(RM) $(OBJS)
@@ -82,6 +90,8 @@ fclean: clean
 	@$(RM) $(NAME)
 
 releaks: fclean leaks
+
+redebug: fclean debug
 
 UNAME = $(shell uname)
 
@@ -101,7 +111,7 @@ showf: re printfunctions fclean
 printfunctions:
 	nm -C $(NAME) | grep -e ' T ' -e ' U ' | awk '{print $$5,$$4,$$3,$$2,$$1}' | awk '{$$1=$$1};1' | awk '{print $$1}' | uniq -u | sort
 
-.PHONY: all clean fclean re leaks releaks
+.PHONY: all clean fclean re leaks releaks debug redebug
 
 ##Colors #
 RESET		= 	\033[1;0m
