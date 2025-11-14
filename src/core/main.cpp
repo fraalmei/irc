@@ -6,7 +6,7 @@
 /*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 20:17:51 by fraalmei          #+#    #+#             */
-/*   Updated: 2025/11/13 16:25:18 by samartin         ###   ########.fr       */
+/*   Updated: 2025/11/13 16:48:53 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,17 @@
 #include <cstdio>
 #include "Server.hpp"
 #include <cstdlib> // atoi
-#include <string>
 
 static void leaks()
 {
 	system ("leaks -q ircserv");
 }
 
-
-int	read_args(char** argv)
+static int	check_args(char** argv)
 {
 	if (atoi(argv[1]) < 1024 || atoi(argv[1]) > 65535)
 		return 1;
-	std::cout << "Using port: " << argv[1] << std::endl;
+	std::cout << "Using port: " << argv[1] << std::endl; //Redundantes
 	std::cout << "Using password: " << argv[2] << std::endl;
 	return 0;
 }
@@ -34,7 +32,7 @@ int	read_args(char** argv)
 int	main(int argc, char **argv)
 {
 	atexit(leaks);
-	if (argc != 3 || read_args(argv))
+	if (argc != 3 || check_args(argv))
 	{
 		std::cerr << "Invalid number of arguments or port number. Please use 'ircserv password port' with a port between 1024 and 65535." << std::endl;
 		return 1;

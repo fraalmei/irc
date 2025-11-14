@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   login_handler.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 18:26:30 by p                 #+#    #+#             */
-/*   Updated: 2025/11/06 18:55:58 by p                ###   ########.fr       */
+/*   Updated: 2025/11/13 17:53:27 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "../include/User.hpp"
 #include "../include/validNames.hpp"
 
-int             msg_handler::handle_login_parse(User *user, Server *server)
+int	msg_handler::handle_login_parse(User *user, Server *server)
 {
     std::string	buffer;
 	std::string	response;
@@ -53,7 +53,7 @@ int             msg_handler::handle_login_parse(User *user, Server *server)
     return 0;
 }
 
-int				msg_handler::parse_user(std::string buffer, User *user, Server *server)
+int	msg_handler::parse_user(std::string buffer, User *user, Server *server)
 {
 	if (!user->isPasswdCorrect())
 	{
@@ -69,7 +69,7 @@ int				msg_handler::parse_user(std::string buffer, User *user, Server *server)
 	return 0;
 }
 
-int				msg_handler::handle_password(std::string buffer, User *user, Server *server)
+int	msg_handler::handle_password(std::string buffer, User *user, Server *server)
 {
 	std::cout << "Dentro de handle_password con buffer '" << buffer << "'." << std::endl;
 	if (buffer.empty() || buffer[0] == '\0')
@@ -91,7 +91,7 @@ int				msg_handler::handle_password(std::string buffer, User *user, Server *serv
 	return 0;
 }
 
-int				msg_handler::handle_nickname(std::string buffer, User *user)
+int	msg_handler::handle_nickname(std::string buffer, User *user)
 {
 	std::cout << "Dentro de handle_nickname." << std::endl;
 	if (buffer.empty() || buffer[0] == '\0')
@@ -101,7 +101,7 @@ int				msg_handler::handle_nickname(std::string buffer, User *user)
 	return 0;
 }
 
-int				msg_handler::handle_username(std::string buffer, User *user)
+int	msg_handler::handle_username(std::string buffer, User *user)
 {
 	std::cout << "Dentro de handle_username." << std::endl;
 	if (buffer.empty() || buffer[0] == '\0')

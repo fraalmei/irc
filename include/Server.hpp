@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2025/11/06 18:55:41 by p                ###   ########.fr       */
+/*   Updated: 2025/11/14 13:07:07 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,13 +89,13 @@ class Server
 		int									_port;				//	port number	
 		std::string							_password;			//	server password
 
-		std::map<int, User*>					_client_list;		// fd client list
-		//std::vector<Client*>					_clients;			// vector of clients
+		std::map<int, User*>				_client_list;		// fd client list
+		//std::vector<Client*>				_clients;			// vector of clients
 		std::map<std::string, Channel*>		_channel_list;		// map of the created channels
 
-		void				init_server_socket();
-		void				handle_new_connection();
-		void				handle_client_message(User *client);
+		void		init_server_socket();
+		void		handle_new_connection();
+		int			handle_client_message(User *client);
 
 };
 

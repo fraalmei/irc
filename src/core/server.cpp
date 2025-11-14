@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/11/06 18:49:15 by p                ###   ########.fr       */
+/*   Updated: 2025/11/14 13:23:44 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,10 +114,9 @@ void	Server::handle_new_connection()
 	}
 }
 
-/// @brief Read and process a message from a user
-///			leer y procesar un mensaje de un cliente
+/// @brief Recibe un mensaje y po pasa por el buffer handler, que lo va guardando en el objeto User hasta que esté completo
 /// @param client_fd
-void	Server::handle_client_message(User *user)
+int	Server::handle_client_message(User *user)
 {
 	std::string	buffer;
 	std::string	response;
@@ -145,23 +144,28 @@ void	Server::handle_client_message(User *user)
     {
         buffer.resize(nbytes);                      // ajustar al tamaño real recibido
         buffer.push_back('\0');                      // asegurar terminador si lo necesita el código siguiente
-
-        std::cout << "Se ha recibido mensaje de " << user->getNickname() << ": '" << buffer <<  "' con " << buffer.size() << " chars and " << nbytes << " bytes." << std::endl;
+		if (user->getNickname() != "")
+        	std::cout << "Se ha recibido mensaje de " << user->getNickname() << ": '" << buffer <<  "' con " << buffer.size() << " chars and " << nbytes << " bytes." << std::endl;
 		
 		if (!msg_handler::handle_buffer(buffer, user)) // handle the buffer
+		{
 			std::cout << "Mensaje parcial." << std::endl;
+			return 1;
+		}
 		// send a eco response to the user
 		else if (msg_handler::parse_msg(user)) // parse the message
 		{
 			std::cout << "Mensaje recibido." << std::endl;
 			response = "Mensaje recibido.\n";
 			send(user->getFd(), response.c_str(), response.size(), 0);
+			return 0;
 		}
 		else
 		{
 			std::cout << "Mensaje mal formateado." << std::endl;
 			response = "Mensaje mal formateado.\n";
 			send(user->getFd(), response.c_str(), response.size(), 0);
+			return -1;
 		}
     }
 }
@@ -243,7 +247,6 @@ void	Server::run()
 		// recorrer todos los fd posibles
 		for(int i = 0; i <= get_fd_max(); ++i)
 		{
-
 			if(FD_ISSET(i, &_read_fds))
 			{
 				if(i == get_server_fd())		// if there is activity on socket i
@@ -253,13 +256,15 @@ void	Server::run()
 				else
 				{
 					User *user = getClientByFd(i);
-					
+
 					if (user == NULL)
-					{
 						std::cerr << "Client with fd " << i << " not found." << std::endl;
-						continue; // Skip if user not found
+					else
+					{
+						if (this->handle_client_message(user))
+							break;	// message of a user
 					}
-					else if (!user->isAuthenticated())
+					if (!user->isAuthenticated())
 					{
 						msg_handler::handle_login_parse(user, this);
 						/* METERLO EN LA FUNCION DE ARRIBA
@@ -271,8 +276,7 @@ void	Server::run()
 						*/
 					}
 					else
-						handle_client_message(user);	// message of a user
-
+						msg_handler::parse_msg(user); //It is a msg from an active user, parse the command
 				}
 			}
 		}

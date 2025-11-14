@@ -6,7 +6,7 @@
 /*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 17:33:06 by p                 #+#    #+#             */
-/*   Updated: 2025/11/12 15:39:24 by samartin         ###   ########.fr       */
+/*   Updated: 2025/11/14 13:31:39 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class	msg_handler
 	public:
 
 		static int		handle_buffer(std::string buffer, User *user);
-		static int		parse_msg(User *user);
+		static int		parse_msg(std::string msg);
 		
 		static int		handle_login_parse(User *user, Server *server);
 

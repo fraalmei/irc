@@ -3,20 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 22:39:07 by p                 #+#    #+#             */
-/*   Updated: 2025/11/06 18:39:19 by p                ###   ########.fr       */
+/*   Updated: 2025/11/14 13:31:43 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/msg_handler.hpp"
 #include "../include/User.hpp"
 #include "../include/validNames.hpp"
-
-msg_handler::msg_handler() {}
-
-msg_handler::~msg_handler() {}
 
 int msg_handler::handle_buffer(std::string buffer, User *user)
 {
@@ -36,6 +32,7 @@ int msg_handler::handle_buffer(std::string buffer, User *user)
 		std::cout << "Buffer: " << user->getBuffer() << "." << std::endl;
 		return 1;
 	}
+
 	if (user->getNickname().empty())
 	{
 		// Esperar mensaje tipo: NICK <nickname>
@@ -58,9 +55,9 @@ int msg_handler::handle_buffer(std::string buffer, User *user)
 	return 1;
 }
 
-int msg_handler::parse_msg(User *user)
+int msg_handler::parse_msg(std::string msg)
 {
-	std::cout << user->getBuffer() << std::endl;
+	std::cout << msg << std::endl;
 	return 1;
 }
 /*
