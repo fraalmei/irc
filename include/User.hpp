@@ -6,7 +6,7 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 17:33:01 by p                 #+#    #+#             */
-/*   Updated: 2025/11/14 13:37:08 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/11/14 14:06:12 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <ostream>
 
 class Server;
+class Channel;
 
 # include "Server.hpp"
 
@@ -59,11 +60,11 @@ public:
 	void			setPasswdCorrect(bool passwd_correct) { _passwd_correct = passwd_correct; }
 	void			setAuthenticated(bool isAuthenticated) { _isAuthenticated = isAuthenticated; }
 	void			setBuffer(const std::string& buffer) { _buffer = buffer; }
-	int				setClient(){ return 0; }
+	int				setClient() { return 0; }
 
 	// Buffer management
 	int				addToBuffer(const std::string& message);
-	void			clearBuffer(){ _buffer.clear(); }
+	void			clearBuffer() { _buffer.clear(); }
 
 };
 
