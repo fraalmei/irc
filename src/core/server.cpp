@@ -6,7 +6,7 @@
 /*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/11/14 13:23:44 by samartin         ###   ########.fr       */
+/*   Updated: 2025/11/14 14:03:14 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,19 +153,12 @@ int	Server::handle_client_message(User *user)
 			return 1;
 		}
 		// send a eco response to the user
-		else if (msg_handler::parse_msg(user)) // parse the message
+		else
 		{
 			std::cout << "Mensaje recibido." << std::endl;
 			response = "Mensaje recibido.\n";
 			send(user->getFd(), response.c_str(), response.size(), 0);
 			return 0;
-		}
-		else
-		{
-			std::cout << "Mensaje mal formateado." << std::endl;
-			response = "Mensaje mal formateado.\n";
-			send(user->getFd(), response.c_str(), response.size(), 0);
-			return -1;
 		}
     }
 }
@@ -276,7 +269,7 @@ void	Server::run()
 						*/
 					}
 					else
-						msg_handler::parse_msg(user); //It is a msg from an active user, parse the command
+						msg_handler::parse_msg(user->getBuffer()); //It is a msg from an active user, parse the command
 				}
 			}
 		}
