@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 17:33:01 by p                 #+#    #+#             */
-/*   Updated: 2025/11/06 18:28:42 by p                ###   ########.fr       */
+/*   Updated: 2025/11/14 13:37:08 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ public:
 	std::string		getBuffer() const { return _buffer; }
 	bool			isPasswdCorrect() const { return _passwd_correct; }	
 	bool			isAuthenticated() const { return _isAuthenticated; }
+	bool			isAdminOfChannel(const Channel& channel) const;
 	int				getFd() const { return _fd; }
 
 	// Setters

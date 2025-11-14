@@ -74,3 +74,11 @@ bool Channel::isMember(const int &fd) const
 			return true;
 	return false;
 }
+
+bool Channel::isAdminMember(const std::string &nickname) const
+{
+	for (std::vector<User*>::const_iterator it = _adminMembers.begin(); it != _adminMembers.end(); ++it)
+		if ((*it)->getNickname() == nickname)
+			return true;
+	return false;
+}

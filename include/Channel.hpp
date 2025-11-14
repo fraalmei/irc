@@ -50,6 +50,7 @@ class Channel
 		void		removeMember(const std::string &nickname);
 		bool		isMember(const std::string &nickname) const;
 		bool		isMember(const int &fd) const;
+		bool		isAdminMember(const std::string &nickname) const;
 		
 		// Getters
 		const		std::string &getName() const{ return _name; }
