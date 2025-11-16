@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/11/14 14:03:14 by samartin         ###   ########.fr       */
+/*   Updated: 2025/11/16 01:42:55 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,19 +114,35 @@ void	Server::handle_new_connection()
 	}
 }
 
-/// @brief Recibe un mensaje y po pasa por el buffer handler, que lo va guardando en el objeto User hasta que esté completo
+/// @brief Recibe un mensaje y lo pasa por el buffer handler, que lo va guardando en el objeto User hasta que esté completo
 /// @param client_fd
 int	Server::handle_client_message(User *user)
 {
-	std::string	buffer;
-	std::string	response;
-	int			nbytes = recv( user->getFd(), &buffer[0], BUFFER_SIZE - 1, 0 ); // data receiv
+	//std::string	buffer;
+	//int			nbytes = recv( user->getFd(), &buffer[0], BUFFER_SIZE - 1, 0 ); // data receiv
+	char	initbuffer[BUFFER_SIZE];
+	int		nbytes = recv( user->getFd(), initbuffer, BUFFER_SIZE - 1, 0 ); // data receiv
 
-	buffer.resize(BUFFER_SIZE);
+	std::cout << "handle_client_message 1: initbuffer -> '" << initbuffer << "'" << std::endl;
+	std::cout << "handle_client_message 1: nbytes -> '" << nbytes << "'" << std::endl;
+
+	// Remove trailing whitespace characters (\t, \r, \n)
+	while (nbytes > 0 && (initbuffer[nbytes - 1] == '\t' || 
+                      initbuffer[nbytes - 1] == '\r' || 
+                      initbuffer[nbytes - 1] == '\n')) {
+    	nbytes--;
+	}
+	initbuffer[nbytes] = '\0';
+	std::string buffer(initbuffer);
+
+	//buffer.resize(BUFFER_SIZE);
+	std::cout << "handle_client_message 2: buffer -> '" << buffer << "'" << std::endl;
+	std::cout << "handle_client_message 2: length -> '" << buffer.length() << "'" << std::endl;
 	if (user->getNickname() != "")
 		std::cout << "Se ha recibido mensaje de " << user->getNickname() << ": '" << buffer <<  "' con " << buffer.size() << " chars and " << nbytes << " bytes." << std::endl;
 	if (nbytes < 0)
     {
+		std::cout << "handle_client_message: nbytes < 0" << std::endl;
         perror("recv");		// mostrar error exacto
         close( user->getFd() );
         FD_CLR( user->getFd(), &_master_set );
@@ -142,10 +158,12 @@ int	Server::handle_client_message(User *user)
     }
     else
     {
-        buffer.resize(nbytes);                      // ajustar al tamaño real recibido
-        buffer.push_back('\0');                      // asegurar terminador si lo necesita el código siguiente
+		std::cout << "handle_client_message 3: buffer -> " << buffer << std::endl;
+        //buffer.resize(nbytes);                      // ajustar al tamaño real recibido
+        //buffer.push_back('\0');                      // asegurar terminador si lo necesita el código siguiente
 		if (user->getNickname() != "")
         	std::cout << "Se ha recibido mensaje de " << user->getNickname() << ": '" << buffer <<  "' con " << buffer.size() << " chars and " << nbytes << " bytes." << std::endl;
+		std::cout << "handle_client_message 4: buffer -> " << buffer << std::endl;
 		
 		if (!msg_handler::handle_buffer(buffer, user)) // handle the buffer
 		{
@@ -155,12 +173,14 @@ int	Server::handle_client_message(User *user)
 		// send a eco response to the user
 		else
 		{
+			std::string	response;
 			std::cout << "Mensaje recibido." << std::endl;
 			response = "Mensaje recibido.\n";
 			send(user->getFd(), response.c_str(), response.size(), 0);
 			return 0;
 		}
     }
+	return 0;
 }
 
 /// @brief join or create a channel

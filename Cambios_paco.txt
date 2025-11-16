@@ -1,0 +1,8 @@
+Dejad de borrar los logs cabrones, que algo informan.
+
+15/11/2025
+    "Server::handle_client_message(User *user)" no obtenía el buffer
+        Se vuelve a cambiar la obtencion de buffer a array char y se convierte a string despues
+16/11/2025
+    "Server::handle_client_message(User *user)" recibía varios chars más
+        Se añade un while para eliminar caracteres \t, \r y \n si existen al final del mensaje.
