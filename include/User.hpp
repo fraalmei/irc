@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 17:33:01 by p                 #+#    #+#             */
-/*   Updated: 2025/11/14 14:06:12 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/11/16 11:49:34 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ class Server;
 class Channel;
 
 # include "Server.hpp"
+# include "colors.hpp"
 
 class User
 {

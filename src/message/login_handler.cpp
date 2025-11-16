@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   login_handler.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 18:26:30 by p                 #+#    #+#             */
-/*   Updated: 2025/11/13 17:53:27 by samartin         ###   ########.fr       */
+/*   Updated: 2025/11/16 12:06:36 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/msg_handler.hpp"
 #include "../include/User.hpp"
 #include "../include/validNames.hpp"
+#include "../include/colors.hpp"
 
 int	msg_handler::handle_login_parse(User *user, Server *server)
 {
@@ -22,7 +23,7 @@ int	msg_handler::handle_login_parse(User *user, Server *server)
 
 	buffer.resize(BUFFER_SIZE);
 	if (user->getNickname() != "")
-		std::cout << "Se ha recibido mensaje de " << user->getNickname() << ": '" << buffer <<  "' con " << buffer.size() << " chars and " << nbytes << " bytes." << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Se ha recibido mensaje de " << user->getNickname() << ": '" << buffer <<  "' con " << buffer.size() << " chars and " << nbytes << " bytes." << std::endl;
 	if (nbytes < 0)
     {
         perror("recv");		// mostrar error exacto
@@ -32,7 +33,7 @@ int	msg_handler::handle_login_parse(User *user, Server *server)
     else if(nbytes == 0)
     {
         // if an error ocurr or the client desconetion
-        std::cout << "Socket " << user->getNickname() << " disconected for the user." << std::endl;
+        std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Socket " << user->getNickname() << " disconected for the user." << std::endl;
 
         // close the user socket and remove it from the set
         close( user->getFd() );
@@ -43,10 +44,10 @@ int	msg_handler::handle_login_parse(User *user, Server *server)
         buffer.resize(nbytes);                      // ajustar al tamaño real recibido
         buffer.push_back('\0');                      // asegurar terminador si lo necesita el código siguiente
 
-        std::cout << "Se ha recibido mensaje de " << user->getNickname() << ": '" << buffer <<  "' con " << buffer.size() << " chars and " << nbytes << " bytes." << std::endl;
-        std::cout << "Buffer recibido de " << user->getFd() << ": " << buffer;
+        std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Se ha recibido mensaje de " << user->getNickname() << ": '" << buffer <<  "' con " << buffer.size() << " chars and " << nbytes << " bytes." << std::endl;
+        std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Buffer recibido de " << user->getFd() << ": " << buffer;
         std::string	message = buffer.substr(0, buffer.size() - 3); // remove \n\r
-        std::cout << "Mensaje recibido de " << user->getFd() << ": " << message;
+        std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Mensaje recibido de " << user->getFd() << ": " << message;
 						
         parse_user(message, user, server);
     }
@@ -71,44 +72,44 @@ int	msg_handler::parse_user(std::string buffer, User *user, Server *server)
 
 int	msg_handler::handle_password(std::string buffer, User *user, Server *server)
 {
-	std::cout << "Dentro de handle_password con buffer '" << buffer << "'." << std::endl;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Dentro de handle_password con buffer '" << buffer << "'." << std::endl;
 	if (buffer.empty() || buffer[0] == '\0')
 	{
-		std::cout << "Buffer erroneo." << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Buffer erroneo." << std::endl;
 		return 1;
 	}
 	if (server->get_password() != buffer)
 	{
-		std::cout << "Invalid password from user " << user->getFd() << "." << std::endl;
-		std::cout << "Server password '" << server->get_password() << "'." << std::endl;
-		std::cout << "User password '" << buffer << "'." << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Invalid password from user " << user->getFd() << "." << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Server password '" << server->get_password() << "'." << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " User password '" << buffer << "'." << std::endl;
 		return 2;
 	}
 	user->setAuthenticated(true);
 	std::string welcome = "Bienvenido. Por favor, envía tu nickname:username\n";
 	send(user->getFd(), welcome.c_str(), welcome.size(), 0);
-	std::cout << "Handling password, return int." << std::endl;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Handling password, return int." << std::endl;
 	return 0;
 }
 
 int	msg_handler::handle_nickname(std::string buffer, User *user)
 {
-	std::cout << "Dentro de handle_nickname." << std::endl;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Dentro de handle_nickname." << std::endl;
 	if (buffer.empty() || buffer[0] == '\0')
 		return 1;
 	user->setNickname(std::string(buffer));
-	std::cout << "Handling nickname, return int." << std::endl;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Handling nickname, return int." << std::endl;
 	return 0;
 }
 
 int	msg_handler::handle_username(std::string buffer, User *user)
 {
-	std::cout << "Dentro de handle_username." << std::endl;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Dentro de handle_username." << std::endl;
 	if (buffer.empty() || buffer[0] == '\0')
 		return 1;
 	user->setUsername(std::string(buffer));
 	std::string welcome = "Usuario completo. Bienvenido\n";
 	send(user->getFd(), welcome.c_str(), welcome.size(), 0);
-	std::cout << "Handling username, return int." << std::endl;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Handling username, return int." << std::endl;
 	return 0;
 }

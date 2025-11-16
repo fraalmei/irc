@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2025/11/14 13:07:07 by samartin         ###   ########.fr       */
+/*   Updated: 2025/11/16 11:49:35 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 # include "Channel.hpp"
 # include "msg_handler.hpp"
+# include "colors.hpp"
 
 # include <iostream>
 # include <cstring>			// memset()

@@ -16,6 +16,7 @@
 # include <vector>
 # include <string>
 # include "User.hpp"
+# include "colors.hpp"
 
 class User;
 

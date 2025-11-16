@@ -110,4 +110,4 @@ Mostrar canales y cantidad de usuarios
 
 
 Protocol specifications:
-https://modern.ircdocs.horse/
+https://modern.ircdocs.h

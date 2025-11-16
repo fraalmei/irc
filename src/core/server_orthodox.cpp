@@ -3,26 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   server_orthodox.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fraalmei <fraalmei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:05:36 by p                 #+#    #+#             */
-/*   Updated: 2025/11/02 15:01:54 by fraalmei         ###   ########.fr       */
+/*   Updated: 2025/11/16 12:06:35 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include "colors.hpp"
 
 // Constructors
 Server::Server() : _server_fd(-1), _fd_max(0)
 {
 	init_server_socket();
-	std::cout << "Server created." << std::endl;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Server created." << std::endl;
 }
 
 Server::Server(char *password, int port) : _server_fd(-1), _fd_max(0), _port(port), _password(password)
 {
 	init_server_socket();
-	std::cout << "Server created with password and port." << std::endl;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Server created with password and port." << std::endl;
 }
 
 Server::Server(const Server &copy)
@@ -31,7 +32,7 @@ Server::Server(const Server &copy)
 	this->set_master_set(copy._master_set);
 	this->set_read_fds(copy._read_fds);
 	this->set_server_fd(copy._fd_max);
-	std::cout << "Server copied." << std::endl;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Server copied." << std::endl;
 }
 
 // Destructor
@@ -52,7 +53,7 @@ Server::~Server(void)
 		delete it->second; // delete each channel
 	_channel_list.clear(); // clear the map of channels
 
-	std::cout << "Server destroyed." << std::endl;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Server destroyed." << std::endl;
 }
 
 // Operators

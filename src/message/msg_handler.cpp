@@ -3,38 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 22:39:07 by p                 #+#    #+#             */
-/*   Updated: 2025/11/14 13:31:43 by samartin         ###   ########.fr       */
+/*   Updated: 2025/11/16 12:06:34 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/msg_handler.hpp"
 #include "../include/User.hpp"
 #include "../include/validNames.hpp"
+#include "../include/colors.hpp"
 
 int msg_handler::handle_buffer(std::string buffer, User *user)
 {
-	std::string	response;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " buffer -> " << buffer << std::endl;
 
 	if (user->addToBuffer(buffer) == 0)
 	{
-		std::cout << "Se ha recibido un mensaje cortado sin fin de línea." << std::endl;
-		std::cout << "Usuario: " << user->getFd() << std::endl;
-		std::cout << "Buffer: " << user->getBuffer() << "." << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Se ha recibido un mensaje cortado sin fin de línea." << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Usuario: " << user->getFd() << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Buffer: " << user->getBuffer() << "." << std::endl;
 		return 0;
 	}
 	else
 	{
-		std::cout << "Se ha recibido un mensaje y está completo para parsear." << std::endl;
-		std::cout << "Usuario: " << user->getFd() << std::endl;
-		std::cout << "Buffer: " << user->getBuffer() << "." << std::endl;
-		return 1;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Se ha recibido un mensaje y está completo para parsear." << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Usuario: " << user->getFd() << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Buffer: " << user->getBuffer() << "." << std::endl;
 	}
 
 	if (user->getNickname().empty())
 	{
+		std::string	response;
 		// Esperar mensaje tipo: NICK <nickname>
 		if (buffer.find("NICK ") == 0) {
 			std::string nickname = buffer.substr(5);

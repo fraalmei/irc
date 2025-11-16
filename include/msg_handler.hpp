@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 17:33:06 by p                 #+#    #+#             */
-/*   Updated: 2025/11/14 13:31:39 by samartin         ###   ########.fr       */
+/*   Updated: 2025/11/16 11:49:36 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ class User;
 
 # include "Server.hpp"
 # include "User.hpp"
+# include "colors.hpp"
 
 class	msg_handler
 {

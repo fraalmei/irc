@@ -6,11 +6,12 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/11/16 01:42:55 by p                ###   ########.fr       */
+/*   Updated: 2025/11/16 11:46:57 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include "colors.hpp"
 
 /// @brief server socket initializer function
 /// función para inicializar el socket del servidor
@@ -22,11 +23,11 @@ void	Server::init_server_socket()
 	set_server_fd( socket( AF_INET, SOCK_STREAM, 0 ));
 	if ( get_server_fd() < 0 )
 	{
-		std::cerr << "Error al crear el socket." << std::endl;
+		std::cerr << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error al crear el socket." << std::endl;
 		exit (1);
 	}
 
-	std::cout << "Socket creado con fd " << get_server_fd() << " ." << std::endl;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Socket creado con fd " << get_server_fd() << " ." << std::endl;
 
 	// server address scrtuct
 	// Estructura para la dirección del servidor
@@ -41,7 +42,7 @@ void	Server::init_server_socket()
 	int opt = 1;
 	if ( setsockopt( get_server_fd(), SOL_SOCKET, SO_REUSEADDR, &opt, sizeof( opt )) < 0 )
 	{
-		std::cerr << "Error en setsockopt()." << std::endl;
+		std::cerr << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error en setsockopt()." << std::endl;
 		close ( get_server_fd() );
 		exit (1);
 	}
@@ -50,7 +51,7 @@ void	Server::init_server_socket()
 	// Asociar el socket a una IP / puerto
 	if ( bind( get_server_fd(), ( struct sockaddr* ) &server_addr, sizeof( server_addr )) < 0 )
 	{
-		std::cerr << "Error en bind()." << std::endl;
+		std::cerr << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error en bind()." << std::endl;
 		close( get_server_fd() );
 		exit(1);
 	}
@@ -59,13 +60,13 @@ void	Server::init_server_socket()
 	// escuchar conexiones entrantes
 	if( listen(get_server_fd(), BACKLOG) < 0 )
 	{
-		std::cerr << "Error en listen()." << std::endl;
+		std::cerr << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error en listen()." << std::endl;
 		close ( get_server_fd() );
 		exit (1);
 	}
 
-	std::cout << "Servidor iniciado en el puerto " << _port << std::endl;
-	std::cout << "Servidor iniciado con contraseña: '" << _password << "'"<< std::endl;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Servidor iniciado en el puerto " << _port << std::endl;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Servidor iniciado con contraseña: '" << _password << "'" << std::endl;
 
 	// Initialize the descriptor sets
 	// Inicializar los conjuntos de descriptores
@@ -89,12 +90,12 @@ void	Server::handle_new_connection()
 
 	if (new_fd < 0)
 	{
-		std::cerr << "Error en accept()." << std::endl;
+		std::cerr << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error en accept()." << std::endl;
 	}
 	else
 	{
 
-		std::cout << "Nuevo cliente con fd " << new_fd << " aceptado y direccion " << client_addr.sin_addr.s_addr << "." << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Nuevo cliente con fd " << new_fd << " aceptado y direccion " << client_addr.sin_addr.s_addr << "." << std::endl;
 
 		// add the new user to the set
 		// añadir el nuevo cliente al conjunto
@@ -107,7 +108,7 @@ void	Server::handle_new_connection()
 		//_clients.push_back(new_client);		// add the new user to the vector
 		getClientList()[new_fd] = new_client;		// add the new user to the vector
 
-		std::cout << "Nueva conexión desde " << inet_ntoa( client_addr.sin_addr ) << " en socket " << new_fd << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Nueva conexión desde " << inet_ntoa( client_addr.sin_addr ) << " en socket " << new_fd << std::endl;
 
 		std::string welcome = "Contraseña. Por favor.\n";
 		send(new_fd, welcome.c_str(), welcome.size(), 0);
@@ -123,26 +124,20 @@ int	Server::handle_client_message(User *user)
 	char	initbuffer[BUFFER_SIZE];
 	int		nbytes = recv( user->getFd(), initbuffer, BUFFER_SIZE - 1, 0 ); // data receiv
 
-	std::cout << "handle_client_message 1: initbuffer -> '" << initbuffer << "'" << std::endl;
-	std::cout << "handle_client_message 1: nbytes -> '" << nbytes << "'" << std::endl;
-
-	// Remove trailing whitespace characters (\t, \r, \n)
+	// Remove trailing whitespace characters (\t, \r)
 	while (nbytes > 0 && (initbuffer[nbytes - 1] == '\t' || 
-                      initbuffer[nbytes - 1] == '\r' || 
-                      initbuffer[nbytes - 1] == '\n')) {
+                      initbuffer[nbytes - 1] == '\r') ) {
     	nbytes--;
 	}
 	initbuffer[nbytes] = '\0';
 	std::string buffer(initbuffer);
 
 	//buffer.resize(BUFFER_SIZE);
-	std::cout << "handle_client_message 2: buffer -> '" << buffer << "'" << std::endl;
-	std::cout << "handle_client_message 2: length -> '" << buffer.length() << "'" << std::endl;
 	if (user->getNickname() != "")
-		std::cout << "Se ha recibido mensaje de " << user->getNickname() << ": '" << buffer <<  "' con " << buffer.size() << " chars and " << nbytes << " bytes." << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Se ha recibido mensaje de " << user->getNickname() << ": '" << buffer <<  "' con " << buffer.size() << " chars and " << nbytes << " bytes." << std::endl;
 	if (nbytes < 0)
     {
-		std::cout << "handle_client_message: nbytes < 0" << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " nbytes < 0" << std::endl;
         perror("recv");		// mostrar error exacto
         close( user->getFd() );
         FD_CLR( user->getFd(), &_master_set );
@@ -150,7 +145,7 @@ int	Server::handle_client_message(User *user)
     else if(nbytes == 0)
     {
         // if an error ocurr or the client desconetion
-        std::cout << "Socket " << user->getNickname() << " disconected for the user." << std::endl;
+        std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Socket " << user->getNickname() << " disconected for the user." << std::endl;
 
         // close the user socket and remove it from the set
         close( user->getFd() );
@@ -158,23 +153,21 @@ int	Server::handle_client_message(User *user)
     }
     else
     {
-		std::cout << "handle_client_message 3: buffer -> " << buffer << std::endl;
         //buffer.resize(nbytes);                      // ajustar al tamaño real recibido
         //buffer.push_back('\0');                      // asegurar terminador si lo necesita el código siguiente
 		if (user->getNickname() != "")
-        	std::cout << "Se ha recibido mensaje de " << user->getNickname() << ": '" << buffer <<  "' con " << buffer.size() << " chars and " << nbytes << " bytes." << std::endl;
-		std::cout << "handle_client_message 4: buffer -> " << buffer << std::endl;
+        	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Se ha recibido mensaje de " << user->getNickname() << ": '" << buffer <<  "' con " << buffer.size() << " chars and " << nbytes << " bytes." << std::endl;
 		
 		if (!msg_handler::handle_buffer(buffer, user)) // handle the buffer
 		{
-			std::cout << "Mensaje parcial." << std::endl;
+			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Mensaje parcial." << std::endl;
 			return 1;
 		}
 		// send a eco response to the user
 		else
 		{
 			std::string	response;
-			std::cout << "Mensaje recibido." << std::endl;
+			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Mensaje recibido." << std::endl;
 			response = "Mensaje recibido.\n";
 			send(user->getFd(), response.c_str(), response.size(), 0);
 			return 0;
@@ -194,28 +187,28 @@ void				Server::joinChannel(const std::string channelName, User *new_client)
 	std::string msg;
 	if (channel == NULL)
 	{
-		std::cout << channelName << " not found" << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " "<< channelName << " not found" << std::endl;
 		// Crear nuevo canal público
 		Channel* newChannel = new Channel(channelName);
 		newChannel->addMember(new_client);	// primer miembro
 		getChannelList()[channelName] = newChannel;
 		msg = "Joined channel " + newChannel->getName() + "\n";
-		std::cout << "Created channel: " << channelName << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Created channel: " << channelName << std::endl;
 	}
 	else
 	{
-		std::cout << "Found channel: " << channel->getName() << std::endl;
-		std::cout << channel->isMember(new_client->getFd()) << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Found channel: " << channel->getName() << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " " << channel->isMember(new_client->getFd()) << std::endl;
 		if (!channel->isMember(new_client->getFd()))
 		{
 			if (channel->addMember(new_client) != 0 ) // Agregar al canal existente
-				std::cerr << "Error: User already in channel " << channelName << std::endl;
-			std::cout << "User " << new_client->getFd() << " joined " << channelName << std::endl;
+				std::cerr << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error: User already in channel " << channelName << std::endl;
+			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " User " << new_client->getFd() << " joined " << channelName << std::endl;
 			msg = "Joined channel " + channel->getName() + "\n";
 		}
 		else
 		{
-			std::cerr << "Error: User already in channel " << channelName << std::endl;
+			std::cerr << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error: User already in channel " << channelName << std::endl;
 			msg = "Error: User already in channel " + channelName + "\n";
 		}
 	}
@@ -229,7 +222,7 @@ void				Server::joinChannel(const std::string channelName, User *new_client)
 void	Server::run()
 {
 
-	std::cout << "Running server." << std::endl;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Running server." << std::endl;
 	while (true)
 	{
 		set_read_fds(get_master_set());		// copy set from selec()
@@ -252,7 +245,7 @@ void	Server::run()
 
 		if(select(get_fd_max() + 1, &_read_fds, NULL, NULL, NULL ) == -1)
 		{
-			std::cerr << "Error en select()." << std::endl;
+			std::cerr << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error en select()." << std::endl;
 			exit(1);
 		}
 
@@ -271,7 +264,7 @@ void	Server::run()
 					User *user = getClientByFd(i);
 
 					if (user == NULL)
-						std::cerr << "Client with fd " << i << " not found." << std::endl;
+						std::cerr << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Client with fd " << i << " not found." << std::endl;
 					else
 					{
 						if (this->handle_client_message(user))
