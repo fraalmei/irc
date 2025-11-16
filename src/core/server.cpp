@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/11/16 11:46:57 by p                ###   ########.fr       */
+/*   Updated: 2025/11/16 14:23:09 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void	Server::handle_new_connection()
 
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Nueva conexión desde " << inet_ntoa( client_addr.sin_addr ) << " en socket " << new_fd << std::endl;
 
-		std::string welcome = "Contraseña. Por favor.\n";
+		std::string welcome = "CAP * LS : \r\n";
 		send(new_fd, welcome.c_str(), welcome.size(), 0);
 	}
 }
@@ -141,6 +141,7 @@ int	Server::handle_client_message(User *user)
         perror("recv");		// mostrar error exacto
         close( user->getFd() );
         FD_CLR( user->getFd(), &_master_set );
+		return 1;
     }
     else if(nbytes == 0)
     {
@@ -150,6 +151,7 @@ int	Server::handle_client_message(User *user)
         // close the user socket and remove it from the set
         close( user->getFd() );
         FD_CLR( user->getFd(), &_master_set );
+		return 1;
     }
     else
     {
@@ -265,22 +267,10 @@ void	Server::run()
 
 					if (user == NULL)
 						std::cerr << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Client with fd " << i << " not found." << std::endl;
-					else
-					{
-						if (this->handle_client_message(user))
-							break;	// message of a user
-					}
+					else if (this->handle_client_message(user))
+						break;	// incomplete message, wait for more data
 					if (!user->isAuthenticated())
-					{
-						msg_handler::handle_login_parse(user, this);
-						/* METERLO EN LA FUNCION DE ARRIBA
-						std::cout << "Buffer recibido de " << user->getFd() << ": " << buffer;
-						std::string	message = buffer.substr(0, buffer.size() - 3); // remove \n\r
-						std::cout << "Mensaje recibido de " << user->getFd() << ": " << message;
-						if (user->parse_user(message, this)) // handle the password
-							std::cout << "Mensaje tratado incorrectamente." << std::endl;
-						*/
-					}
+						msg_handler::handle_login_parse(user, this); //should only read login messages until complete
 					else
 						msg_handler::parse_msg(user->getBuffer()); //It is a msg from an active user, parse the command
 				}
