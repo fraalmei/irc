@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2025/11/16 11:49:35 by p                ###   ########.fr       */
+/*   Updated: 2025/11/27 02:25:57 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,25 @@
 
 # include "Channel.hpp"
 # include "msg_handler.hpp"
+# include "User.hpp"
 # include "colors.hpp"
-
 # include <iostream>
-# include <cstring>			// memset()
-# include <cstdlib>			// exit()
+# include <stdlib.h>		// exit()
+# include <string.h> 		// memset()
+# include <signal.h>		// signal()
 # include <unistd.h>		// close()
 # include <sys/types.h>		// Basic types for sockets
 # include <sys/socket.h>	// Basic functions for sockets
 # include <netinet/in.h>	// Structs for IP direccions IP4
 # include <arpa/inet.h>		// inet_ntoa(), IP converion <> text
 # include <sys/select.h>	// Multiplex
+# include <fcntl.h>			// fcntl()
+# include <poll.h>			// poll()
 # include <cstdio>
 # include <vector>
 # include <map>
 # include <algorithm>
+# include <cerrno>
 
 # define BACKLOG 10		// Max number of waiting conetions
 # define BUFFER_SIZE 512	// size of the buffer to receive messages
@@ -42,15 +46,11 @@ class Server
 {
 	public:
 
-		// Constructors
+		// Orthodox functions
 		Server(void);
 		Server(char *password, int port);
 		Server(const Server &copy);
-
-		// Destructor
 		~Server(void);
-		
-		// Operators
 		Server & operator=(const Server &assign);
 	
 		// Getters
@@ -61,24 +61,32 @@ class Server
 		fd_set				get_read_fds() { return this->_read_fds; }
 		int					get_port() { return this->_port; }
 		std::string			get_password() { return this->_password; }
+		bool				get_signal() { return _signal; }
 
-		const std::map<std::string, Channel*>&		getConstChannelList() const { return this->_channel_list; }
-		std::map<std::string, Channel*>&			getChannelList() { return this->_channel_list; }
-		const std::map<int, User*>&					getConstClientList() const { return this->_client_list; }
-		std::map<int, User*>&						getClientList() { return this->_client_list; }
+		const std::map<std::string, Channel*>&			getConstChannelList() const { return this->_channel_list; }
+		std::map<std::string, Channel*>&				getChannelList() { return this->_channel_list; }
+		const std::map<int, User*>&				getConstClientList() const { return this->_clients; }
+		std::map<int, User*>&				getClientList() { return this->_clients; }
 
-		User				*getClientByFd(int fd);
-		Channel			*getChannelByName(const std::string &channelName);
+		User											*getClientByFd(int fd);
+		Channel											*getChannelByName(const std::string &channelName);
 
 		// Setters
 		void				set_server_fd(int server_fd) { this->_server_fd = server_fd; }
 		void				set_fd_max(int fd_max) { this->_fd_max = fd_max; }
 		void				set_master_set(fd_set master_set) { this->_master_set = master_set; }
-		void				set_read_fds(fd_set read_fds) { this->_read_fds = read_fds; }
+		static bool			set_signal(bool signal) { _signal = signal; return _signal; }	
 
 		void				run(void);
 
 		void				joinChannel(const std::string channelName, User *new_client);
+		static void			SignalHandler(int signum);
+
+		void				CloseFds();				// close file descriptors
+		void				ClearClients(int fd);	// clear clients
+
+		void				rtrim_crlf(std::string &s);
+		std::string			handle_client_message(User *client);
 
 	private:
 
@@ -86,18 +94,19 @@ class Server
 		fd_set								_master_set;		//	set of file descriptors
 		fd_set								_read_fds;			//	temporal set to read
 		int									_fd_max;			//	high fd used
+		static bool							_signal;			//	signal to close the server	
 
 		int									_port;				//	port number	
 		std::string							_password;			//	server password
 
-		std::map<int, User*>				_client_list;		// fd client list
-		//std::vector<Client*>				_clients;			// vector of clients
+		// client list: map fd -> User*
+		std::map<int, User*>				_clients;			// map of client pointers by fd
 		std::map<std::string, Channel*>		_channel_list;		// map of the created channels
+		std::vector<struct pollfd>			_fds;				//	vector of pollfd structures
 
-		void		init_server_socket();
-		void		handle_new_connection();
-		int			handle_client_message(User *client);
-
+		void				init_server_socket();
+		void				handle_new_connection();
+		
 };
 
 	// overload an operator

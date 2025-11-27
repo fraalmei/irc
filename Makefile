@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+         #
+#    By: p <p@student.42.fr>                        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/30 19:06:15 by fraalmei          #+#    #+#              #
-#    Updated: 2025/11/13 10:57:58 by cagonzal         ###   ########.fr        #
+#    Updated: 2025/11/27 01:32:05 by p                ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,13 +34,16 @@ BIN_DIR		= bin
 HEADERS		= -I $(INCDIR)
 
 # Directories
-SRCS		=	$(CORE) $(CHANNELS) $(MESSAGES) $(PARSE) $(UTILS)
+SRCS		=	$(CORE) $(SERVER) $(CHANNELS) $(MESSAGES) $(PARSE) $(UTILS)
 
 CORE		=	core/main.cpp \
-				core/server.cpp \
-				core/server_getset.cpp \
-				core/server_orthodox.cpp \
 				core/User.cpp
+
+SERVER		=	server/server.cpp \
+				server/server_getset.cpp \
+				server/server_orthodox.cpp \
+				server/create_clean_server.cpp \
+				server/utils.cpp
 
 CHANNELS	=	core/Channel.cpp
 
@@ -49,7 +52,7 @@ MESSAGES	=	message/msg_handler.cpp \
 
 PARSE		=
 
-UTILS		=
+UTILS		=	
 
 # Convert source files to binary
 OBJS = $(SRCS:%.cpp=$(BIN_DIR)/%.o) $(UTILS:%.cpp=$(BIN_DIR)/%.o)

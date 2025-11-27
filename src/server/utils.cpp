@@ -1,27 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   structs.hpp                                        :+:      :+:    :+:   */
+/*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/16 16:02:08 by cagonzal          #+#    #+#             */
-/*   Updated: 2025/11/16 16:04:35 by cagonzal         ###   ########.fr       */
+/*   Created: 2025/11/27 01:23:28 by p                 #+#    #+#             */
+/*   Updated: 2025/11/27 01:35:49 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef STRUCTS_HPP
-# define STRUCTS_HPP
+#include "Server.hpp"
 
-#include <string>
-
-struct command
+void Server::rtrim_crlf(std::string &s)
 {
-	std::string		name;
-	std::string		cmd;
-	std::string*	params;	
-};
-
-
-
-#endif
+    while (!s.empty()) {
+        char c = s[s.size() - 1];
+        if (c == '\r' || c == '\n')
+            s.erase(s.size() - 1);
+        else
+            break;
+    }
+}

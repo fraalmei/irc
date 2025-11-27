@@ -5,4 +5,9 @@ Dejad de borrar los logs cabrones, que algo informan.
         Se vuelve a cambiar la obtencion de buffer a array char y se convierte a string despues
 16/11/2025
     "Server::handle_client_message(User *user)" recibía varios chars más
-        Se añade un while para eliminar caracteres \t, \r y \n si existen al final del mensaje.
+        Se añade un while para eliminar caracteres \t y \r si existen al final del mensaje.
+
+27/11/2025
+    Se han añadido en el servidor las señales y el poll (modificando partes del server.cpp)
+    Se ha modificado el handle client message para que devuelva el buffer comprobado y trimeado
+    Se ha metido lo del servidor en su carpeta

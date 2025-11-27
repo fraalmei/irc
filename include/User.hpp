@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 17:33:01 by p                 #+#    #+#             */
-/*   Updated: 2025/11/16 11:49:34 by p                ###   ########.fr       */
+/*   Updated: 2025/11/27 00:42:50 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ class User
 private:
 
 	int				_fd; // File descriptor for the client socket
+	std::string		_IPadd; // IP address of the client
 
 	std::string		_username;
 	std::string		_nickname;
@@ -39,9 +40,9 @@ private:
 public:
 
 	// Constructors
-	User(int fd) { _fd = fd; _username = ""; _nickname = ""; _isAuthenticated = false; }
+	User(int fd) { _fd = fd; _username = ""; _nickname = ""; _isAuthenticated = false; ; _passwd_correct = false;}
 	User(int fd, const std::string& nickname, const std::string& username)
-	{ _fd = fd; _nickname = nickname; _username = username; _isAuthenticated = false; }
+	{ _fd = fd; _nickname = nickname; _username = username; _isAuthenticated = false; _passwd_correct = false; 	}
 
 	// Destructor
 	~User() {}
@@ -54,6 +55,7 @@ public:
 	bool			isAuthenticated() const { return _isAuthenticated; }
 	bool			isAdminOfChannel(const Channel& channel) const;
 	int				getFd() const { return _fd; }
+	std::string		getIpAdd() const { return _IPadd; }
 
 	// Setters
 	void			setNickname(const std::string& nickname) { _nickname = nickname; }
@@ -62,6 +64,7 @@ public:
 	void			setAuthenticated(bool isAuthenticated) { _isAuthenticated = isAuthenticated; }
 	void			setBuffer(const std::string& buffer) { _buffer = buffer; }
 	int				setClient() { return 0; }
+	void			setIpAdd(const std::string& ipadd) { _IPadd = ipadd; }
 
 	// Buffer management
 	int				addToBuffer(const std::string& message);
