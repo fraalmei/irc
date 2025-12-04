@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/12/04 16:02:12 by p                ###   ########.fr       */
+/*   Updated: 2025/12/04 16:37:59 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,16 +80,15 @@ std::string	Server::handle_client_message(User *user)
 	rtrim_crlf(buffer);
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Received trimed buffer: '" << buffer << "' with " << nbytes << " bytes." << std::endl;
 
-	/*if (!msg_handler::handle_buffer(buffer, user)) // handle the buffer
-	{
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Mensaje parcial:" << msg_handler::handle_buffer(buffer, user) << std::endl;
-		return 1;
-	}*/
 	// send a eco response to the user
 	std::string	response;
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Mensaje recibido." << std::endl;
 	response = "Mensaje recibido.\n";
 	send(user->getFd(), response.c_str(), response.size(), 0);
+	// add the received buffer to the user buffer
+	user->clearBuffer();
+	user->setBuffer(buffer);
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Stablized user buffer: '" << buffer << "' with " << nbytes << " bytes." << std::endl;
 	return buffer;
 }
 
@@ -166,8 +165,10 @@ void	Server::run()
 				{
 					handle_new_connection();	// new incoming conection
 				}
-				else if(getClientByFd(_fds[i].fd)->isAuthenticated())
+				else if(getClientByFd(_fds[i].fd)->isAuthenticated()){
 					handle_client_message(getClientByFd(_fds[i].fd));
+
+				}
 				else
 					msg_handler::aunthenticateUser(getClientByFd(_fds[i].fd), this);
 				

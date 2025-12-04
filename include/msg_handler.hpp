@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 17:33:06 by p                 #+#    #+#             */
-/*   Updated: 2025/12/04 15:55:57 by p                ###   ########.fr       */
+/*   Updated: 2025/12/04 16:24:44 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,11 @@ class	msg_handler
 		msg_handler(void);
 		~msg_handler();
 
-		// Parse user
-		static int		authenticate(std::string buffer, User *user, Server *server);
-		static int		handle_password(std::string buffer, User *user, Server *server);
-		static int		handle_nickname(std::string buffer, User *user);
-		static int		handle_username(std::string buffer, User *user);
+		// Parse user authentication steps
+		static int		authenticate(User *user, Server *server);
+		static int		handle_password(User *user, Server *server);
+		static int		handle_nickname(User *user);
+		static int		handle_username(User *user);
 
 };
 
