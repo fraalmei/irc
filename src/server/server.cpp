@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/11/27 02:27:35 by p                ###   ########.fr       */
+/*   Updated: 2025/12/04 16:02:12 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,9 +167,9 @@ void	Server::run()
 					handle_new_connection();	// new incoming conection
 				}
 				else if(getClientByFd(_fds[i].fd)->isAuthenticated())
-					this->handle_client_message(getClientByFd(_fds[i].fd));
+					handle_client_message(getClientByFd(_fds[i].fd));
 				else
-					msg_handler::handle_login_parse(getClientByFd(_fds[i].fd), this);
+					msg_handler::aunthenticateUser(getClientByFd(_fds[i].fd), this);
 				
 				/*	if (user == NULL)
 						std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Client with fd " << _fds[i].fd << " not found." << std::endl;

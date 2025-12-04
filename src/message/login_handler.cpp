@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 18:26:30 by p                 #+#    #+#             */
-/*   Updated: 2025/11/27 02:26:00 by p                ###   ########.fr       */
+/*   Updated: 2025/12/04 15:56:14 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,14 @@
 #include "../include/validNames.hpp"
 #include "../include/colors.hpp"
 
-int	msg_handler::handle_login_parse(User *user, Server *server)
+int	msg_handler::aunthenticateUser(User *user, Server *server)
 {
 	std::string buffer = server->handle_client_message(user); // receive message into user buffer
-	parse_user(buffer, user, server);
+	authenticate(buffer, user, server);
     return 0;
 }
 
-int	msg_handler::parse_user(std::string buffer, User *user, Server *server)
+int	msg_handler::authenticate(std::string buffer, User *user, Server *server)
 {
 	// PASO 1: Validar contraseña
 	if (!user->isPasswdCorrect())
