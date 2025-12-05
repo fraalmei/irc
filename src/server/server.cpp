@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/12/04 16:37:59 by p                ###   ########.fr       */
+/*   Updated: 2025/12/05 11:41:30 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,9 @@ std::string	Server::handle_client_message(User *user)
 	response = "Mensaje recibido.\n";
 	send(user->getFd(), response.c_str(), response.size(), 0);
 	// add the received buffer to the user buffer
-	user->clearBuffer();
-	user->setBuffer(buffer);
+	
+	//user->clearBuffer();
+	user->addToBuffer(buffer);
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Stablized user buffer: '" << buffer << "' with " << nbytes << " bytes." << std::endl;
 	return buffer;
 }
@@ -165,7 +166,8 @@ void	Server::run()
 				{
 					handle_new_connection();	// new incoming conection
 				}
-				else if(getClientByFd(_fds[i].fd)->isAuthenticated()){
+				else if(getClientByFd(_fds[i].fd)->isAuthenticated())
+				{
 					handle_client_message(getClientByFd(_fds[i].fd));
 
 				}
