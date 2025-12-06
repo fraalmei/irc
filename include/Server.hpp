@@ -3,13 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2025/12/06 11:16:36 by p                ###   ########.fr       */
+/*   Updated: 2025/12/06 12:17:53 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #ifndef SERVER_HPP
 # define SERVER_HPP
@@ -45,14 +44,13 @@ class Channel;
 class Server
 {
 	public:
-
 		// Orthodox functions
 		Server(void);
 		Server(char *password, int port);
 		Server(const Server &copy);
 		~Server(void);
 		Server & operator=(const Server &assign);
-	
+
 		// Getters
 		int					get_server_fd() { return this->_server_fd; }
 		int					get_fd_max() { return this->_fd_max; }
@@ -67,9 +65,7 @@ class Server
 		std::map<std::string, Channel*>&				getChannelList() { return this->_channel_list; }
 		const std::map<int, User*>&						getConstClientList() const { return this->_clients; }
 		std::map<int, User*>&							getClientList() { return this->_clients; }
-
 		int												closeClientFd(int fd);
-
 		User											*getClientByFd(int fd);
 		User											*getClientFdByNickname(const std::string &nickname);	
 		int												getClientCount() const { return this->_clients.size(); }
@@ -81,26 +77,20 @@ class Server
 		void				set_fd_max(int fd_max) { this->_fd_max = fd_max; }
 		void				set_master_set(fd_set master_set) { this->_master_set = master_set; }
 		static bool			set_signal(bool signal) { _signal = signal; return _signal; }	
-
 		void				run(void);
-
 		void				joinChannel(const std::string channelName, User *new_client);
 		static void			SignalHandler(int signum);
-
 		void				CloseFds();				// close file descriptors
 		void				ClearClients(int fd);	// clear clients
-
 		void				rtrim_crlf(std::string &s);
 		std::string			handle_client_message(User *client);
 
 	private:
-
 		int									_server_fd;			//	server file descriptor
 		fd_set								_master_set;		//	set of file descriptors
 		fd_set								_read_fds;			//	temporal set to read
 		int									_fd_max;			//	high fd used
 		static bool							_signal;			//	signal to close the server	
-
 		int									_port;				//	port number	
 		std::string							_password;			//	server password
 
@@ -111,10 +101,8 @@ class Server
 
 		void				init_server_socket();
 		void				handle_new_connection();
-		
 };
 
 	// overload an operator
 	std::ostream	&operator<<(std::ostream &o, Server const &i);
-
 #endif
