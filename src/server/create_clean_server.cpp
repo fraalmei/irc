@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 09:08:51 by p                 #+#    #+#             */
-/*   Updated: 2025/11/27 02:05:25 by p                ###   ########.fr       */
+/*   Updated: 2025/12/06 11:22:32 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 /// función para inicializar el socket del servidor
 void	Server::init_server_socket()
 {
-
 	int					en = 1;
 
 	// server address struct

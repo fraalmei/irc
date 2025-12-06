@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 22:39:07 by p                 #+#    #+#             */
-/*   Updated: 2025/12/05 07:47:58 by p                ###   ########.fr       */
+/*   Updated: 2025/12/06 10:46:47 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,6 @@ int msg_handler::handle_buffer(std::string buffer, User *user)
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Buffer: " << user->getBuffer() << "." << std::endl;
 	}
 
-	// handle the buffer
-	// tratar el buffer
-	//msg_handler::handle_buffer<int>(buffer);
-	//msg_andler::andle_buffer<std::string>(buffer);
 	return 1;
 }
 

@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/12/05 11:41:30 by p                ###   ########.fr       */
+/*   Updated: 2025/12/06 11:31:16 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ std::string	Server::handle_client_message(User *user)
 		perror("recv");		// mostrar error exacto
 		ClearClients(user->getFd());
 		close( user->getFd() );
-		return NULL;
+		return "";
 	}
 
 	initbuffer[nbytes] = '\0';
@@ -88,7 +88,8 @@ std::string	Server::handle_client_message(User *user)
 	// add the received buffer to the user buffer
 	
 	//user->clearBuffer();
-	user->addToBuffer(buffer);
+	if (msg_handler::handle_buffer(buffer, user) == 0)
+		return ""; // mensaje incompleto, esperar más datos"";
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Stablized user buffer: '" << buffer << "' with " << nbytes << " bytes." << std::endl;
 	return buffer;
 }

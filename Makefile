@@ -6,7 +6,7 @@
 #    By: p <p@student.42.fr>                        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/30 19:06:15 by fraalmei          #+#    #+#              #
-#    Updated: 2025/11/27 01:32:05 by p                ###   ########.fr        #
+#    Updated: 2025/12/05 16:56:01 by p                ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,7 +43,8 @@ SERVER		=	server/server.cpp \
 				server/server_getset.cpp \
 				server/server_orthodox.cpp \
 				server/create_clean_server.cpp \
-				server/utils.cpp
+				server/utils.cpp \
+				server/client_handler.cpp
 
 CHANNELS	=	core/Channel.cpp
 

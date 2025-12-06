@@ -6,11 +6,12 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 16:31:13 by p                 #+#    #+#             */
-/*   Updated: 2025/11/27 02:14:01 by p                ###   ########.fr       */
+/*   Updated: 2025/12/06 11:24:48 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+
 
 User	*Server::getClientByFd(int fd)
 {
@@ -20,6 +21,17 @@ User	*Server::getClientByFd(int fd)
 		if (it->first == fd)
 			return it->second; // Return the found client
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " User with fd " << fd << " not found." << std::endl;
+	return NULL; // Exit if the client is not found
+}
+
+User	*Server::getClientFdByNickname(const std::string &nickname)
+{
+	// Search for the client by its nickname (member definition)
+	// Buscar el cliente por su nickname
+	for(std::map<int, User*>::const_iterator it = this->getConstClientList().begin(); it != this->getConstClientList().end(); ++it)
+		if (it->second->getNickname() == nickname)
+			return it->second; // Return the found client
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " User with nickname " << nickname << " not found." << std::endl;
 	return NULL; // Exit if the client is not found
 }
 
