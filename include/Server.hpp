@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2025/12/06 12:30:16 by samartin         ###   ########.fr       */
+/*   Updated: 2025/12/06 13:06:16 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ class Server
 		std::map<std::string, Channel*>&		getChannelList() { return this->_channel_list; }
 		const std::map<int, User*>&				getConstClientList() const { return this->_clients; }
 		std::map<int, User*>&					getClientList() { return this->_clients; }
+		
 		int										closeClientFd(int fd);
 		User									*getClientByFd(int fd);
 		User									*getClientFdByNickname(const std::string &nickname);	

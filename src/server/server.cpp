@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/12/06 11:31:16 by p                ###   ########.fr       */
+/*   Updated: 2025/12/06 13:33:01 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,8 @@ std::string	Server::handle_client_message(User *user)
 	initbuffer[nbytes] = '\0';
 	std::string buffer(initbuffer);
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Received raw buffer: '" << buffer << "' with " << nbytes << " bytes." << std::endl;
-	rtrim_crlf(buffer);
-	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Received trimed buffer: '" << buffer << "' with " << nbytes << " bytes." << std::endl;
+	//rtrim_crlf(buffer);
+	//std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Received trimed buffer: '" << buffer << "' with " << nbytes << " bytes." << std::endl;
 
 	// send a eco response to the user
 	std::string	response;
@@ -90,8 +90,8 @@ std::string	Server::handle_client_message(User *user)
 	//user->clearBuffer();
 	if (msg_handler::handle_buffer(buffer, user) == 0)
 		return ""; // mensaje incompleto, esperar más datos"";
-	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Stablized user buffer: '" << buffer << "' with " << nbytes << " bytes." << std::endl;
-	return buffer;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Stablized user buffer: '" << user->getBuffer() << "' with " << nbytes << " bytes." << std::endl;
+	return user->getBuffer();
 }
 
 /// @brief join or create a channel
