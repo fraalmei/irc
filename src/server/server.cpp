@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/12/06 13:33:01 by p                ###   ########.fr       */
+/*   Updated: 2025/12/10 11:03:29 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,11 @@ std::string	Server::handle_client_message(User *user)
 		close( user->getFd() );
 		return "";
 	}
-
+	prints::printchars(initbuffer);
 	initbuffer[nbytes] = '\0';
 	std::string buffer(initbuffer);
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Received raw buffer: '" << buffer << "' with " << nbytes << " bytes." << std::endl;
+	
 	//rtrim_crlf(buffer);
 	//std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Received trimed buffer: '" << buffer << "' with " << nbytes << " bytes." << std::endl;
 
@@ -88,8 +89,11 @@ std::string	Server::handle_client_message(User *user)
 	// add the received buffer to the user buffer
 	
 	//user->clearBuffer();
-	if (msg_handler::handle_buffer(buffer, user) == 0)
+	if (msg_handler::handle_buffer(buffer, user))
+	{
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Mensaje vacio, erroneo o incompleto." << std::endl;
 		return ""; // mensaje incompleto, esperar más datos"";
+	}
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Stablized user buffer: '" << user->getBuffer() << "' with " << nbytes << " bytes." << std::endl;
 	return user->getBuffer();
 }
@@ -169,8 +173,12 @@ void	Server::run()
 				}
 				else if(getClientByFd(_fds[i].fd)->isAuthenticated())
 				{
-					handle_client_message(getClientByFd(_fds[i].fd));
-
+					if(handle_client_message(getClientByFd(_fds[i].fd)).empty())
+					{
+						continue;	// mensaje incompleto, esperar más datos
+					}
+					msg_handler::parse_msg(getClientByFd(_fds[i].fd)->getBuffer());
+					getClientByFd(_fds[i].fd)->clearBuffer();
 				}
 				else
 					msg_handler::aunthenticateUser(getClientByFd(_fds[i].fd), this);

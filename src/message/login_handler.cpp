@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 18:26:30 by p                 #+#    #+#             */
-/*   Updated: 2025/12/06 11:29:59 by p                ###   ########.fr       */
+/*   Updated: 2025/12/10 11:09:32 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int	msg_handler::aunthenticateUser(User *user, Server *server)
 	if (server->handle_client_message(user).empty()) // receive message into user buffer
 		return 1;
 	authenticate(user, server);
+	user->clearBuffer();
 	return 0;
 }
 

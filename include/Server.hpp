@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2025/12/06 13:06:16 by p                ###   ########.fr       */
+/*   Updated: 2025/12/10 10:01:37 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # include <map>
 # include <algorithm>
 # include <cerrno>
+# include "prints.hpp"
 
 # define BACKLOG 10		// Max number of waiting conections
 # define BUFFER_SIZE 512	// size of the buffer to receive messages

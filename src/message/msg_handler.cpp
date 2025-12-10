@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 22:39:07 by p                 #+#    #+#             */
-/*   Updated: 2025/12/06 10:46:47 by p                ###   ########.fr       */
+/*   Updated: 2025/12/10 10:52:54 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,20 @@ int msg_handler::handle_buffer(std::string buffer, User *user)
 {
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " buffer -> " << buffer << std::endl;
 
-	if (user->addToBuffer(buffer) == 0)
+	int msg_result = user->addToBuffer(buffer);
+	if (msg_result == -1)
 	{
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Se ha recibido un mensaje cortado sin fin de línea." << std::endl;
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Usuario: " << user->getFd() << std::endl;
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Buffer: " << user->getBuffer() << "." << std::endl;
-		return 0;
+		return 1;
+	}
+	else if (msg_result == 0)
+	{
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Se ha recibido un mensaje vacio." << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Usuario: " << user->getFd() << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Buffer: " << user->getBuffer() << "." << std::endl;
+		return 1;
 	}
 	else
 	{
@@ -32,13 +40,12 @@ int msg_handler::handle_buffer(std::string buffer, User *user)
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Usuario: " << user->getFd() << std::endl;
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Buffer: " << user->getBuffer() << "." << std::endl;
 	}
-
-	return 1;
+	return 0;
 }
 
 int msg_handler::parse_msg(std::string msg)
 {
-	std::cout << msg << std::endl;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << msg << std::endl;
 	return 1;
 }
 /*
