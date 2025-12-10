@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: fraalmei <fraalmei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/27 01:23:28 by p                 #+#    #+#             */
-/*   Updated: 2025/11/27 01:35:49 by p                ###   ########.fr       */
+/*   Updated: 2025/12/10 14:46:34 by fraalmei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,4 +21,12 @@ void Server::rtrim_crlf(std::string &s)
         else
             break;
     }
+}
+
+void Server::print_users(void)
+{
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Printing user lists." << std::endl;
+	for(std::map<int, User*>::const_iterator it = getConstClientList().begin(); it != getConstClientList().end(); ++it)
+		if (it->first)
+			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " User with fd " << it->first << " not found." << std::endl;
 }

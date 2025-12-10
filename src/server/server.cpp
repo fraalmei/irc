@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: fraalmei <fraalmei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/12/10 11:03:29 by p                ###   ########.fr       */
+/*   Updated: 2025/12/10 14:47:28 by fraalmei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,8 @@ void	Server::handle_new_connection()
 
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Nueva conexión desde " << inet_ntoa( client_addr.sin_addr ) << " en socket " << new_fd << std::endl;
 
-	std::string welcome = "Contraseña. Por favor.\n";
-	send(new_fd, welcome.c_str(), welcome.size(), 0);
+	//std::string welcome = "Contraseña. Por favor.\n";
+	//send(new_fd, welcome.c_str(), welcome.size(), 0);
 }
 
 /// @brief Recibe un mensaje y lo pasa por el buffer handler, que lo va guardando en el objeto User hasta que esté completo
@@ -71,6 +71,7 @@ std::string	Server::handle_client_message(User *user)
 		perror("recv");		// mostrar error exacto
 		ClearClients(user->getFd());
 		close( user->getFd() );
+		print_users();
 		return "";
 	}
 	prints::printchars(initbuffer);

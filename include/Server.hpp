@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: fraalmei <fraalmei@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2025/12/10 10:01:37 by p                ###   ########.fr       */
+/*   Updated: 2025/12/10 14:42:08 by fraalmei         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,9 @@ class Server
 		void				ClearClients(int fd);	// clear clients
 		void				rtrim_crlf(std::string &s);
 		std::string			handle_client_message(User *client);
+
+		// utils
+		void				print_users(void);
 
 	private:
 		int									_server_fd;			//	server file descriptor
