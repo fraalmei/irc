@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fraalmei <fraalmei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 22:39:07 by p                 #+#    #+#             */
-/*   Updated: 2025/12/10 14:40:18 by fraalmei         ###   ########.fr       */
+/*   Updated: 2025/12/12 14:22:51 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,11 @@ int msg_handler::handle_buffer(std::string buffer, User *user)
 	return 0;
 }
 
-int msg_handler::parse_msg(std::string msg)
+t_command msg_handler::parse_msg(std::string msg)
 {
+	t_command	command;
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << msg << std::endl;
-	return 1;
+	return command;
 }
 /*
 	if(message.find("KICK ") == 0)

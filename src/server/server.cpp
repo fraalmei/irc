@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fraalmei <fraalmei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/12/10 14:47:28 by fraalmei         ###   ########.fr       */
+/*   Updated: 2025/12/12 14:21:22 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,6 +153,8 @@ void	Server::SignalHandler(int signum)
 ///			bucle principal
 void	Server::run()
 {
+
+	t_command command;
 
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Running server with fd -> " << _server_fd << " ." << std::endl;
 	while (!get_signal())

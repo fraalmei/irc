@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fraalmei <fraalmei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2025/12/10 14:42:08 by fraalmei         ###   ########.fr       */
+/*   Updated: 2025/12/12 14:20:06 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 # include <cstdio>
 # include <vector>
 # include <map>
+# include <list>
 # include <algorithm>
 # include <cerrno>
 # include "prints.hpp"
@@ -41,6 +42,13 @@
 
 class User;
 class Channel;
+
+typedef struct s_command
+{
+	User*					user;
+	std::string				command;
+	std::list <std::string>	params;
+}	t_command;
 
 class Server
 {
