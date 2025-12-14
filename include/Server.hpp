@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2025/12/12 14:20:06 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/12/14 18:29:24 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@
 # include <list>
 # include <algorithm>
 # include <cerrno>
-# include "prints.hpp"
 
 # define BACKLOG 10		// Max number of waiting conections
 # define BUFFER_SIZE 512	// size of the buffer to receive messages
@@ -43,13 +42,13 @@
 class User;
 class Channel;
 
-typedef struct s_command
+/* typedef struct s_command
 {
 	User*					user;
 	std::string				command;
 	std::list <std::string>	params;
 }	t_command;
-
+ */
 class Server
 {
 	public:

@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 20:17:51 by fraalmei          #+#    #+#             */
-/*   Updated: 2025/12/10 09:54:03 by p                ###   ########.fr       */
+/*   Updated: 2025/12/14 18:14:50 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include <cstdio>
 #include <cstdlib> // atoi
 #include <csignal> // signal
-#include "prints.hpp"
 
 static void leaks()
 {

@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/12/14 17:57:59 by samartin         ###   ########.fr       */
+/*   Updated: 2025/12/14 18:29:13 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include "../include/prints.hpp"
 
 /// @brief handle a new incoming conecction
 /// manejar una nueva conexión entrante
@@ -153,7 +154,7 @@ void	Server::SignalHandler(int signum)
 ///			bucle principal
 void	Server::run()
 {
-	t_command command;
+	msg_handler::t_command command;
 
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Running server with fd -> " << _server_fd << " ." << std::endl;
 	while (!get_signal())
@@ -208,7 +209,7 @@ void	Server::run()
 		if(select(get_fd_max() + 1, &_read_fds, NULL, NULL, NULL ) == -1)
 		{
 			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error en select()." << std::endl;
-			exit(1);
+	msg_handler::t_command command;
 		}
 
 		// traverse all posible fd
