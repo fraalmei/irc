@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 22:39:07 by p                 #+#    #+#             */
-/*   Updated: 2025/12/12 14:22:51 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/12/14 17:57:57 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,11 @@ t_command msg_handler::parse_msg(std::string msg)
 	t_command	command;
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << msg << std::endl;
 	return command;
+}
+
+void msg_handler::execute_command(t_command command)
+{
+	
 }
 /*
 	if(message.find("KICK ") == 0)

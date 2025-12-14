@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/12/12 14:21:22 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/12/14 17:57:59 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,6 @@ void	Server::SignalHandler(int signum)
 ///			bucle principal
 void	Server::run()
 {
-
 	t_command command;
 
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Running server with fd -> " << _server_fd << " ." << std::endl;
@@ -174,14 +173,16 @@ void	Server::run()
 				{
 					handle_new_connection();	// new incoming conection
 				}
-				else if(getClientByFd(_fds[i].fd)->isAuthenticated())
+				else if (getClientByFd(_fds[i].fd)->isAuthenticated())
 				{
-					if(handle_client_message(getClientByFd(_fds[i].fd)).empty())
+					if (handle_client_message(getClientByFd(_fds[i].fd)).empty())
 					{
 						continue;	// mensaje incompleto, esperar más datos
 					}
-					msg_handler::parse_msg(getClientByFd(_fds[i].fd)->getBuffer());
-					getClientByFd(_fds[i].fd)->clearBuffer();
+					command = msg_handler::parse_msg(getClientByFd(_fds[i].fd)->getBuffer());
+					if (command.user != NULL)
+						msg_handler::execute_command(command);
+					//getClientByFd(_fds[i].fd)->clearBuffer();
 				}
 				else
 					msg_handler::aunthenticateUser(getClientByFd(_fds[i].fd), this);

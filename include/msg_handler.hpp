@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 17:33:06 by p                 #+#    #+#             */
-/*   Updated: 2025/12/12 14:22:45 by cagonzal         ###   ########.fr       */
+/*   Updated: 2025/12/14 17:57:49 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class	msg_handler
 
 		static int			handle_buffer(std::string buffer, User *user);
 		static t_command	parse_msg(std::string msg);
-		
+		static void 		execute_command(t_command command);
 		static int			aunthenticateUser(User *user, Server *server);
 
 	private:
