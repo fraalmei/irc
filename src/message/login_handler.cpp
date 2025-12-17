@@ -25,8 +25,9 @@ int	msg_handler::aunthenticateUser(User *user, Server *server)
 }
 
 // Rehacer: La mayoría de los clientes enviarán los mensajes de login en paquete y podría ser que en distinto orden.
-// En vez de bloquear pidiendo paso por paso, según haya mensajes completos en el buffer, pasarlos a command con el msg_handler::parse_msg() y comprobar cada
-// uno si va cumpliendo con lo que va faltando por autentificar.
+// En vez de bloquear pidiendo paso por paso, según haya mensajes completos en el buffer, pasarlos a command con el
+// msg_handler::parse_msg() y comprobar cada uno si va cumpliendo con lo que va faltando por autentificar. Normalmente
+// habrá uno con el comando "CAP" que podemos ignorar de momento. 
 int	msg_handler::authenticate(User *user, Server *server)
 {
 	// PASO 1: Validar contraseña
