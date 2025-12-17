@@ -50,12 +50,16 @@ int	msg_handler::print_command(msg_handler::t_command command)
 	return 0;
 }
 
-msg_handler::t_command msg_handler::parse_msg(std::string msg)
+msg_handler::t_command msg_handler::parse_msg(User* user)
 {
 	msg_handler::t_command	command;
-	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << msg << std::endl;
+	std::stringstream		ss;
+    std::string				token;
+	int						state = 0;
+
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << user->getBuffer() << std::endl;
 	std::string line;
-	line = msg.substr(0, msg.find("\r\n"));
+	line = user->getBuffer().substr(0, user->getBuffer().find("\r\n"));
 	if (line.empty())
 	{
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Mensaje vacío." << std::endl;
@@ -63,31 +67,81 @@ msg_handler::t_command msg_handler::parse_msg(std::string msg)
 	}
 	else
 	{
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Línea a parsear: '" << line << "'." << std::endl;
-		// Extraer comando y parámetros
-		size_t pos = line.find(" ");
-		if (pos != std::string::npos)
+		if (user->getBuffer().find("\r\n") != std::string::npos)
+			user->setBuffer(user->getBuffer().substr(user->getBuffer().find("\r\n") + 2));
+		command.user = user;
+		ss.str(line);
+		ss.clear();
+    // --- Estados ---
+    // 0: Start/Waiting for Prefix or Command
+    // 1: Reading Command
+    // 2: Reading Middle Parameters
+    // 3: Reading Trailing Parameter
+    // La lógica de parsing de IRC está basada en espacios y el carácter ':'
+		while (ss >> token)
 		{
-			command.command = line.substr(0, pos);
-			std::string params_str = line.substr(pos + 1);
-			size_t param_pos;
-			while ((param_pos = params_str.find(" ")) != std::string::npos)
+			if (state == 0)
 			{
-				std::string param = params_str.substr(0, param_pos);
-				command.params.push_back(param);
-				params_str.erase(0, param_pos + 1);
+				// Estado 0: Inicio
+				if (token[0] == ':')
+				{
+					// Transición: ':' -> Estado 1 (Command)
+					// Consume el prefijo y el token de prefijo completo
+					command.prefix = token.substr(1); // Guarda el prefijo (sin los ':')
+					state = 1; // El siguiente token DEBE ser el comando
+				}
+				else
+				{
+					// Transición: Carácter -> Estado 1 (Command)
+					command.command = token;
+					state = 2; // El siguiente token será un parámetro
+				}
 			}
-			if (!params_str.empty())
-				command.params.push_back(params_str);
+			else if (state == 1)
+			{
+				// Estado 1: Lectura del Comando (después de un prefijo)
+				// Transición: Carácter -> Estado 2 (Middle Params)
+				command.command = token;
+				state = 2;
+			}
+			else if (state == 2)
+			{
+				// Estado 2: Lectura de Parámetros Medios
+				if (token[0] == ':')
+				{
+					// Transición: ':' -> Estado 3 (Trailing Param)
+					
+					// Lee el resto de la línea (incluyendo espacios) para el parámetro final
+					std::string trailing_part = token.substr(1); // Primer parte del trailing
+					std::string rest_of_line;
+					
+					// Necesitamos la posición actual en el stringstream para leer el resto de la línea
+					// Esta es la parte "no-canónica" del AFD, donde el parser salta la lectura basada en '>>'
+					// y lee el resto de la línea.
+					std::getline(ss, rest_of_line); 
+					
+					// El parámetro final incluye el espacio antes y después (si hay)
+					// y el resto del contenido de la línea.
+					if (!rest_of_line.empty() && rest_of_line[0] == ' ')
+						trailing_part += rest_of_line.substr(1); // Quita el espacio extra de getline
+					else
+						trailing_part += rest_of_line;
+					command.params.push_back(trailing_part);
+					state = 3; // Final de la lógica, cualquier otra cosa es basura
+					break; // Salir del bucle, el resto de la línea ya fue consumida
+				}
+				else
+				{
+					// Transición: Carácter -> Estado 2 (Middle Params) (sigue leyendo parámetros medios)
+					command.params.push_back(token);
+				}
+			}
+			// El Estado 3 (Trailing Param) es el estado de ACEPTACIÓN y no procesa más tokens
+			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Comando parseado: '" << command.command << "' con " << command.params.size() << " parámetros." << std::endl;
 		}
-		else
-		{
-			command.command = line; // No hay parámetros
-		}
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Comando parseado: '" << command.command << "' con " << command.params.size() << " parámetros." << std::endl;
 	}
-	    msg_handler::print_command(command);
-	return command;
+	msg_handler::print_command(command);
+    return command;
 }
 
 	void msg_handler::execute_command(msg_handler::t_command command)

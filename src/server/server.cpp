@@ -180,7 +180,7 @@ void	Server::run()
 					{
 						continue;	// mensaje incompleto, esperar más datos
 					}
-					command = msg_handler::parse_msg(getClientByFd(_fds[i].fd)->getBuffer());
+					command = msg_handler::parse_msg(getClientByFd(_fds[i].fd));
 					if (command.user != NULL)
 						msg_handler::execute_command(command);
 					//getClientByFd(_fds[i].fd)->clearBuffer();

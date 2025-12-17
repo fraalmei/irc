@@ -16,6 +16,7 @@
 # include <string>
 # include <iostream>
 # include <ostream>
+# include <sstream>
 # include <list>
 
 class Server;
@@ -30,15 +31,16 @@ class	msg_handler
 		typedef struct s_command
 		{
 			User*                   user;
+			std::string				prefix;
 			std::string             command;
 			std::list<std::string>  params;
 		}   t_command;
 
 		static int			handle_buffer(std::string buffer, User *user);
-		static t_command	parse_msg(std::string msg);
-		static void 	execute_command(t_command command);
+		static t_command	parse_msg(User* user);
+		static void 		execute_command(t_command command);
 		static int			aunthenticateUser(User *user, Server *server);
-		static int				print_command(t_command command);
+		static int			print_command(t_command command);
 
 	private:
 		msg_handler(void);
