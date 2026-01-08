@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 22:39:07 by p                 #+#    #+#             */
-/*   Updated: 2025/12/14 18:28:03 by p                ###   ########.fr       */
+/*   Updated: 2026/01/09 00:35:30 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,21 +46,28 @@ int msg_handler::handle_buffer(std::string buffer, User *user)
 int	msg_handler::print_command(msg_handler::t_command command)
 {
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Command: '" << command.command << "'" << std::endl;
-	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Params: '" << command.params.size() << "'" << std::endl;
+	for (std::list<std::string>::const_iterator it = command.params.begin(); it != command.params.end(); ++it)
+	{
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Param: '" << *it << "'" << std::endl;
+	}
 	return 0;
 }
 
 msg_handler::t_command msg_handler::parse_msg(User* user)
 {
 	msg_handler::t_command	command;
-	std::stringstream		ss;
-    std::string				token;
-	int						state = 0;
+	//std::stringstream		ss;
+    //std::string				token;
+	//int						state = 0;
 
-	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << user->getBuffer() << std::endl;
-	std::string line;
-	line = user->getBuffer().substr(0, user->getBuffer().find("\r\n"));
-	if (line.empty())
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CYEL << "Buffer: " << CRST << "\"" << user->getBuffer() << "\"" << std::endl;
+	command.actual_line = user->getBuffer().substr(0, user->getBuffer().find("\n"));
+	if (command.actual_line.find("\r") != std::string::npos)
+		command.actual_line = command.actual_line.substr(0, command.actual_line.find("\r"));
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CYEL << "Extracted line: " << CRST << "\"" << command.actual_line << "\"" << std::endl;
+	user->removeFromBuffer(command.actual_line.length() + 1); // +1 to remove \n
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CYEL << "Resting buffer: " << CRST << "\"" << user->getBuffer() << "\"" << std::endl;
+	/* if (line.empty())
 	{
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Mensaje vacío." << std::endl;
 		command.user = NULL;
@@ -137,16 +144,88 @@ msg_handler::t_command msg_handler::parse_msg(User* user)
 				}
 			}
 			// El Estado 3 (Trailing Param) es el estado de ACEPTACIÓN y no procesa más tokens
-			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Comando parseado: '" << command.command << "' con " << command.params.size() << " parámetros." << std::endl;
+			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Comando parseado: '" << command.command << "' con " << command.params.front() << " parámetros." << std::endl;
 		}
 	}
 	msg_handler::print_command(command);
+    return command; */
+	if (command.actual_line.empty())
+	{
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Mensaje vacío." << std::endl;
+		command.user = NULL;
+	}
+	else
+	{
+		command.user = user;
+		command.command = command.actual_line.substr(0, command.actual_line.find(' '));
+		command.actual_line = command.actual_line.substr(command.actual_line.find(' ') + 1);
+		command.params.push_back(command.actual_line.substr(0, command.actual_line.find(' ')));
+		msg_handler::print_command(command);
+	}
     return command;
 }
 
-	void msg_handler::execute_command(msg_handler::t_command command)
+void msg_handler::execute_command(msg_handler::t_command command, Server &server)
 {
-	(void)command;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Ejecutando comando: " << command.command << std::endl;
+	if (!command.user->isAuthenticated() && command.command == "USER")
+	{
+		if (command.user->getUsername() != "")
+		{
+			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Usuario ya autenticado con username: " << command.user->getUsername() << std::endl;
+		}
+		command.user->setUsername(command.params.front().substr(0, command.params.front().find(' ')));
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Username set to: '" << command.user->getUsername() << "'" << std::endl;
+		server.set_Authentication(command.user);
+	}
+	else if (!command.user->isAuthenticated() && command.command == "NICK")
+	{
+		if (command.user->getNickname() != "")
+		{
+			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Usuario ya autenticado con nickname: " << command.user->getNickname() << std::endl;
+		}
+		command.user->setNickname(command.params.front());
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Nickname set to: '" << command.user->getNickname() << "'" << std::endl;
+		server.set_Authentication(command.user);
+	}
+	else if (!command.user->isAuthenticated() && command.command == "PASS")
+	{
+		std::string pass = command.params.front();
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "PASS: '" << pass << "'" << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Password: '" << server.get_password() << "'" << std::endl;
+		if (pass.compare(server.get_password()) == 0)
+		{
+			command.user->setPasswdCorrect(true);
+			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Password set to true." << std::endl;
+		}
+		else
+		{
+			server.ClearClients(command.user->getFd());
+			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Incorrect password. Disconnecting user." << std::endl;
+		}
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Password : " << command.user->isPasswdCorrect() << std::endl;
+		server.set_Authentication(command.user);
+	}
+	else if (command.command == "CAP")
+	{
+		command.user->setCapability(command.params.front().substr(0, command.params.front().find(' ')));
+		command.user->setVersion(std::atoi(command.params.front().substr(command.params.front().find(' ') + 1).c_str()));
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Capability set to: " << command.user->getCapability() << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Version set to: " << command.user->getVersion() << std::endl;
+	}
+	else if (command.command == "/join" || command.command == "JOIN")
+	{
+		server.joinChannel(command.params.front(), command.user);
+	}
+	else if (command.command == "QUIT")
+	{
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Client with fd " << command.user->getFd() << " sent QUIT command." << std::endl;
+		server.ClearClients(command.user->getFd());
+	}
+	else
+	{
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Comando no implementado: " << command.user->getBuffer() << std::endl;
+	}
 	return;
 }
 /*

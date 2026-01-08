@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 09:08:51 by p                 #+#    #+#             */
-/*   Updated: 2025/12/06 11:22:32 by p                ###   ########.fr       */
+/*   Updated: 2026/01/08 00:24:42 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,7 @@ void Server::ClearClients(int fd)	// clear the clients
 	{
 		if (_fds[i].fd == fd)
 		{
+			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Encontrado cliente a limpiar en lista." << std::endl;
 			_fds.erase(_fds.begin() + i);
 			break;
 		}
@@ -108,6 +109,7 @@ void Server::ClearClients(int fd)	// clear the clients
 	std::map<int, User*>::iterator it = _clients.find(fd);
 	if (it != _clients.end())
 	{
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Encontrado cliente a limpiar en mapa." << std::endl;
 		delete it->second;
 		_clients.erase(it);
 	}

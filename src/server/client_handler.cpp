@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/05 16:44:19 by p                 #+#    #+#             */
-/*   Updated: 2025/12/06 11:25:32 by p                ###   ########.fr       */
+/*   Updated: 2026/01/09 00:29:11 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,24 @@ int	Server::closeClientFd(int fd)
         delete it->second; // Free the User object
         getClientList().erase(it); // Remove from the map
         close(fd); // Close the file descriptor
-        std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Closed client fd " << fd << "." << std::endl;
+        std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Closed client fd " << fd << "." << std::endl;
         return 0; // Success
     }
-    std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Client fd " << fd << " not found." << std::endl;
+    std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Client fd " << fd << " not found." << std::endl;
     return -1; // Failure
+}
+
+int Server::set_Authentication(User *client)
+{
+    std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Cheking autentication." << std::endl;
+    if (client->getNickname() != "" && client->getUsername() != "" && client->isPasswdCorrect())
+    {
+        std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Autenticated." << std::endl;
+        return 1;
+    }
+    else
+    {
+        std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Not autenticated yet." << std::endl;
+        return 0;
+    }
 }

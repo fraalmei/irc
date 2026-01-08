@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2025/12/14 18:29:24 by p                ###   ########.fr       */
+/*   Updated: 2026/01/09 00:00:52 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,8 @@ class Server
 		void				ClearClients(int fd);	// clear clients
 		void				rtrim_crlf(std::string &s);
 		std::string			handle_client_message(User *client);
+
+		int 				set_Authentication(User *client);
 
 		// utils
 		void				print_users(void);

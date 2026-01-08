@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 17:33:06 by p                 #+#    #+#             */
-/*   Updated: 2025/12/14 18:28:14 by p                ###   ########.fr       */
+/*   Updated: 2026/01/08 00:30:21 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,13 @@
 # include <ostream>
 # include <sstream>
 # include <list>
+# include <iterator>
 
 class Server;
 class User;
 
 # include "colors.hpp"
+# include "Server.hpp"
 
 class	msg_handler
 {
@@ -31,6 +33,7 @@ class	msg_handler
 		typedef struct s_command
 		{
 			User*                   user;
+			std::string			 	actual_line;
 			std::string				prefix;
 			std::string             command;
 			std::list<std::string>  params;
@@ -38,7 +41,7 @@ class	msg_handler
 
 		static int			handle_buffer(std::string buffer, User *user);
 		static t_command	parse_msg(User* user);
-		static void 		execute_command(t_command command);
+		static void 		execute_command(t_command command, Server &server);
 		static int			aunthenticateUser(User *user, Server *server);
 		static int			print_command(t_command command);
 

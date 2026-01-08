@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 17:33:01 by p                 #+#    #+#             */
-/*   Updated: 2025/11/27 00:42:50 by p                ###   ########.fr       */
+/*   Updated: 2026/01/08 00:10:16 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,10 @@ private:
 	bool			_passwd_correct;
 	bool			_isAuthenticated;
 
+	std::string		_realname;
+	std::string		_capability;
+	int				_version;
+
 public:
 
 	// Constructors
@@ -56,6 +60,8 @@ public:
 	bool			isAdminOfChannel(const Channel& channel) const;
 	int				getFd() const { return _fd; }
 	std::string		getIpAdd() const { return _IPadd; }
+	std::string		getCapability() const { return _capability; }
+	int				getVersion() const { return _version; }
 
 	// Setters
 	void			setNickname(const std::string& nickname) { _nickname = nickname; }
@@ -65,10 +71,13 @@ public:
 	void			setBuffer(const std::string& buffer) { _buffer = buffer; }
 	int				setClient() { return 0; }
 	void			setIpAdd(const std::string& ipadd) { _IPadd = ipadd; }
+	void			setCapability(const std::string& capability) { _capability = capability; }
+	void			setVersion(const int& version) { _version = version; }
 
 	// Buffer management
 	int				addToBuffer(const std::string& message);
 	void			clearBuffer() { _buffer.clear(); }
+	void			removeFromBuffer(size_t len) { _buffer.erase(0, len); }
 
 };
 

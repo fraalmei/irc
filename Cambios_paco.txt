@@ -11,3 +11,19 @@ Dejad de borrar los logs cabrones, que algo informan.
     Se han añadido en el servidor las señales y el poll (modificando partes del server.cpp)
     Se ha modificado el handle client message para que devuelva el buffer comprobado y trimeado
     Se ha metido lo del servidor en su carpeta
+
+3/1/2026
+    Añadida desconexion del cliente si se autentifica mal
+    Se añade respuesta IRC estandar cuando se autentifica
+    Se añade gestion de todo el buffer linea a linea
+    Se añaden los comandos de autenticacion
+    
+    
+
+Cambios a arealizar:
+    Registrar direccion IP del handle_client_message
+    Enviar más respuesta IRC estandar
+    Limpiar el codigo y simplificarlo
+
+
+

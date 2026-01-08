@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2025/12/14 18:29:13 by p                ###   ########.fr       */
+/*   Updated: 2026/01/09 00:39:29 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,11 @@ void	Server::handle_new_connection()
 	// Accept the new conexion and get its socket
 	// Aceptar la nueva conexión y obtener su socket
 	int			new_fd = accept( get_server_fd(), ( sockaddr* )&client_addr, &addrlen );
-
 	if (new_fd == -1)
-		{std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error en accept()." << std::endl; return;}
-
+	{
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error en accept()." << std::endl;
+		return;
+	}
 	if (fcntl( new_fd, F_SETFL, O_NONBLOCK ) == -1 )	// set the socket option (O_NONBLOCK) for non-blocking socket
 	{
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error en fcntl()." << std::endl;
@@ -63,41 +64,51 @@ std::string	Server::handle_client_message(User *user)
 {
 	char	initbuffer[BUFFER_SIZE];
 	memset(initbuffer, 0, sizeof(initbuffer)); // clear the buffer
-	ssize_t	nbytes = recv( user->getFd(), initbuffer, BUFFER_SIZE - 1, 0 ); // data receiv
+	ssize_t	nbytes = recv( user->getFd(), initbuffer, BUFFER_SIZE - 1, 0 ); // data receive
 
-	// Remove trailing whitespace characters (\t, \r)
-	if (nbytes <= 0 )
-	{
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " nbytes <= 0" << std::endl;
-		perror("recv");		// mostrar error exacto
+	if (nbytes < 0) {  // Error in recv
+		if (errno == EAGAIN || errno == EWOULDBLOCK) {
+		// No data available, not an error - just return without cleaning
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " No data available (EAGAIN), continuing." << std::endl;
+		return "";
+		} else {
+			// Real error or disconnection
+			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error in recv: " << strerror(errno) << std::endl;
+			ClearClients(user->getFd());
+			print_users();
+			return "";
+		}
+	} else if (nbytes == 0) {  // Client disconnected
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Client disconnected (nbytes == 0)." << std::endl;
 		ClearClients(user->getFd());
-		close( user->getFd() );
 		print_users();
 		return "";
 	}
+
 	prints::printchars(initbuffer);
-	initbuffer[nbytes] = '\0';
 	std::string buffer(initbuffer);
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Received raw buffer: '" << buffer << "' with " << nbytes << " bytes." << std::endl;
-	
-	//rtrim_crlf(buffer);
-	//std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Received trimed buffer: '" << buffer << "' with " << nbytes << " bytes." << std::endl;
 
-	// send a eco response to the user
-	std::string	response;
-	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Mensaje recibido." << std::endl;
-	response = "Mensaje recibido.\n";
-	send(user->getFd(), response.c_str(), response.size(), 0);
-	// add the received buffer to the user buffer
 	
-	//user->clearBuffer();
+	user->addToBuffer(buffer);
+
+	while (!user->getBuffer().empty() && user->getBuffer().find("\r\n") != std::string::npos) {
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Processing buffer: '" << user->getBuffer() << "'" << std::endl;
+		msg_handler::t_command parsed_command = msg_handler::parse_msg(user);
+		if (parsed_command.user != NULL) {
+			msg_handler::execute_command(parsed_command, *this);
+		}
+	}
+	return "";
+
+	/* //user->clearBuffer();
 	if (msg_handler::handle_buffer(buffer, user))
 	{
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Mensaje vacio, erroneo o incompleto." << std::endl;
 		return ""; // mensaje incompleto, esperar más datos"";
 	}
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Stablized user buffer: '" << user->getBuffer() << "' with " << nbytes << " bytes." << std::endl;
-	return user->getBuffer();
+	return user->getBuffer(); */
 }
 
 /// @brief join or create a channel
@@ -174,20 +185,29 @@ void	Server::run()
 				{
 					handle_new_connection();	// new incoming conection
 				}
-				else if (getClientByFd(_fds[i].fd)->isAuthenticated())
-				{
-					if (handle_client_message(getClientByFd(_fds[i].fd)).empty())
-					{
-						continue;	// mensaje incompleto, esperar más datos
-					}
-					command = msg_handler::parse_msg(getClientByFd(_fds[i].fd));
-					if (command.user != NULL)
-						msg_handler::execute_command(command);
-					//getClientByFd(_fds[i].fd)->clearBuffer();
-				}
 				else
-					msg_handler::aunthenticateUser(getClientByFd(_fds[i].fd), this);
-				
+				{
+					User *user = getClientByFd(_fds[i].fd);
+					if (user == NULL)
+					{
+						std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Client with fd " << _fds[i].fd << " not found." << std::endl;
+						continue;
+					}
+					if (!user->isAuthenticated())
+					{
+						handle_client_message(user);  // Procesar mensajes de autenticación
+						if (user->isAuthenticated())
+						{
+							// Enviar welcome IRC
+							std::string welcome = "001 " + user->getNickname() + " :Welcome to the IRC server\r\n";
+							send(user->getFd(), welcome.c_str(), welcome.size(), 0);
+						}
+               		}
+					else
+					{
+						handle_client_message(user); // message of a user
+					}
+				}
 				/*	if (user == NULL)
 						std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Client with fd " << _fds[i].fd << " not found." << std::endl;
 					else
