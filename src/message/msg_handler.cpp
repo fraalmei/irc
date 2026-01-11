@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/19 22:39:07 by p                 #+#    #+#             */
-/*   Updated: 2026/01/09 00:35:30 by p                ###   ########.fr       */
+/*   Created: 2026/01/11 11:38:21 by p                 #+#    #+#             */
+/*   Updated: 2026/01/11 11:38:25 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,99 +56,14 @@ int	msg_handler::print_command(msg_handler::t_command command)
 msg_handler::t_command msg_handler::parse_msg(User* user)
 {
 	msg_handler::t_command	command;
-	//std::stringstream		ss;
-    //std::string				token;
-	//int						state = 0;
 
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CYEL << "Buffer: " << CRST << "\"" << user->getBuffer() << "\"" << std::endl;
 	command.actual_line = user->getBuffer().substr(0, user->getBuffer().find("\n"));
-	if (command.actual_line.find("\r") != std::string::npos)
-		command.actual_line = command.actual_line.substr(0, command.actual_line.find("\r"));
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CYEL << "Extracted line: " << CRST << "\"" << command.actual_line << "\"" << std::endl;
 	user->removeFromBuffer(command.actual_line.length() + 1); // +1 to remove \n
+	if (command.actual_line.find('\r') != std::string::npos)
+		command.actual_line.erase(command.actual_line.length() - 1);
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CYEL << "Resting buffer: " << CRST << "\"" << user->getBuffer() << "\"" << std::endl;
-	/* if (line.empty())
-	{
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Mensaje vacío." << std::endl;
-		command.user = NULL;
-	}
-	else
-	{
-		if (user->getBuffer().find("\r\n") != std::string::npos)
-			user->setBuffer(user->getBuffer().substr(user->getBuffer().find("\r\n") + 2));
-		command.user = user;
-		ss.str(line);
-		ss.clear();
-    // --- Estados ---
-    // 0: Start/Waiting for Prefix or Command
-    // 1: Reading Command
-    // 2: Reading Middle Parameters
-    // 3: Reading Trailing Parameter
-    // La lógica de parsing de IRC está basada en espacios y el carácter ':'
-		while (ss >> token)
-		{
-			if (state == 0)
-			{
-				// Estado 0: Inicio
-				if (token[0] == ':')
-				{
-					// Transición: ':' -> Estado 1 (Command)
-					// Consume el prefijo y el token de prefijo completo
-					command.prefix = token.substr(1); // Guarda el prefijo (sin los ':')
-					state = 1; // El siguiente token DEBE ser el comando
-				}
-				else
-				{
-					// Transición: Carácter -> Estado 1 (Command)
-					command.command = token;
-					state = 2; // El siguiente token será un parámetro
-				}
-			}
-			else if (state == 1)
-			{
-				// Estado 1: Lectura del Comando (después de un prefijo)
-				// Transición: Carácter -> Estado 2 (Middle Params)
-				command.command = token;
-				state = 2;
-			}
-			else if (state == 2)
-			{
-				// Estado 2: Lectura de Parámetros Medios
-				if (token[0] == ':')
-				{
-					// Transición: ':' -> Estado 3 (Trailing Param)
-					
-					// Lee el resto de la línea (incluyendo espacios) para el parámetro final
-					std::string trailing_part = token.substr(1); // Primer parte del trailing
-					std::string rest_of_line;
-					
-					// Necesitamos la posición actual en el stringstream para leer el resto de la línea
-					// Esta es la parte "no-canónica" del AFD, donde el parser salta la lectura basada en '>>'
-					// y lee el resto de la línea.
-					std::getline(ss, rest_of_line); 
-					
-					// El parámetro final incluye el espacio antes y después (si hay)
-					// y el resto del contenido de la línea.
-					if (!rest_of_line.empty() && rest_of_line[0] == ' ')
-						trailing_part += rest_of_line.substr(1); // Quita el espacio extra de getline
-					else
-						trailing_part += rest_of_line;
-					command.params.push_back(trailing_part);
-					state = 3; // Final de la lógica, cualquier otra cosa es basura
-					break; // Salir del bucle, el resto de la línea ya fue consumida
-				}
-				else
-				{
-					// Transición: Carácter -> Estado 2 (Middle Params) (sigue leyendo parámetros medios)
-					command.params.push_back(token);
-				}
-			}
-			// El Estado 3 (Trailing Param) es el estado de ACEPTACIÓN y no procesa más tokens
-			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Comando parseado: '" << command.command << "' con " << command.params.front() << " parámetros." << std::endl;
-		}
-	}
-	msg_handler::print_command(command);
-    return command; */
 	if (command.actual_line.empty())
 	{
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Mensaje vacío." << std::endl;
@@ -162,7 +77,7 @@ msg_handler::t_command msg_handler::parse_msg(User* user)
 		command.params.push_back(command.actual_line.substr(0, command.actual_line.find(' ')));
 		msg_handler::print_command(command);
 	}
-    return command;
+	return command;
 }
 
 void msg_handler::execute_command(msg_handler::t_command command, Server &server)
@@ -174,6 +89,13 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 		{
 			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Usuario ya autenticado con username: " << command.user->getUsername() << std::endl;
 		}
+		if (command.params.empty())
+		{
+			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " ERROR: No se han proporcionado parámetros para el comando USER." << std::endl;
+			std::string err = "461 NICK :Not enough parameters\r\n";
+			send(command.user->getFd(), err.c_str(), err.size(), 0);
+			return;
+		}
 		command.user->setUsername(command.params.front().substr(0, command.params.front().find(' ')));
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Username set to: '" << command.user->getUsername() << "'" << std::endl;
 		server.set_Authentication(command.user);
@@ -184,12 +106,25 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 		{
 			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Usuario ya autenticado con nickname: " << command.user->getNickname() << std::endl;
 		}
+		if (command.params.empty())
+		{
+			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " ERROR: No se han proporcionado parámetros para el comando NICK." << std::endl;
+			std::string err = "461 NICK :Not enough parameters\r\n";
+			send(command.user->getFd(), err.c_str(), err.size(), 0);
+			return;
+		}
 		command.user->setNickname(command.params.front());
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Nickname set to: '" << command.user->getNickname() << "'" << std::endl;
 		server.set_Authentication(command.user);
 	}
 	else if (!command.user->isAuthenticated() && command.command == "PASS")
 	{
+		if (command.params.empty())
+		{
+			std::string err = "461 PASS :Not enough parameters\r\n";
+			send(command.user->getFd(), err.c_str(), err.size(), 0);
+			return;
+		}
 		std::string pass = command.params.front();
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "PASS: '" << pass << "'" << std::endl;
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Password: '" << server.get_password() << "'" << std::endl;
@@ -200,8 +135,11 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 		}
 		else
 		{
+			std::string err = "464 :Password incorrect\r\n";
+			send(command.user->getFd(), err.c_str(), err.size(), 0);
+			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Password incorrect, disconnecting." << std::endl;
 			server.ClearClients(command.user->getFd());
-			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Incorrect password. Disconnecting user." << std::endl;
+			return;
 		}
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Password : " << command.user->isPasswdCorrect() << std::endl;
 		server.set_Authentication(command.user);
@@ -215,7 +153,15 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 	}
 	else if (command.command == "/join" || command.command == "JOIN")
 	{
-		server.joinChannel(command.params.front(), command.user);
+		if (command.params.empty())
+		{
+			std::string err = "461 JOIN :Not enough parameters\r\n";
+			send(command.user->getFd(), err.c_str(), err.size(), 0);
+			return;
+		}
+		std::string channelName = command.params.front();
+		
+		server.joinChannel(channelName, command.user);
 	}
 	else if (command.command == "QUIT")
 	{

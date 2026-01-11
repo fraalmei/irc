@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 09:08:51 by p                 #+#    #+#             */
-/*   Updated: 2026/01/08 00:24:42 by p                ###   ########.fr       */
+/*   Updated: 2026/01/11 11:39:10 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	Server::init_server_socket()
 
 void	Server::CloseFds()
 {
-    const std::string quit_msg = "ERROR :Server shutting down\r\n";
+	const std::string quit_msg = "ERROR :Server shutting down\r\n";
 
 	for (std::map<int, User*>::iterator it = _clients.begin(); it != _clients.end(); ++it)
 	{
@@ -90,7 +90,7 @@ void	Server::CloseFds()
 		std::cout << CRED << "Server <" << get_server_fd() << "> Disconnected" << CRST << std::endl;
 		close(get_server_fd());
 		set_server_fd(-1);
-    }
+	}
 
 }
 

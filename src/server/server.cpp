@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2026/01/09 00:39:29 by p                ###   ########.fr       */
+/*   Updated: 2026/01/11 11:37:53 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,15 +100,6 @@ std::string	Server::handle_client_message(User *user)
 		}
 	}
 	return "";
-
-	/* //user->clearBuffer();
-	if (msg_handler::handle_buffer(buffer, user))
-	{
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Mensaje vacio, erroneo o incompleto." << std::endl;
-		return ""; // mensaje incompleto, esperar más datos"";
-	}
-	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Stablized user buffer: '" << user->getBuffer() << "' with " << nbytes << " bytes." << std::endl;
-	return user->getBuffer(); */
 }
 
 /// @brief join or create a channel
@@ -132,6 +123,7 @@ void				Server::joinChannel(const std::string channelName, User *new_client)
 	}
 	else
 	{
+
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Found channel: " << channel->getName() << std::endl;
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " " << channel->isMember(new_client->getFd()) << std::endl;
 		if (!channel->isMember(new_client->getFd()))

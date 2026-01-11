@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: fraalmei <fraalmei@student.42.fr>          +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/27 01:23:28 by p                 #+#    #+#             */
-/*   Updated: 2025/12/10 14:46:34 by fraalmei         ###   ########.fr       */
+/*   Updated: 2026/01/11 11:39:41 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 void Server::rtrim_crlf(std::string &s)
 {
-    while (!s.empty()) {
+    while (!s.empty())
+    {
         char c = s[s.size() - 1];
         if (c == '\r' || c == '\n')
             s.erase(s.size() - 1);

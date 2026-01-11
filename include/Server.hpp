@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2026/01/09 00:00:52 by p                ###   ########.fr       */
+/*   Updated: 2026/01/11 11:34:53 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ class Server
 		const std::map<std::string, Channel*>&	getConstChannelList() const { return this->_channel_list; }
 		std::map<std::string, Channel*>&		getChannelList() { return this->_channel_list; }
 		const std::map<int, User*>&				getConstClientList() const { return this->_clients; }
-		std::map<int, User*>&					getClientList() { return this->_clients; }
+		std::map<int, User*>&					getClientList() { return this->_clients; }	
 		
 		int										closeClientFd(int fd);
 		User									*getClientByFd(int fd);
@@ -80,6 +80,7 @@ class Server
 		int										getClientCount() const { return this->_clients.size(); }
 		Channel									*getChannelByName(const std::string &channelName);
 		int										getChannelCount() const { return this->_channel_list.size(); }
+		int										isChannelExist(const std::string &channelName) const;
 
 		// Setters
 		void				set_server_fd(int server_fd) { this->_server_fd = server_fd; }
