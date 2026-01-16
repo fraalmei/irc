@@ -29,9 +29,9 @@ class Channel
 		std::string			_password;
 	
 		std::vector<User*>	_members; // List of the user sockets
-		std::vector<User*>	_adminMembers; // List of the user sockets
+		std::vector<User*>	_adminMembers; // List of the users who are admin in this channel
 	
-		unsigned int		_userLimit; // User limit = = No Limit
+		unsigned int		_userLimit; // User limit = 0 = No Limit
 	
 		// Modes
 		bool				_inviteOnly; // Invite only mode

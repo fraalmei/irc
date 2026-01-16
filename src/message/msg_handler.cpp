@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 11:38:21 by p                 #+#    #+#             */
-/*   Updated: 2026/01/11 11:38:25 by p                ###   ########.fr       */
+/*   Updated: 2026/01/16 16:01:56 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 		if (command.params.empty())
 		{
 			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " ERROR: No se han proporcionado parámetros para el comando USER." << std::endl;
-			std::string err = "461 NICK :Not enough parameters\r\n";
+			std::string err = std::string(":") + ME + " 461 USER :Not enough parameters\r\n";
 			send(command.user->getFd(), err.c_str(), err.size(), 0);
 			return;
 		}
@@ -109,7 +109,7 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 		if (command.params.empty())
 		{
 			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " ERROR: No se han proporcionado parámetros para el comando NICK." << std::endl;
-			std::string err = "461 NICK :Not enough parameters\r\n";
+			std::string err = std::string(":") + ME + " 431 NICK :No nickname given\r\n";
 			send(command.user->getFd(), err.c_str(), err.size(), 0);
 			return;
 		}
@@ -121,7 +121,7 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 	{
 		if (command.params.empty())
 		{
-			std::string err = "461 PASS :Not enough parameters\r\n";
+			std::string err = std::string(":") + ME + " 461 PASS :Not enough parameters\r\n";
 			send(command.user->getFd(), err.c_str(), err.size(), 0);
 			return;
 		}
@@ -135,7 +135,7 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 		}
 		else
 		{
-			std::string err = "464 :Password incorrect\r\n";
+			std::string err = std::string(":") + ME + " 464 :Password incorrect\r\n";
 			send(command.user->getFd(), err.c_str(), err.size(), 0);
 			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Password incorrect, disconnecting." << std::endl;
 			server.ClearClients(command.user->getFd());
@@ -155,7 +155,7 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 	{
 		if (command.params.empty())
 		{
-			std::string err = "461 JOIN :Not enough parameters\r\n";
+			std::string err = std::string(":") + ME + " 461 JOIN :Not enough parameters\r\n";
 			send(command.user->getFd(), err.c_str(), err.size(), 0);
 			return;
 		}
@@ -186,7 +186,7 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 		channelName.erase(channelName.find_last_not_of(WS) + 1);
 		if (channelName.find_first_of(CHNAMEINVALID) != std::string::npos || (channelName[0] != REGCH && channelName[0] != LOCCH))
 		{
-			response = "Channel name not valid. Must not contain whitespace and comma and must start with `#` or `&`.\n";
+			response = "Channel name not valid. Must not contain whitespace and comma and must start with `#` or `&`.\r\n";
 			send(user->getFd(), response.c_str(), response.size(), 0);
 		}
 		else

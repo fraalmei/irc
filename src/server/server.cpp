@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2026/01/11 11:37:53 by p                ###   ########.fr       */
+/*   Updated: 2026/01/16 16:01:54 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	Server::handle_new_connection()
 
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Nueva conexión desde " << inet_ntoa( client_addr.sin_addr ) << " en socket " << new_fd << std::endl;
 
-	//std::string welcome = "Contraseña. Por favor.\n";
+	//std::string welcome = "Contraseña. Por favor.\r\n";
 	//send(new_fd, welcome.c_str(), welcome.size(), 0);
 }
 
@@ -118,7 +118,7 @@ void				Server::joinChannel(const std::string channelName, User *new_client)
 		Channel* newChannel = new Channel(channelName);
 		newChannel->addMember(new_client);	// primer miembro
 		getChannelList()[channelName] = newChannel;
-		msg = "Joined channel " + newChannel->getName() + "\n";
+		msg = "Joined channel " + newChannel->getName() + "\r\n";
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Created channel: " << channelName << std::endl;
 	}
 	else
@@ -131,12 +131,12 @@ void				Server::joinChannel(const std::string channelName, User *new_client)
 			if (channel->addMember(new_client) != 0 ) // Agregar al canal existente
 				std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error: User already in channel " << channelName << std::endl;
 			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " User " << new_client->getFd() << " joined " << channelName << std::endl;
-			msg = "Joined channel " + channel->getName() + "\n";
+			msg = "Joined channel " + channel->getName() + "\r\n";
 		}
 		else
 		{
 			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error: User already in channel " << channelName << std::endl;
-			msg = "Error: User already in channel " + channelName + "\n";
+			msg = "Error: User already in channel " + channelName + "\r\n";
 		}
 	}
 

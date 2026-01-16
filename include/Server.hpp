@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2026/01/11 11:34:53 by p                ###   ########.fr       */
+/*   Updated: 2026/01/14 13:44:06 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@
 
 # define BACKLOG 10		// Max number of waiting conections
 # define BUFFER_SIZE 512	// size of the buffer to receive messages
+# define ME "Morse"		//Server name for source in messages
 
 class User;
 class Channel;

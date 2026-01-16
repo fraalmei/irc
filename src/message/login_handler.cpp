@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   login_handler.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 18:26:30 by p                 #+#    #+#             */
-/*   Updated: 2025/12/14 18:13:06 by p                ###   ########.fr       */
+/*   Updated: 2026/01/16 15:57:07 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	msg_handler::authenticate(User *user, Server *server)
 		if (result == 0)  // Contraseña correcta
 		{
 			user->setPasswdCorrect(true);  // Establecer flag de contraseña correcta
-			std::string prompt = "Envía tu nickname\n";
+			std::string prompt = "Envía tu nickname\r\n";
 			send(user->getFd(), prompt.c_str(), prompt.size(), 0);
 			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Contraseña correcta, esperando nickname." << std::endl;
 			return 0;  // Espera siguiente mensaje (nickname)
@@ -53,7 +53,7 @@ int	msg_handler::authenticate(User *user, Server *server)
 	if (user->getNickname().empty())
 	{
 		handle_nickname(user);
-		std::string prompt = "Envía tu username\n";
+		std::string prompt = "Envía tu username\r\n";
 		send(user->getFd(), prompt.c_str(), prompt.size(), 0);
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Nickname recibido, esperando username." << std::endl;
 		return 0;  // Espera siguiente mensaje (username)
@@ -63,6 +63,10 @@ int	msg_handler::authenticate(User *user, Server *server)
 	if (user->getUsername().empty())
 	{
 		handle_username(user);
+		std::string welcome = "Usuario completo. Bienvenido\r\n";
+		send(user->getFd(), welcome.c_str(), welcome.size(), 0);
+		std::string prompt = std::string(":") + ME + " CAP * LS :\r\n";
+		send(user->getFd(), prompt.c_str(), prompt.size(), 0);
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Usuario completamente autenticado." << std::endl;
 		return 0;  // Ya está completo
 	}
@@ -101,7 +105,7 @@ int	msg_handler::handle_nickname(User *user)
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Buffer erroneo." << std::endl;
 		return 1;
 	}
-	
+
 	// Trimmar espacios y saltos de línea (izquierda)
 	user->getBuffer().erase(0, user->getBuffer().find_first_not_of(" \n\r\t"));
 	// Trimmar espacios y saltos de línea (derecha)
@@ -112,7 +116,7 @@ int	msg_handler::handle_nickname(User *user)
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Nickname vacío después de trimmar." << std::endl;
 		return 1;
 	}
-	
+
 	user->setNickname(user->getBuffer());
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Nickname establecido: '" << user->getBuffer() << "'." << std::endl;
 	return 0;
@@ -137,12 +141,10 @@ int	msg_handler::handle_username(User *user)
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Username vacío después de trimmar." << std::endl;
 		return 1;
 	}
-	
+
 	user->setUsername(user->getBuffer());
 	// Mark user as authenticated and welcome
 	user->setAuthenticated(true);
-	std::string welcome = "Usuario completo. Bienvenido\n";
-	send(user->getFd(), welcome.c_str(), welcome.size(), 0);
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Username establecido: '" << user->getBuffer() << "'." << std::endl;
 	return 0;
 }
