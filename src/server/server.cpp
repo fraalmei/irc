@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2026/01/16 16:01:54 by samartin         ###   ########.fr       */
+/*   Updated: 2026/01/17 20:30:12 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,36 +60,42 @@ void	Server::handle_new_connection()
 
 /// @brief Recibe un mensaje y lo pasa por el buffer handler, que lo va guardando en el objeto User hasta que esté completo
 /// @param client_fd
-std::string	Server::handle_client_message(User *user)
+void	Server::handle_client_message(User *user)
 {
-	char	initbuffer[BUFFER_SIZE];
-	memset(initbuffer, 0, sizeof(initbuffer)); // clear the buffer
+	char	initbuffer[BUFFER_SIZE];			// buffer to receive data
+	memset(initbuffer, 0, sizeof(initbuffer));	// clear the buffer
 	ssize_t	nbytes = recv( user->getFd(), initbuffer, BUFFER_SIZE - 1, 0 ); // data receive
 
-	if (nbytes < 0) {  // Error in recv
-		if (errno == EAGAIN || errno == EWOULDBLOCK) {
-		// No data available, not an error - just return without cleaning
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " No data available (EAGAIN), continuing." << std::endl;
-		return "";
-		} else {
+	if (nbytes < 0)
+	{
+		// Error in recv
+		// Check if it's a non-blocking error
+		if (errno == EAGAIN || errno == EWOULDBLOCK)
+		{
+			// No data available, not an error - just return without cleaning
+			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " No data available (EAGAIN), continuing." << std::endl;
+		}
+		else
+		{
 			// Real error or disconnection
 			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error in recv: " << strerror(errno) << std::endl;
 			ClearClients(user->getFd());
 			print_users();
-			return "";
 		}
-	} else if (nbytes == 0) {  // Client disconnected
+	}
+	else if (nbytes == 0)
+	{
+		// Client disconnected
+		// Desconexión del cliente
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Client disconnected (nbytes == 0)." << std::endl;
 		ClearClients(user->getFd());
 		print_users();
-		return "";
 	}
 
-	prints::printchars(initbuffer);
-	std::string buffer(initbuffer);
+	prints::printchars(initbuffer);	// print ascii values of received message
+	std::string buffer(initbuffer);	// convert to std::string
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Received raw buffer: '" << buffer << "' with " << nbytes << " bytes." << std::endl;
 
-	
 	user->addToBuffer(buffer);
 
 	while (!user->getBuffer().empty() && user->getBuffer().find("\r\n") != std::string::npos) {
@@ -99,49 +105,6 @@ std::string	Server::handle_client_message(User *user)
 			msg_handler::execute_command(parsed_command, *this);
 		}
 	}
-	return "";
-}
-
-/// @brief join or create a channel
-///			entrar o crear un canal
-/// @param channelName
-/// @param new_client
-void				Server::joinChannel(const std::string channelName, User *new_client)
-{
-	Channel* channel = getChannelByName(channelName);
-
-	std::string msg;
-	if (channel == NULL)
-	{
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " "<< channelName << " not found" << std::endl;
-		// Crear nuevo canal público
-		Channel* newChannel = new Channel(channelName);
-		newChannel->addMember(new_client);	// primer miembro
-		getChannelList()[channelName] = newChannel;
-		msg = "Joined channel " + newChannel->getName() + "\r\n";
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Created channel: " << channelName << std::endl;
-	}
-	else
-	{
-
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Found channel: " << channel->getName() << std::endl;
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " " << channel->isMember(new_client->getFd()) << std::endl;
-		if (!channel->isMember(new_client->getFd()))
-		{
-			if (channel->addMember(new_client) != 0 ) // Agregar al canal existente
-				std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error: User already in channel " << channelName << std::endl;
-			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " User " << new_client->getFd() << " joined " << channelName << std::endl;
-			msg = "Joined channel " + channel->getName() + "\r\n";
-		}
-		else
-		{
-			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error: User already in channel " << channelName << std::endl;
-			msg = "Error: User already in channel " + channelName + "\r\n";
-		}
-	}
-
-	// Mensaje de confirmación
-	send(new_client->getFd(), msg.c_str(), msg.length(), 0);
 }
 
 /// @brief Signal handler for graceful shutdown
@@ -152,117 +115,54 @@ void	Server::SignalHandler(int signum)
 	set_signal(true);	// set the static boolean to true to stop the server
 }
 
-
 ///		principal loop
-///			bucle principal
+///		bucle principal
 void	Server::run()
 {
-	msg_handler::t_command command;
-
-	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Running server with fd -> " << _server_fd << " ." << std::endl;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Running server with fd -> " << get_server_fd() << " ." << std::endl;
 	while (!get_signal())
 	{
-
+		// wait for activity on any of the sockets
+		// esperar actividad en cualquiera de los sockets
 		if ((poll(&_fds[0], _fds.size(), -1) == -1) && !get_signal())
 		{
-			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error en poll()." << std::endl;
+			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " poll() error." << std::endl;
 			exit(1);
 		}
 
-		for(size_t i = 0; i < _fds.size(); i++)	// check all fds in the poll list
+		// check all fds in the poll list
+		// comprobar todos los fds en la lista de poll
+		for(size_t i = 0; i < _fds.size(); i++)
 		{
+			// check if there is activity on socket i
+			// comprobar si hay actividad en el socket i
 			if (_fds[i].revents & POLLIN)	// 
 			{
-				if (_fds[i].fd == get_server_fd())		// if there is activity on socket i
+				// if the activity is on the server socket, it is a new connection
+				// si la actividad es en el socket del servidor, es una nueva conexión
+				if (_fds[i].fd == get_server_fd())		
 				{
-					handle_new_connection();	// new incoming conection
+					// new incoming conection
+					// nueva conexión entrante
+					handle_new_connection();
 				}
 				else
 				{
+					// message from a client
+					// mensaje de un cliente
 					User *user = getClientByFd(_fds[i].fd);
 					if (user == NULL)
 					{
+						// This should not happen, but just in case
+						// Esto no debería pasar, pero por si acaso
 						std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Client with fd " << _fds[i].fd << " not found." << std::endl;
 						continue;
 					}
-					if (!user->isAuthenticated())
-					{
-						handle_client_message(user);  // Procesar mensajes de autenticación
-						if (user->isAuthenticated())
-						{
-							// Enviar welcome IRC
-							std::string welcome = "001 " + user->getNickname() + " :Welcome to the IRC server\r\n";
-							send(user->getFd(), welcome.c_str(), welcome.size(), 0);
-						}
-               		}
-					else
-					{
-						handle_client_message(user); // message of a user
-					}
+					handle_client_message(user); // message of a user
+
 				}
-				/*	if (user == NULL)
-						std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Client with fd " << _fds[i].fd << " not found." << std::endl;
-					else
-					{
-						if (this->handle_client_message(user))
-							break;	// message of a user
-					}
-					if (!user->isAuthenticated())
-					{
-						msg_handler::handle_login_parse(user, this);
-					}
-					else
-						msg_handler::parse_msg(user->getBuffer()); //It is a msg from an active user, parse the command
-				
-				}*/
 			}
 		}
-/*
-		if(select(get_fd_max() + 1, &_read_fds, NULL, NULL, NULL ) == -1)
-		{
-			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error en select()." << std::endl;
-	msg_handler::t_command command;
-		}
-
-		// traverse all posible fd
-		// recorrer todos los fd posibles
-		for(int i = 0; i <= get_fd_max(); ++i)
-		{
-			if(FD_ISSET(i, &_read_fds))
-			{
-				if(i == get_server_fd())		// if there is activity on socket i
-				{
-					handle_new_connection();	// new incoming conection
-				}
-				else
-				{
-					User *user = getClientByFd(i);
-
-					if (user == NULL)
-						std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Client with fd " << i << " not found." << std::endl;
-					else
-					{
-						if (this->handle_client_message(user))
-							break;	// message of a user
-					}
-					if (!user->isAuthenticated())
-					{
-						msg_handler::handle_login_parse(user, this);
-						// METERLO EN LA FUNCION DE ARRIBA
-						// std::cout << "Buffer recibido de " << user->getFd() << ": " << buffer;
-						// std::string	message = buffer.substr(0, buffer.size() - 3); // remove \n\r
-						// std::cout << "Mensaje recibido de " << user->getFd() << ": " << message;
-						// if (user->parse_user(message, this)) // handle the password
-						// 	std::cout << "Mensaje tratado incorrectamente." << std::endl;
-						
-					}
-					else
-						msg_handler::parse_msg(user->getBuffer()); //It is a msg from an active user, parse the command
-				}
-
-			}
-		}
-*/
 	}
 	CloseFds();
 }

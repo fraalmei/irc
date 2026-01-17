@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 17:33:06 by p                 #+#    #+#             */
-/*   Updated: 2026/01/08 00:30:21 by p                ###   ########.fr       */
+/*   Updated: 2026/01/17 17:01:24 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,12 @@ class	msg_handler
 
 		// Parse user authentication steps
 		static int			authenticate(User *user, Server *server);
-		static int			handle_password(User *user, Server *server);
-		static int			handle_nickname(User *user);
-		static int			handle_username(User *user);
+		static int			handle_password(msg_handler::t_command command, Server *server);
+		static int			handle_nickname(msg_handler::t_command command);
+		static int			handle_username(msg_handler::t_command command);
+
+		// Other command handlers can be added here
+		static int			joinChannel(const std::string channelName, User *new_client, Server &server);
 
 };
 

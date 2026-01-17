@@ -6,7 +6,7 @@
 #    By: p <p@student.42.fr>                        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/30 19:06:15 by fraalmei          #+#    #+#              #
-#    Updated: 2025/12/05 16:56:01 by p                ###   ########.fr        #
+#    Updated: 2026/01/17 17:14:06 by p                ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,7 +49,8 @@ SERVER		=	server/server.cpp \
 CHANNELS	=	core/Channel.cpp
 
 MESSAGES	=	message/msg_handler.cpp \
-				message/login_handler.cpp
+				message/login_handler.cpp \
+				message/command_handler.cpp
 
 PARSE		=
 
@@ -76,6 +77,11 @@ re: fclean all
 leaks: $(BIN) $(OBJS)
 	@echo "\033[0;32mCompiling $(NAME) with sanitizer..."
 	$(CXX) $(CXXFLAGS) $(LEAK_FLAGS) $(OBJS) -o $(NAME)
+	@echo "\n\033[0mDone !"
+
+valgrind:
+	@echo "\033[0;32mExecuting $(NAME) with valgrind..."
+	@valgrind --leak-check=full --show-leak-kinds=all ./$(NAME)
 	@echo "\n\033[0mDone !"
 
 debug: $(BIN) $(OBJS)

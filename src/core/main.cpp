@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/30 20:17:51 by fraalmei          #+#    #+#             */
-/*   Updated: 2025/12/14 18:14:50 by p                ###   ########.fr       */
+/*   Updated: 2026/01/17 11:59:40 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,17 @@ int	main(int argc, char **argv)
 		return 1;
 	}
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Initiating server." << std::endl;
+	// Creation of the server object
+	// Creacion del objeto servidor
 	Server server(argv[2], atoi(argv[1]));
-	//Server server;
 	try
 	{
+		// Set signal handlers for graceful shutdown
+		// Establecer manejadores de señales para un cierre ordenado
 		signal(SIGINT, Server::SignalHandler);
 		signal(SIGQUIT, Server::SignalHandler);
+		// Run the server
+		// Ejecutar el servidor
 		server.run();
 	}
 	catch(const std::exception& e)

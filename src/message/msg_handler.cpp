@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 11:38:21 by p                 #+#    #+#             */
-/*   Updated: 2026/01/16 16:01:56 by samartin         ###   ########.fr       */
+/*   Updated: 2026/01/17 21:09:38 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,12 +76,12 @@ msg_handler::t_command msg_handler::parse_msg(User* user)
 		command.user = user;
 		ss.str(line);
 		ss.clear();
-    // --- Estados ---
-    // 0: Start/Waiting for Prefix or Command
-    // 1: Reading Command
-    // 2: Reading Middle Parameters
-    // 3: Reading Trailing Parameter
-    // La lógica de parsing de IRC está basada en espacios y el carácter ':'
+	// --- Estados ---
+	// 0: Start/Waiting for Prefix or Command
+	// 1: Reading Command
+	// 2: Reading Middle Parameters
+	// 3: Reading Trailing Parameter
+	// La lógica de parsing de IRC está basada en espacios y el carácter ':'
 		while (ss >> token)
 		{
 			if (state == 0)
@@ -145,7 +145,7 @@ msg_handler::t_command msg_handler::parse_msg(User* user)
 		}
 	}
 	msg_handler::print_command(command);
-    return command; */
+	return command; */
 	if (command.actual_line.empty())
 	{
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Mensaje vacío." << std::endl;
@@ -167,63 +167,20 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Ejecutando comando: " << command.command << std::endl;
 	if (!command.user->isAuthenticated() && command.command == "USER")
 	{
-		if (command.user->getUsername() != "")
-		{
-			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Usuario ya autenticado con username: " << command.user->getUsername() << std::endl;
-		}
-		if (command.params.empty())
-		{
-			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " ERROR: No se han proporcionado parámetros para el comando USER." << std::endl;
-			std::string err = std::string(":") + ME + " 461 USER :Not enough parameters\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
+		if (handle_username(command))
 			return;
-		}
-		command.user->setUsername(command.params.front().substr(0, command.params.front().find(' ')));
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Username set to: '" << command.user->getUsername() << "'" << std::endl;
 		server.set_Authentication(command.user);
 	}
 	else if (!command.user->isAuthenticated() && command.command == "NICK")
 	{
-		if (command.user->getNickname() != "")
-		{
-			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Usuario ya autenticado con nickname: " << command.user->getNickname() << std::endl;
-		}
-		if (command.params.empty())
-		{
-			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " ERROR: No se han proporcionado parámetros para el comando NICK." << std::endl;
-			std::string err = std::string(":") + ME + " 431 NICK :No nickname given\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
+		if (handle_nickname(command))
 			return;
-		}
-		command.user->setNickname(command.params.front());
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Nickname set to: '" << command.user->getNickname() << "'" << std::endl;
 		server.set_Authentication(command.user);
 	}
 	else if (!command.user->isAuthenticated() && command.command == "PASS")
 	{
-		if (command.params.empty())
-		{
-			std::string err = std::string(":") + ME + " 461 PASS :Not enough parameters\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
+		if (handle_password(command, &server))
 			return;
-		}
-		std::string pass = command.params.front();
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "PASS: '" << pass << "'" << std::endl;
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Password: '" << server.get_password() << "'" << std::endl;
-		if (pass.compare(server.get_password()) == 0)
-		{
-			command.user->setPasswdCorrect(true);
-			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Password set to true." << std::endl;
-		}
-		else
-		{
-			std::string err = std::string(":") + ME + " 464 :Password incorrect\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Password incorrect, disconnecting." << std::endl;
-			server.ClearClients(command.user->getFd());
-			return;
-		}
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Password : " << command.user->isPasswdCorrect() << std::endl;
 		server.set_Authentication(command.user);
 	}
 	else if (command.command == "CAP")
@@ -233,7 +190,7 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Capability set to: " << command.user->getCapability() << std::endl;
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Version set to: " << command.user->getVersion() << std::endl;
 	}
-	else if (command.command == "/join" || command.command == "JOIN")
+	else if (command.command == "JOIN")
 	{
 		if (command.params.empty())
 		{
@@ -243,7 +200,7 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 		}
 		std::string channelName = command.params.front();
 		
-		server.joinChannel(channelName, command.user);
+		joinChannel(channelName, command.user, server);
 	}
 	else if (command.command == "QUIT")
 	{

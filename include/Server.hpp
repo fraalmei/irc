@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2026/01/14 13:44:06 by samartin         ###   ########.fr       */
+/*   Updated: 2026/01/17 20:39:51 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ class Server
 		std::map<std::string, Channel*>&		getChannelList() { return this->_channel_list; }
 		const std::map<int, User*>&				getConstClientList() const { return this->_clients; }
 		std::map<int, User*>&					getClientList() { return this->_clients; }	
-		
+
 		int										closeClientFd(int fd);
 		User									*getClientByFd(int fd);
 		User									*getClientFdByNickname(const std::string &nickname);	
@@ -89,12 +89,11 @@ class Server
 		void				set_master_set(fd_set master_set) { this->_master_set = master_set; }
 		static bool			set_signal(bool signal) { _signal = signal; return _signal; }	
 		void				run(void);
-		void				joinChannel(const std::string channelName, User *new_client);
 		static void			SignalHandler(int signum);
 		void				CloseFds();				// close file descriptors
 		void				ClearClients(int fd);	// clear clients
 		void				rtrim_crlf(std::string &s);
-		std::string			handle_client_message(User *client);
+		void				handle_client_message(User *client);
 
 		int 				set_Authentication(User *client);
 
@@ -113,7 +112,7 @@ class Server
 		// client list: map fd -> User*
 		std::map<int, User*>				_clients;			// map of client pointers by fd
 		std::map<std::string, Channel*>		_channel_list;		// map of the created channels
-		std::vector<struct pollfd>			_fds;				//	vector of pollfd structures
+		std::vector<struct pollfd>			_fds;				// vector of pollfd structures
 
 		void				init_server_socket();
 		void				handle_new_connection();

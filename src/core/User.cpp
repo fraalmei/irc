@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 17:28:00 by p                 #+#    #+#             */
-/*   Updated: 2025/12/11 18:29:15 by p                ###   ########.fr       */
+/*   Updated: 2026/01/17 20:34:12 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,9 @@ bool User::isAdminOfChannel(const Channel &channel) const
 
 int User::addToBuffer(const std::string &message)
 {
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Buffer actual: '" << _buffer << "'" << std::endl;
 	_buffer += message;
-
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Buffer + mensaje: '" << _buffer << "'" << std::endl;
 	/* size_t pos;
 	while ((pos = _buffer.find("\r\n")) != std::string::npos)
 	{
