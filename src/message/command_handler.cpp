@@ -30,7 +30,7 @@ int				msg_handler::joinChannel(const std::string channelName, User *new_client,
 		Channel* newChannel = new Channel(channelName);
 		newChannel->addMember(new_client);	// primer miembro
 		server.getChannelList()[channelName] = newChannel;
-		msg = "JOIN " + newChannel->getName() + "\r\n";
+		channel = newChannel;
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Created channel: " << channelName << std::endl;
 	}
 	else
@@ -42,18 +42,45 @@ int				msg_handler::joinChannel(const std::string channelName, User *new_client,
 			if (channel->addMember(new_client) != 0 ) // Agregar al canal existente
 				std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error: User already in channel " << channelName << std::endl;
 			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " User " << new_client->getFd() << " joined " << channelName << std::endl;
-			msg = "JOIN " + channel->getName() + "\r\n";
 		}
 		else
 		{
 			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error: User already in channel " << channelName << std::endl;
-			msg = new_client->getUsername() + " " + new_client->getUsername() + " " + channelName + " :is already on channel\r\n";
-			send(new_client->getFd(), msg.c_str(), msg.length(), 0);
+			std::stringstream ss;
+			ss << ERR_NOTONCHANNEL;
+			std::string err_code = ss.str();
+			std::string err = ":" + std::string(ME) + " " + err_code + " " + new_client->getNickname() + " " + channelName + " :You're not on that channel\r\n";
+			send(new_client->getFd(), err.c_str(), err.length(), 0);
 			return 1;
 		}
 	}
 
-	// Mensaje de confirmación
+	// Send JOIN to all members
+	std::string join_msg = ":" + new_client->getNickname() + "!" + new_client->getUsername() + "@localhost JOIN " + channel->getName() + "\r\n";
+	for (std::vector<User*>::const_iterator it = channel->getMembers().begin(); it != channel->getMembers().end(); ++it)
+	{
+		send((*it)->getFd(), join_msg.c_str(), join_msg.length(), 0);
+	}
+
+	// Send RPL_NAMREPLY and RPL_ENDOFNAMES to the new client
+	std::string names_list;
+	for (std::vector<User*>::const_iterator it = channel->getMembers().begin(); it != channel->getMembers().end(); ++it)
+	{
+		if (!names_list.empty()) names_list += " ";
+		names_list += (*it)->getNickname();
+	}
+	std::stringstream ss;
+	ss << RPL_NAMREPLY;
+	std::string nam_code = ss.str();
+	ss.str(""); ss << RPL_ENDOFNAMES;
+	std::string end_code = ss.str();
+	
+	std::string namreply = ":" + std::string(ME) + " " + nam_code + " " + new_client->getNickname() + " = " + channel->getName() + " :" + names_list + "\r\n";
+	send(new_client->getFd(), namreply.c_str(), namreply.length(), 0);
+
+	std::string endofnames = ":" + std::string(ME) + " " + end_code + " " + new_client->getNickname() + " " + channel->getName() + " :End of /NAMES list\r\n";
+	send(new_client->getFd(), endofnames.c_str(), endofnames.length(), 0);
+
 	return 0;
 }
 

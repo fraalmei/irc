@@ -61,7 +61,7 @@ OBJS = $(SRCS:%.cpp=$(BIN_DIR)/%.o) $(UTILS:%.cpp=$(BIN_DIR)/%.o)
 
 all: $(NAME)
 
-$(NAME):	$(BIN) $(OBJS)
+$(NAME):	$(OBJS)
 	@echo "$(GREEN)Compiling $(NAME)... \n$(RESET)"
 	$(CXX) $(CXXFLAGS) $(OBJS) $(HEADERS) -o $(NAME)
 	@echo "\n$(RESET)Done !"
