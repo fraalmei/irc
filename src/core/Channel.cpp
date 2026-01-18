@@ -12,6 +12,7 @@
 
 // filepath: /home/arksh/Documentos/42 Madrid/irc/srcs/channel/public.cpp
 #include "Channel.hpp"
+#include <algorithm>
 
 int Channel::addMember(const User* user)
 {
@@ -81,4 +82,26 @@ bool Channel::isAdminMember(const std::string &nickname) const
 		if ((*it)->getNickname() == nickname)
 			return true;
 	return false;
+}
+
+void Channel::removeMember(User* user)
+{
+	_members.erase(std::remove(_members.begin(), _members.end(), user), _members.end());
+	_adminMembers.erase(std::remove(_adminMembers.begin(), _adminMembers.end(), user), _adminMembers.end());
+}
+
+bool Channel::isOperator(User* user) const
+{
+	return std::find(_adminMembers.begin(), _adminMembers.end(), user) != _adminMembers.end();
+}
+
+void Channel::addOperator(User* user)
+{
+	if (!isOperator(user))
+		_adminMembers.push_back(user);
+}
+
+void Channel::removeOperator(User* user)
+{
+	_adminMembers.erase(std::remove(_adminMembers.begin(), _adminMembers.end(), user), _adminMembers.end());
 }

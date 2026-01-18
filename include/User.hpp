@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 17:33:01 by p                 #+#    #+#             */
-/*   Updated: 2026/01/08 00:10:16 by p                ###   ########.fr       */
+/*   Updated: 2026/01/18 12:02:16 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ public:
 	bool			isAdminOfChannel(const Channel& channel) const;
 	int				getFd() const { return _fd; }
 	std::string		getIpAdd() const { return _IPadd; }
+	std::string		getRealname() const { return _realname; }
 	std::string		getCapability() const { return _capability; }
 	int				getVersion() const { return _version; }
 

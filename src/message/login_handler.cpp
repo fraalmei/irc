@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 18:26:30 by p                 #+#    #+#             */
-/*   Updated: 2026/01/17 16:02:22 by p                ###   ########.fr       */
+/*   Updated: 2026/01/18 13:14:49 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ int	msg_handler::authenticate(User *user, Server *server)
 
 int	msg_handler::handle_password(msg_handler::t_command command, Server *server)
 {
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Entrando en PASS " << command.params.front() << "." << std::endl;
 	if (command.params.empty())
 	{
 		std::string err = std::string(":") + ME + " 461 PASS :Not enough parameters\r\n";

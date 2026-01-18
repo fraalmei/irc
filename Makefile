@@ -6,7 +6,7 @@
 #    By: p <p@student.42.fr>                        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/30 19:06:15 by fraalmei          #+#    #+#              #
-#    Updated: 2026/01/17 17:14:06 by p                ###   ########.fr        #
+#    Updated: 2026/01/18 13:09:58 by p                ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ NAME	= ircserv
 #	compilation
 CXX			= c++
 
-CXXFLAGS 	= -Wall -Wextra -Werror -std=c++98 #-MD
+CXXFLAGS 	= -Wall -Wextra -std=c++98 #-MD
 
 LEAK_FLAGS	= -fsanitize=address -g3 -pedantic #-fsanitize=thread
 

@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 11:38:42 by p                 #+#    #+#             */
-/*   Updated: 2026/01/17 23:24:31 by p                ###   ########.fr       */
+/*   Updated: 2026/01/18 13:13:07 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,9 @@ int	Server::closeClientFd(int fd)
 int Server::set_Authentication(User *client)
 	{
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Cheking autentication." << std::endl;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Client Nickname: " << client->getNickname() << "." << std::endl;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Client Username: " << client->getUsername() << "." << std::endl;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Client Password: " << client->isPasswdCorrect() << "." << std::endl;
 	if (client->getNickname() != "" && client->getUsername() != "" && client->isPasswdCorrect())
 	{
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Autenticated." << std::endl;
@@ -60,6 +63,7 @@ int Server::set_Authentication(User *client)
 		std::string myinfo = ":" + std::string(ME) + " " + code4 + " " + client->getNickname() + " " + std::string(ME) + " 1.0 o o\r\n";
 		send(client->getFd(), myinfo.c_str(), myinfo.size(), 0);
 		
+		client->setAuthenticated(true);
 		return 1;
 	}
 	else

@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/17 16:37:21 by p                 #+#    #+#             */
-/*   Updated: 2026/01/17 18:00:38 by p                ###   ########.fr       */
+/*   Updated: 2026/01/18 13:05:07 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,4 +83,3 @@ int				msg_handler::joinChannel(const std::string channelName, User *new_client,
 
 	return 0;
 }
-

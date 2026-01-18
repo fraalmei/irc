@@ -49,9 +49,13 @@ class Channel
 		int			addMember(const User* user);
 		int			addMember(const User* user, const std::string& password);
 		void		removeMember(const std::string &nickname);
+		void		removeMember(User* user);
 		bool		isMember(const std::string &nickname) const;
 		bool		isMember(const int &fd) const;
 		bool		isAdminMember(const std::string &nickname) const;
+		bool		isOperator(User* user) const;
+		void		addOperator(User* user);
+		void		removeOperator(User* user);
 		
 		// Getters
 		const		std::string &getName() const{ return _name; }

@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 20:53:11 by p                 #+#    #+#             */
-/*   Updated: 2026/01/17 20:30:12 by p                ###   ########.fr       */
+/*   Updated: 2026/01/18 13:09:57 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,10 @@ void	Server::handle_client_message(User *user)
 		msg_handler::t_command parsed_command = msg_handler::parse_msg(user);
 		if (parsed_command.user != NULL) {
 			msg_handler::execute_command(parsed_command, *this);
+			// Check if user was disconnected during command execution
+			if (_clients.find(user->getFd()) == _clients.end()) {
+				break;
+			}
 		}
 	}
 }
