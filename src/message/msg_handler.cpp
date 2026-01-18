@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 11:38:21 by p                 #+#    #+#             */
-/*   Updated: 2026/01/18 15:00:51 by p                ###   ########.fr       */
+/*   Updated: 2026/01/18 16:48:18 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,9 @@ int	msg_handler::print_command(msg_handler::t_command command)
 msg_handler::t_command msg_handler::parse_msg(User* user)
 {
 	msg_handler::t_command	command;
+	std::stringstream		ss;
+    std::string				token;
+	int						state = 0;
 
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CYEL << "Buffer: " << CRST << "\"" << user->getBuffer() << "\"" << std::endl;
 	command.actual_line = user->getBuffer().substr(0, user->getBuffer().find("\n"));
@@ -64,17 +67,16 @@ msg_handler::t_command msg_handler::parse_msg(User* user)
 	if (command.actual_line.find('\r') != std::string::npos)
 		command.actual_line.erase(command.actual_line.length() - 1);
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CYEL << "Resting buffer: " << CRST << "\"" << user->getBuffer() << "\"" << std::endl;
-		/* if (line.empty())
+
+	if (command.actual_line.empty())
 	{
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Mensaje vacío." << std::endl;
 		command.user = NULL;
 	}
 	else
 	{
-		if (user->getBuffer().find("\r\n") != std::string::npos)
-			user->setBuffer(user->getBuffer().substr(user->getBuffer().find("\r\n") + 2));
 		command.user = user;
-		ss.str(line);
+		ss.str(command.actual_line);
 		ss.clear();
 	// --- Estados ---
 	// 0: Start/Waiting for Prefix or Command
@@ -145,12 +147,7 @@ msg_handler::t_command msg_handler::parse_msg(User* user)
 		}
 	}
 	msg_handler::print_command(command);
-	return command; */
-	if (command.actual_line.empty())
-	{
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Mensaje vacío." << std::endl;
-		command.user = NULL;
-	}
+	/* simplified version, doesn't handle more than 1 param
 	else
 	{
 		command.user = user;
@@ -158,7 +155,7 @@ msg_handler::t_command msg_handler::parse_msg(User* user)
 		command.actual_line = command.actual_line.substr(command.actual_line.find(' ') + 1);
 		command.params.push_back(command.actual_line.substr(0, command.actual_line.find(' ')));
 		msg_handler::print_command(command);
-	}
+	} */
 	return command;
 }
 

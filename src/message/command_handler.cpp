@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_handler.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/17 16:37:21 by p                 #+#    #+#             */
-/*   Updated: 2026/01/18 13:05:07 by p                ###   ########.fr       */
+/*   Updated: 2026/01/18 15:49:01 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ int				msg_handler::joinChannel(const std::string channelName, User *new_client,
 		// Crear nuevo canal público
 		Channel* newChannel = new Channel(channelName);
 		newChannel->addMember(new_client);	// primer miembro
+		newChannel->addOperator(new_client);
 		server.getChannelList()[channelName] = newChannel;
 		channel = newChannel;
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Created channel: " << channelName << std::endl;
@@ -83,3 +84,5 @@ int				msg_handler::joinChannel(const std::string channelName, User *new_client,
 
 	return 0;
 }
+
+int				msg_handler::kick

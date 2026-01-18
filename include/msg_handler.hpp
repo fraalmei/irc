@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 17:33:06 by p                 #+#    #+#             */
-/*   Updated: 2026/01/18 12:02:16 by p                ###   ########.fr       */
+/*   Updated: 2026/01/18 16:13:45 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ class	msg_handler
 
 		// Other command handlers can be added here
 		static int			joinChannel(const std::string channelName, User *new_client, Server &server);
+		static int			kick(const std::string channelName, User *kicker, User *kicked, Server &server);
 
 };
 
@@ -88,6 +89,7 @@ class	msg_handler
 #define RPL_WHOREPLY 352
 #define RPL_ENDOFWHO 315
 #define RPL_INVITING 341
+#define ERR_NONICKNAMEGIVEN 431
 #define ERR_NEEDMOREPARAMS 461
 
 #endif
