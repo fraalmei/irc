@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 11:38:21 by p                 #+#    #+#             */
-/*   Updated: 2026/01/18 18:00:28 by p                ###   ########.fr       */
+/*   Updated: 2026/01/18 18:42:16 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,7 +191,7 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 			return;
 		}
 		command.user->setCapability(command.params[0]);
-		command.user->setVersion(std::atoi(command.params[1].c_str()));
+		//command.user->setVersion(std::atoi(command.params[1].c_str()));
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Capability set to: " << command.user->getCapability() << std::endl;
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Version set to: " << command.user->getVersion() << std::endl;
 		// Respond to CAP negotiation
