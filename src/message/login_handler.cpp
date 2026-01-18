@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 18:26:30 by p                 #+#    #+#             */
-/*   Updated: 2026/01/18 13:14:49 by p                ###   ########.fr       */
+/*   Updated: 2026/01/18 17:53:11 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ int	msg_handler::authenticate(User *user, Server *server)
 
 int	msg_handler::handle_password(msg_handler::t_command command, Server *server)
 {
-	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Entrando en PASS " << command.params.front() << "." << std::endl;
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Entrando en PASS " << command.params[0] << "." << std::endl;
 	if (command.params.empty())
 	{
 		std::string err = std::string(":") + ME + " 461 PASS :Not enough parameters\r\n";
@@ -84,7 +84,7 @@ int	msg_handler::handle_password(msg_handler::t_command command, Server *server)
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " ERROR: No se han proporcionado parámetros para el comando PASS." << std::endl;
 		return 1;
 	}
-	std::string pass = command.params.front();
+	std::string pass = command.params[0];
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "PASS: '" << pass << "'" << std::endl;
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Password: '" << server->get_password() << "'" << std::endl;
 	if (pass.compare(server->get_password()) == 0)
@@ -118,7 +118,7 @@ int	msg_handler::handle_nickname(msg_handler::t_command command)
 		send(command.user->getFd(), err.c_str(), err.size(), 0);
 		return 1;
 	}
-	command.user->setNickname(command.params.front());
+	command.user->setNickname(command.params[0]);
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Nickname set to: '" << command.user->getNickname() << "'" << std::endl;
 	return 0;
 }
@@ -139,7 +139,7 @@ int	msg_handler::handle_username(msg_handler::t_command command)
 		send(command.user->getFd(), err.c_str(), err.size(), 0);
 		return 1;
 	}
-	command.user->setUsername(command.params.front().substr(0, command.params.front().find(' ')));
+	command.user->setUsername(command.params[0]);
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Username set to: '" << command.user->getUsername() << "'" << std::endl;
 	return 0;
 }

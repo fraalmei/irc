@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_handler.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/17 16:37:21 by p                 #+#    #+#             */
-/*   Updated: 2026/01/18 15:49:01 by samartin         ###   ########.fr       */
+/*   Updated: 2026/01/18 17:19:27 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,4 +85,4 @@ int				msg_handler::joinChannel(const std::string channelName, User *new_client,
 	return 0;
 }
 
-int				msg_handler::kick
+//int				msg_handler::kick

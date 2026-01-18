@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 11:38:21 by p                 #+#    #+#             */
-/*   Updated: 2026/01/18 16:48:18 by samartin         ###   ########.fr       */
+/*   Updated: 2026/01/18 18:00:28 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ msg_handler::t_command msg_handler::parse_msg(User* user)
 	}
 	else
 	{
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Mensaje con algo." << std::endl;
 		command.user = user;
 		ss.str(command.actual_line);
 		ss.clear();
@@ -143,9 +144,10 @@ msg_handler::t_command msg_handler::parse_msg(User* user)
 				}
 			}
 			// El Estado 3 (Trailing Param) es el estado de ACEPTACIÓN y no procesa más tokens
-			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Comando parseado: '" << command.command << "' con " << command.params.front() << " parámetros." << std::endl;
 		}
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Comando parseado: '" << command.command << "' con " << command.params.size() << " parámetros." << std::endl;
 	}
+	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Comando parseado o no." << std::endl;
 	msg_handler::print_command(command);
 	/* simplified version, doesn't handle more than 1 param
 	else
@@ -182,8 +184,14 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 	}
 	else if (command.command == "CAP")
 	{
-		command.user->setCapability(command.params.front().substr(0, command.params.front().find(' ')));
-		command.user->setVersion(std::atoi(command.params.front().substr(command.params.front().find(' ') + 1).c_str()));
+		if (command.params.empty())
+		{
+			std::string err = std::string(":") + ME + " 461 CAP :Not enough parameters\r\n";
+			send(command.user->getFd(), err.c_str(), err.size(), 0);
+			return;
+		}
+		command.user->setCapability(command.params[0]);
+		command.user->setVersion(std::atoi(command.params[1].c_str()));
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Capability set to: " << command.user->getCapability() << std::endl;
 		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Version set to: " << command.user->getVersion() << std::endl;
 		// Respond to CAP negotiation
@@ -198,7 +206,7 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 			send(command.user->getFd(), err.c_str(), err.size(), 0);
 			return;
 		}
-		std::string channelName = command.params.front();
+		std::string channelName = command.params[0];
 		if (channelName[0] != '#')
 			channelName = "#" + channelName;
 		
@@ -212,33 +220,15 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 	else if (command.command == "PRIVMSG")
 	{
 		std::stringstream ss;
-		if (command.params.empty())
+		if (command.params.size() < 2)
 		{
 			ss << ERR_NORECIPIENT;
 			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " :No recipient given (PRIVMSG)\r\n";
 			send(command.user->getFd(), err.c_str(), err.size(), 0);
 			return;
 		}
-		std::string target = command.params.front();
-		if (!command.params.empty()) command.params.erase(command.params.begin());
-		// Extract message from the remaining line
-		size_t space_pos = command.actual_line.find(' ');
-		if (space_pos == std::string::npos)
-		{
-			ss.str(""); ss << ERR_NOTEXTTOSEND;
-			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " :No text to send\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			return;
-		}
-		std::string message_part = command.actual_line.substr(space_pos + 1);
-		if (message_part.empty() || message_part[0] != ':')
-		{
-			ss.str(""); ss << ERR_NOTEXTTOSEND;
-			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " :No text to send\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			return;
-		}
-		std::string message = message_part.substr(1); // Remove leading ':'
+		std::string target = command.params[0];
+		std::string message = command.params[1];
 
 		// Check if target is a channel without #
 		if (target[0] != '#')
@@ -301,7 +291,7 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 			send(command.user->getFd(), err.c_str(), err.size(), 0);
 			return;
 		}
-		std::string channelName = command.params.front();
+		std::string channelName = command.params[0];
 		if (channelName[0] != '#')
 			channelName = "#" + channelName;
 		Channel* chan = server.getChannelByName(channelName);
@@ -347,7 +337,7 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 			send(command.user->getFd(), err.c_str(), err.size(), 0);
 			return;
 		}
-		std::string channelName = command.params.front();
+		std::string channelName = command.params[0];
 		if (channelName[0] != '#')
 			channelName = "#" + channelName;
 		Channel* chan = server.getChannelByName(channelName);
