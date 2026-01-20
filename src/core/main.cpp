@@ -43,7 +43,7 @@ int	main(int argc, char **argv)
 	atexit(leaks);
 	if (argc != 3 || check_args(argv))
 	{
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Invalid number of arguments or port number. Please use 'ircserv password port' with a port between 1024 and 65535." << std::endl;
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Invalid number of arguments or port number. Please use 'ircserv port password' with a port between 1024 and 65535." << std::endl;
 		return 1;
 	}
 	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Initiating server." << std::endl;
