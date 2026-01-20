@@ -379,12 +379,6 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 		if (channelName[0] != '#')
 			channelName = "#" + channelName;
 		std::string targetNick = command.params[1];
-		std::string reason = "Kicked";
-		if (command.params.size() > 2)
-		{
-			reason = command.params[2];
-			if (!reason.empty() && reason[0] == ':') reason = reason.substr(1);
-		}
 		Channel* chan = server.getChannelByName(channelName);
 		if (!chan)
 		{
@@ -393,6 +387,14 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + channelName + " :No such channel\r\n";
 			send(command.user->getFd(), err.c_str(), err.size(), 0);
 			return;
+		}
+		std::string reason = "Kicked";
+		if (command.params.size() > 2)
+		{
+			if (std::find(chan->getMembers().begin(), chan->getMembers().end(), command.params[command.params.size() - 1]) != chan->getMembers().end()) 
+				reason = command.params[command.params.size() - 1];
+			if (!reason.empty() && reason[0] == ':')
+				reason = reason.substr(1);
 		}
 		if (!chan->isOperator(command.user))
 		{
