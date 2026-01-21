@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 11:38:21 by p                 #+#    #+#             */
-/*   Updated: 2026/01/18 18:42:16 by samartin         ###   ########.fr       */
+/*   Updated: 2026/01/21 14:42:12 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -380,6 +380,14 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 			channelName = "#" + channelName;
 		std::string targetNick = command.params[1];
 		Channel* chan = server.getChannelByName(channelName);
+		//############3
+		std::string reason = "Kicked";
+		if (command.params.size() > 2)
+		{
+			reason = command.params[2];
+			if (!reason.empty() && reason[0] == ':') reason = reason.substr(1);
+		}
+		//############3
 		if (!chan)
 		{
 			std::stringstream ss;
@@ -388,14 +396,14 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 			send(command.user->getFd(), err.c_str(), err.size(), 0);
 			return;
 		}
-		std::string reason = "Kicked";
+		/* std::string reason = "Kicked";
 		if (command.params.size() > 2)
 		{
-			if (std::find(chan->getMembers().begin(), chan->getMembers().end(), command.params[command.params.size() - 1]) != chan->getMembers().end()) 
+			if (std::find(chan->getMembers().begin(), chan->getMembers().end(), command.params[command.params.size() - 1]) != chan->getMembers().end())
 				reason = command.params[command.params.size() - 1];
 			if (!reason.empty() && reason[0] == ':')
 				reason = reason.substr(1);
-		}
+		} */
 		if (!chan->isOperator(command.user))
 		{
 			std::stringstream ss;
