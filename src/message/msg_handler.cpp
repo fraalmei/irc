@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 11:38:21 by p                 #+#    #+#             */
-/*   Updated: 2026/01/21 14:42:12 by p                ###   ########.fr       */
+/*   Updated: 2026/01/22 14:51:06 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "../include/User.hpp"
 #include "../include/validNames.hpp"
 #include "../include/colors.hpp"
+#include "../include/Commands.hpp"
 
 int msg_handler::handle_buffer(std::string buffer, User *user)
 {
@@ -200,17 +201,7 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 	}
 	else if (command.command == "JOIN")
 	{
-		if (command.params.empty())
-		{
-			std::string err = std::string(":") + ME + " 461 JOIN :Not enough parameters\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			return;
-		}
-		std::string channelName = command.params[0];
-		if (channelName[0] != '#')
-			channelName = "#" + channelName;
-		
-		joinChannel(channelName, command.user, server);
+		Commands::commandJoin(command, server);
 	}
 	else if (command.command == "QUIT")
 	{
@@ -219,508 +210,31 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 	}
 	else if (command.command == "PRIVMSG")
 	{
-		std::stringstream ss;
-		if (command.params.size() < 2)
-		{
-			ss << ERR_NORECIPIENT;
-			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " :No recipient given (PRIVMSG)\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			return;
-		}
-		std::string target = command.params[0];
-		std::string message = command.params[1];
-
-		// Check if target is a channel without #
-		if (target[0] != '#')
-		{
-			std::string possibleChan = "#" + target;
-			Channel* chan = server.getChannelByName(possibleChan);
-			if (chan && chan->isMember(command.user->getFd()))
-			{
-				target = possibleChan;
-			}
-		}
-
-		if (target[0] == '#')
-		{
-			// Channel message
-			Channel* chan = server.getChannelByName(target);
-			if (!chan)
-			{
-				ss.str(""); ss << ERR_NOSUCHCHANNEL;
-				std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + target + " :No such channel\r\n";
-				send(command.user->getFd(), err.c_str(), err.size(), 0);
-				return;
-			}
-			if (!chan->isMember(command.user->getFd()))
-			{
-				ss.str(""); ss << ERR_CANNOTSENDTOCHAN;
-				std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + target + " :Cannot send to channel\r\n";
-				send(command.user->getFd(), err.c_str(), err.size(), 0);
-				return;
-			}
-			// Send to all members including sender
-			std::string msg = ":" + command.user->getNickname() + "!" + command.user->getUsername() + "@localhost PRIVMSG " + target + " :" + message + "\r\n";
-			for (std::vector<User*>::const_iterator it = chan->getMembers().begin(); it != chan->getMembers().end(); ++it)
-			{
-				send((*it)->getFd(), msg.c_str(), msg.length(), 0);
-			}
-		}
-		else
-		{
-			// Private message
-			User* target_user = server.getClientFdByNickname(target);
-			if (!target_user)
-			{
-				ss.str(""); ss << ERR_NOSUCHNICK;
-				std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + target + " :No such nick/channel\r\n";
-				send(command.user->getFd(), err.c_str(), err.size(), 0);
-				return;
-			}
-			std::string msg = ":" + command.user->getNickname() + "!" + command.user->getUsername() + "@localhost PRIVMSG " + target + " :" + message + "\r\n";
-			send(target_user->getFd(), msg.c_str(), msg.length(), 0);
-		}
+		Commands::commandPrivmsg(command, server);
 	}
 	else if (command.command == "PART")
 	{
-		if (command.params.empty())
-		{
-			std::stringstream ss;
-			ss << ERR_NEEDMOREPARAMS;
-			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " PART :Not enough parameters\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			return;
-		}
-		std::string channelName = command.params[0];
-		if (channelName[0] != '#')
-			channelName = "#" + channelName;
-		Channel* chan = server.getChannelByName(channelName);
-		if (!chan)
-		{
-			std::stringstream ss;
-			ss << ERR_NOSUCHCHANNEL;
-			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + channelName + " :No such channel\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			return;
-		}
-		if (!chan->isMember(command.user->getFd()))
-		{
-			std::stringstream ss;
-			ss << ERR_NOTONCHANNEL;
-			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + channelName + " :You're not on that channel\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			return;
-		}
-		// Extract message if any
-		std::string part_msg = "Left the channel";
-		if (command.params.size() > 1)
-		{
-			part_msg = command.params[1];
-			if (!part_msg.empty() && part_msg[0] == ':') part_msg = part_msg.substr(1);
-		}
-		// Send PART to all members
-		std::string part_line = ":" + command.user->getNickname() + "!" + command.user->getUsername() + "@localhost PART " + channelName + " :" + part_msg + "\r\n";
-		for (std::vector<User*>::const_iterator it = chan->getMembers().begin(); it != chan->getMembers().end(); ++it)
-		{
-			send((*it)->getFd(), part_line.c_str(), part_line.length(), 0);
-		}
-		// Remove user from channel
-		chan->removeMember(command.user);
+		Commands::commandPart(command, server);
 	}
 	else if (command.command == "WHO")
 	{
-		if (command.params.empty())
-		{
-			std::stringstream ss;
-			ss << ERR_NEEDMOREPARAMS;
-			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " WHO :Not enough parameters\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			return;
-		}
-		std::string channelName = command.params[0];
-		if (channelName[0] != '#')
-			channelName = "#" + channelName;
-		Channel* chan = server.getChannelByName(channelName);
-		if (!chan)
-		{
-			std::stringstream ss;
-			ss << ERR_NOSUCHCHANNEL;
-			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + channelName + " :No such channel\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			return;
-		}
-		// Send RPL_WHOREPLY for each member
-		for (std::vector<User*>::const_iterator it = chan->getMembers().begin(); it != chan->getMembers().end(); ++it)
-		{
-			std::string flags = "H"; // Here
-			if (chan->isOperator(*it)) flags += "@"; // Operator
-			std::stringstream ss;
-			ss << RPL_WHOREPLY;
-			std::string who_line = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + channelName + " " + (*it)->getUsername() + " localhost " + std::string(ME) + " " + (*it)->getNickname() + " " + flags + " :0 " + (*it)->getRealname() + "\r\n";
-			send(command.user->getFd(), who_line.c_str(), who_line.length(), 0);
-		}
-		// Send RPL_ENDOFWHO
-		std::stringstream ss;
-		ss << RPL_ENDOFWHO;
-		std::string end_line = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + channelName + " :End of /WHO list\r\n";
-		send(command.user->getFd(), end_line.c_str(), end_line.length(), 0);
+		Commands::commandWho(command, server);
 	}
 	else if (command.command == "KICK")
 	{
-		if (command.params.size() < 2)
-		{
-			std::stringstream ss;
-			ss << ERR_NEEDMOREPARAMS;
-			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " KICK :Not enough parameters\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			return;
-		}
-		std::string channelName = command.params[0];
-		if (channelName[0] != '#')
-			channelName = "#" + channelName;
-		std::string targetNick = command.params[1];
-		Channel* chan = server.getChannelByName(channelName);
-		//############3
-		std::string reason = "Kicked";
-		if (command.params.size() > 2)
-		{
-			reason = command.params[2];
-			if (!reason.empty() && reason[0] == ':') reason = reason.substr(1);
-		}
-		//############3
-		if (!chan)
-		{
-			std::stringstream ss;
-			ss << ERR_NOSUCHCHANNEL;
-			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + channelName + " :No such channel\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			return;
-		}
-		/* std::string reason = "Kicked";
-		if (command.params.size() > 2)
-		{
-			if (std::find(chan->getMembers().begin(), chan->getMembers().end(), command.params[command.params.size() - 1]) != chan->getMembers().end())
-				reason = command.params[command.params.size() - 1];
-			if (!reason.empty() && reason[0] == ':')
-				reason = reason.substr(1);
-		} */
-		if (!chan->isOperator(command.user))
-		{
-			std::stringstream ss;
-			ss << ERR_CHANOPRIVSNEEDED;
-			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + channelName + " :You're not channel operator\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			return;
-		}
-		User* target = NULL;
-		for (std::vector<User*>::const_iterator it = chan->getMembers().begin(); it != chan->getMembers().end(); ++it)
-		{
-			if ((*it)->getNickname() == targetNick)
-			{
-				target = *it;
-				break;
-			}
-		}
-		if (!target)
-		{
-			std::stringstream ss;
-			ss << ERR_USERNOTINCHANNEL;
-			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + targetNick + " " + channelName + " :They aren't on that channel\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			return;
-		}
-		// Send KICK to all members
-		std::string kick_line = ":" + command.user->getNickname() + "!" + command.user->getUsername() + "@localhost KICK " + channelName + " " + targetNick + " :" + reason + "\r\n";
-		for (std::vector<User*>::const_iterator it = chan->getMembers().begin(); it != chan->getMembers().end(); ++it)
-		{
-			send((*it)->getFd(), kick_line.c_str(), kick_line.length(), 0);
-		}
-		// Remove user
-		chan->removeMember(target);
+		Commands::commandKick(command, server);
 	}
 	else if (command.command == "INVITE")
 	{
-		if (command.params.size() < 2)
-		{
-			std::stringstream ss;
-			ss << ERR_NEEDMOREPARAMS;
-			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " INVITE :Not enough parameters\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			return;
-		}
-		std::string targetNick = command.params[0];
-		std::string channelName = command.params[1];
-		if (channelName[0] != '#')
-			channelName = "#" + channelName;
-		User* target = server.getClientFdByNickname(targetNick);
-		if (!target)
-		{
-			std::stringstream ss;
-			ss << ERR_NOSUCHNICK;
-			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + targetNick + " :No such nick/channel\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			return;
-		}
-		Channel* chan = server.getChannelByName(channelName);
-		if (!chan)
-		{
-			std::stringstream ss;
-			ss << ERR_NOSUCHCHANNEL;
-			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + channelName + " :No such channel\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			return;
-		}
-		if (!chan->isMember(command.user->getFd()))
-		{
-			std::stringstream ss;
-			ss << ERR_NOTONCHANNEL;
-			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + channelName + " :You're not on that channel\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			return;
-		}
-		if (chan->isMember(target->getFd()))
-		{
-			std::string err = ":" + std::string(ME) + " 443 " + command.user->getNickname() + " " + targetNick + " " + channelName + " :is already on channel\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			return;
-		}
-		// Send RPL_INVITING
-		std::stringstream ss;
-		ss << RPL_INVITING;
-		std::string invite_line = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + targetNick + " " + channelName + "\r\n";
-		send(command.user->getFd(), invite_line.c_str(), invite_line.length(), 0);
-		// Send invite message to target
-		std::string invite_msg = ":" + command.user->getNickname() + "!" + command.user->getUsername() + "@localhost INVITE " + targetNick + " :" + channelName + "\r\n";
-		send(target->getFd(), invite_msg.c_str(), invite_msg.length(), 0);
+		Commands::commandInvite(command, server);
 	}
 	else if (command.command == "TOPIC")
 	{
-		if (command.params.empty())
-		{
-			std::stringstream ss;
-			ss << ERR_NEEDMOREPARAMS;
-			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " TOPIC :Not enough parameters\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			return;
-		}
-		std::string channelName = command.params[0];
-		if (channelName[0] != '#')
-			channelName = "#" + channelName;
-		Channel* chan = server.getChannelByName(channelName);
-		if (!chan)
-		{
-			std::stringstream ss;
-			ss << ERR_NOSUCHCHANNEL;
-			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + channelName + " :No such channel\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			return;
-		}
-		if (!chan->isMember(command.user->getFd()))
-		{
-			std::stringstream ss;
-			ss << ERR_NOTONCHANNEL;
-			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + channelName + " :You're not on that channel\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			return;
-		}
-		if (command.params.size() == 1)
-		{
-			// Show topic
-			if (chan->getTopic().empty())
-			{
-				std::string no_topic = ":" + std::string(ME) + " 331 " + command.user->getNickname() + " " + channelName + " :No topic is set\r\n";
-				send(command.user->getFd(), no_topic.c_str(), no_topic.length(), 0);
-			}
-			else
-			{
-				std::stringstream ss;
-				ss << RPL_TOPIC;
-				std::string topic_line = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + channelName + " :" + chan->getTopic() + "\r\n";
-				send(command.user->getFd(), topic_line.c_str(), topic_line.length(), 0);
-			}
-		}
-		else
-		{
-			// Set topic
-			if (chan->isTopicProtected() && !chan->isOperator(command.user))
-			{
-				std::stringstream ss;
-				ss << ERR_CHANOPRIVSNEEDED;
-				std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + channelName + " :You're not channel operator\r\n";
-				send(command.user->getFd(), err.c_str(), err.size(), 0);
-				return;
-			}
-			std::string new_topic = command.params[1];
-			if (!new_topic.empty() && new_topic[0] == ':') new_topic = new_topic.substr(1);
-			chan->setTopic(new_topic);
-			// Send TOPIC change to all members
-			std::string topic_change = ":" + command.user->getNickname() + "!" + command.user->getUsername() + "@localhost TOPIC " + channelName + " :" + new_topic + "\r\n";
-			for (std::vector<User*>::const_iterator it = chan->getMembers().begin(); it != chan->getMembers().end(); ++it)
-			{
-				send((*it)->getFd(), topic_change.c_str(), topic_change.length(), 0);
-			}
-		}
+		Commands::commandTopic(command, server);
 	}
 	else if (command.command == "MODE")
 	{
-		if (command.params.empty())
-		{
-			std::stringstream ss;
-			ss << ERR_NEEDMOREPARAMS;
-			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " MODE :Not enough parameters\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-			return;
-		}
-		std::string target = command.params[0];
-		if (target[0] == '#')
-		{
-			if (target[0] != '#')
-				target = "#" + target;
-			// Channel mode
-			Channel* chan = server.getChannelByName(target);
-			if (!chan)
-			{
-				std::stringstream ss;
-				ss << ERR_NOSUCHCHANNEL;
-				std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + target + " :No such channel\r\n";
-				send(command.user->getFd(), err.c_str(), err.size(), 0);
-				return;
-			}
-			if (!chan->isMember(command.user->getFd()))
-			{
-				std::stringstream ss;
-				ss << ERR_NOTONCHANNEL;
-				std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + target + " :You're not on that channel\r\n";
-				send(command.user->getFd(), err.c_str(), err.size(), 0);
-				return;
-			}
-			if (command.params.size() == 1)
-			{
-				// Show modes
-				std::string modes = "+";
-				if (chan->isInviteOnly()) modes += "i";
-				if (chan->isTopicProtected()) modes += "t";
-				std::string mode_line = ":" + std::string(ME) + " 324 " + command.user->getNickname() + " " + target + " " + modes + "\r\n";
-				send(command.user->getFd(), mode_line.c_str(), mode_line.length(), 0);
-				return;
-			}
-			// Set modes
-			if (!chan->isOperator(command.user))
-			{
-				std::stringstream ss;
-				ss << ERR_CHANOPRIVSNEEDED;
-				std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + target + " :You're not channel operator\r\n";
-				send(command.user->getFd(), err.c_str(), err.size(), 0);
-				return;
-			}
-			std::string mode_str = command.params[1];
-			char sign = mode_str[0];
-			std::string mode = mode_str.substr(1);
-			if (sign != '+' && sign != '-')
-			{
-				std::stringstream ss;
-				ss << ERR_UNKNOWNMODE;
-				std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + mode + " :is unknown mode char to me\r\n";
-				send(command.user->getFd(), err.c_str(), err.size(), 0);
-				return;
-			}
-			bool set = (sign == '+');
-			if (mode == "i")
-			{
-				chan->setInviteOnly(set);
-			}
-			else if (mode == "t")
-			{
-				chan->setTopicProtected(set);
-			}
-			else if (mode == "o")
-			{
-				if (command.params.size() < 3)
-				{
-					std::stringstream ss;
-					ss << ERR_NEEDMOREPARAMS;
-					std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " MODE :Not enough parameters\r\n";
-					send(command.user->getFd(), err.c_str(), err.size(), 0);
-					return;
-				}
-				std::string nick = command.params[2];
-				User* target_user = NULL;
-				for (std::vector<User*>::const_iterator it = chan->getMembers().begin(); it != chan->getMembers().end(); ++it)
-				{
-					if ((*it)->getNickname() == nick)
-					{
-						target_user = *it;
-						break;
-					}
-				}
-				if (!target_user)
-				{
-					std::stringstream ss;
-					ss << ERR_USERNOTINCHANNEL;
-					std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + nick + " " + target + " :They aren't on that channel\r\n";
-					send(command.user->getFd(), err.c_str(), err.size(), 0);
-					return;
-				}
-				if (set)
-					chan->addOperator(target_user);
-				else
-					chan->removeOperator(target_user);
-			}
-			else
-			{
-				std::stringstream ss;
-				ss << ERR_UNKNOWNMODE;
-				std::string err = ":" + std::string(ME) + " " + ss.str() + " " + command.user->getNickname() + " " + mode + " :is unknown mode char to me\r\n";
-				send(command.user->getFd(), err.c_str(), err.size(), 0);
-				return;
-			}
-			// Send MODE change to all members
-			std::string mode_change = ":" + command.user->getNickname() + "!" + command.user->getUsername() + "@localhost MODE " + target + " " + mode_str;
-			if (mode == "o") mode_change += " " + command.params[2];
-			mode_change += "\r\n";
-			for (std::vector<User*>::const_iterator it = chan->getMembers().begin(); it != chan->getMembers().end(); ++it)
-			{
-				send((*it)->getFd(), mode_change.c_str(), mode_change.length(), 0);
-			}
-		}
-		else
-		{
-			// User mode - not implemented
-			std::string err = ":" + std::string(ME) + " 501 " + command.user->getNickname() + " :Unknown MODE flag\r\n";
-			send(command.user->getFd(), err.c_str(), err.size(), 0);
-		}
+		Commands::commandMode(command, server);
 	}
 	return;
 }
-/*
-	if(message.find("KICK ") == 0)
-	{
-		
-	}
-	if(message.find("JOIN ") == 0)
-	{
-		channelName = message.substr(4);
-		channelName.erase(0, channelName.find_first_not_of(WS));
-		channelName.erase(channelName.find_last_not_of(WS) + 1);
-		if (channelName.find_first_of(CHNAMEINVALID) != std::string::npos || (channelName[0] != REGCH && channelName[0] != LOCCH))
-		{
-			response = "Channel name not valid. Must not contain whitespace and comma and must start with `#` or `&`.\r\n";
-			send(user->getFd(), response.c_str(), response.size(), 0);
-		}
-		else
-			Server->joinChannel(channelName, user);
-	}
-
-	if(message.find("show") == 0)
-	{
-		std::cout << "Canales" << std::endl;
-		for (std::map<std::string, Channel*>::const_iterator it = Server->getConstChannelList().begin(); it != Server->getConstChannelList().end(); ++it)
-		{
-			int i = it->second->getMembers().size();
-			std::cout << it->first << " - " << i << std::endl;
-		}
-	}
-
-}
-
-*/

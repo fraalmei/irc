@@ -1,1 +1,0 @@
-Implementar interface para commands y modifico los métodos de los canales con esas interfaces

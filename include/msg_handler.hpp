@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 17:33:06 by p                 #+#    #+#             */
-/*   Updated: 2026/01/18 16:13:45 by samartin         ###   ########.fr       */
+/*   Updated: 2026/01/22 13:58:32 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,20 +45,19 @@ class	msg_handler
 		static int			aunthenticateUser(User *user, Server *server);
 		static int			print_command(t_command command);
 
-	private:
-		msg_handler(void);
-		~msg_handler();
 
-		// Parse user authentication steps
-		static int			authenticate(User *user, Server *server);
-		static int			handle_password(msg_handler::t_command command, Server *server);
-		static int			handle_nickname(msg_handler::t_command command);
-		static int			handle_username(msg_handler::t_command command);
+private:
+	msg_handler(void);
+	~msg_handler();
 
-		// Other command handlers can be added here
-		static int			joinChannel(const std::string channelName, User *new_client, Server &server);
-		static int			kick(const std::string channelName, User *kicker, User *kicked, Server &server);
+	// Parse user authentication steps
+	static int			authenticate(User *user, Server *server);
+	static int			handle_password(msg_handler::t_command command, Server *server);
+	static int			handle_nickname(msg_handler::t_command command);
+	static int			handle_username(msg_handler::t_command command);
 
+	// Other command handlers can be added here
+	static int			kick(const std::string channelName, User *kicker, User *kicked, Server &server);
 };
 
 // IRC Response Codes

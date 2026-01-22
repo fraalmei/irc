@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: p <p@student.42.fr>                        +#+  +:+       +#+         #
+#    By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/30 19:06:15 by fraalmei          #+#    #+#              #
-#    Updated: 2026/01/18 13:09:58 by p                ###   ########.fr        #
+#    Updated: 2026/01/22 14:38:20 by cagonzal         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,10 +34,10 @@ BIN_DIR		= bin
 HEADERS		= -I $(INCDIR)
 
 # Directories
-SRCS		=	$(CORE) $(SERVER) $(CHANNELS) $(MESSAGES) $(PARSE) $(UTILS)
+SRCS		=	main.cpp $(CORE) $(SERVER) $(MESSAGES) $(PARSE) $(RESPONSE) $(UTILS)
 
-CORE		=	core/main.cpp \
-				core/User.cpp
+CORE		=	core/User.cpp \
+				core/Channel.cpp
 
 SERVER		=	server/server.cpp \
 				server/server_getset.cpp \
@@ -46,13 +46,15 @@ SERVER		=	server/server.cpp \
 				server/utils.cpp \
 				server/client_handler.cpp
 
-CHANNELS	=	core/Channel.cpp
-
 MESSAGES	=	message/msg_handler.cpp \
 				message/login_handler.cpp \
-				message/command_handler.cpp
+				message/commands_handler.cpp \
+				message/commands_executor.cpp
 
-PARSE		=
+PARSE		=	
+
+RESPONSE	=	responses/IrcResponses.cpp \
+				responses/ChannelUtils.cpp
 
 UTILS		=	
 
