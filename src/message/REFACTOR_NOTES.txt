@@ -80,10 +80,6 @@ UTILIDADES CREADAS PARA REDUCIR DUPLICACIÓN
    - broadcastToChannel() - Envía mensaje a todos los miembros
    → Elimina ~20 bucles duplicados de broadcast
 
-3. ServerUtils (include/ServerUtils.hpp):
-   - rtrimCrlf() - Limpieza de strings (actualmente sin uso)
-   → Preparado para futuras utilidades del servidor
-
 ================================================================================
 BENEFICIOS DE ESTA ARQUITECTURA
 ================================================================================

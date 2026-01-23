@@ -6,14 +6,13 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/10 11:38:20 by p                 #+#    #+#             */
-/*   Updated: 2026/01/23 11:01:38 by cagonzal         ###   ########.fr       */
+/*   Updated: 2026/01/23 11:12:14 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
-#include "ServerUtils.hpp"
 
-void ServerUtils::rtrimCrlf(std::string &s)
+void Server::rtrim_crlf(std::string &s)
 {
     while (!s.empty())
     {
