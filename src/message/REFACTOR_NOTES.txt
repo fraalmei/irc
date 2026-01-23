@@ -1,17 +1,19 @@
 ================================================================================
-NOTAS SOBRE LA REFACTORIZACIÓN DE COMANDOS IRC
+NOTAS SOBRE LA REFACTORIZACIÓN DEL CÓDIGO IRC
 ================================================================================
-Fecha: 22 de enero de 2026
+Fecha: 22-23 de enero de 2026
 Autor: cagonzal
 
 ================================================================================
 MOTIVACIÓN DEL CAMBIO
 ================================================================================
 
-El código original tenía todo mezclado en archivos muy grandes:
+El código original tenía problemas de mantenibilidad:
 - msg_handler.cpp: 726 líneas (ahora 240 líneas - reducción del 67%)
+- client_handler.cpp: 75 líneas (ahora 56 líneas - reducción del 25%)
 - Lógica de validación y ejecución mezcladas
-- Código duplicado en múltiples lugares
+- Código duplicado en múltiples lugares (~70 construcciones repetidas)
+- Mensajes IRC construidos manualmente en cada lugar
 - Difícil de mantener y testear
 
 ================================================================================
@@ -53,17 +55,34 @@ UTILIDADES CREADAS PARA REDUCIR DUPLICACIÓN
 ================================================================================
 
 1. IrcResponses (responses/IrcResponses.cpp):
+   ERRORES:
    - sendErrorNeedMoreParams()
    - sendErrorNoSuchChannel()
+   - sendErrorCannotSendToChan()
+   - sendErrorNoSuchNick()
+   - sendErrorUserNotInChannel()
+   - sendErrorChanOpPrivsNeeded()
+   - sendErrorNoRecipient()
+   
+   BIENVENIDA:
+   - sendWelcomeMessages() - Envía RPL_WELCOME, RPL_YOURHOST, RPL_CREATED, RPL_MYINFO
+   
+   CONSTRUCCIÓN DE MENSAJES:
    - buildPrivmsgToChannel()
    - buildPartMessage()
    - buildKickMessage()
-   → Elimina ~50 construcciones duplicadas de stringstream
+   
+   → Elimina ~70 construcciones duplicadas de stringstream
+   → Centraliza formato de mensajes IRC en un solo lugar
 
 2. ChannelUtils (responses/ChannelUtils.cpp):
    - normalizeChannelName() - Asegura que canales empiecen con #
    - broadcastToChannel() - Envía mensaje a todos los miembros
    → Elimina ~20 bucles duplicados de broadcast
+
+3. ServerUtils (include/ServerUtils.hpp):
+   - rtrimCrlf() - Limpieza de strings (actualmente sin uso)
+   → Preparado para futuras utilidades del servidor
 
 ================================================================================
 BENEFICIOS DE ESTA ARQUITECTURA
@@ -87,11 +106,19 @@ BENEFICIOS DE ESTA ARQUITECTURA
   Cada archivo tiene un propósito claro
 
 ✓ MENOS DUPLICACIÓN:
-  - Antes: ~50 stringstreams duplicados para construir mensajes
+  - Antes: ~70 stringstreams duplicados para construir mensajes
   - Ahora: Funciones centralizadas en IrcResponses
   
   - Antes: ~20 bucles idénticos para broadcast
   - Ahora: Una función broadcastToChannel()
+  
+  - Antes: 4 mensajes de bienvenida construidos en cliente_handler
+  - Ahora: Una función sendWelcomeMessages()
+  
+✓ CONSISTENCIA:
+  - Todos los comandos siguen el patrón command* → función de lógica
+  - Todos los mensajes IRC se construyen igual
+  - Nomenclatura uniforme en todo el código
 
 ================================================================================
 PATRÓN SEGUIDO - NOMENCLATURA CLARA
@@ -130,7 +157,8 @@ Total: 928 líneas (vs 1043 líneas antes - reducción del 11%)
 
 include/Commands.hpp:
 - 8 funciones command* (validación)
-- 5 funciones de ejecución (lógica=====================
+- 5 funciones de ejecución (lógica)
+=====================
 ARCHIVOS ELIMINADOS
 ================================================================================
 

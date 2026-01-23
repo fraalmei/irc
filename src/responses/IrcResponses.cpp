@@ -6,7 +6,7 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 00:00:00 by cagonzal          #+#    #+#             */
-/*   Updated: 2026/01/22 13:49:46 by cagonzal         ###   ########.fr       */
+/*   Updated: 2026/01/23 11:01:38 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,3 +112,34 @@ std::string IrcResponses::buildKickMessage(User* kicker, const std::string& chan
 {
 	return ":" + kicker->getNickname() + "!" + kicker->getUsername() + "@localhost KICK " + channel + " " + target + " :" + reason + "\r\n";
 }
+
+void IrcResponses::sendWelcomeMessages(User* user)
+{
+	std::stringstream ss;
+	
+	// RPL_WELCOME (001)
+	ss << RPL_WELCOME;
+	std::string welcome = ":" + getServerName() + " " + ss.str() + " " + user->getNickname() + 
+	                      " :Welcome to the Internet Relay Network " + user->getNickname() + "!" + 
+	                      user->getUsername() + "@localhost\r\n";
+	sendMessage(user->getFd(), welcome);
+	
+	// RPL_YOURHOST (002)
+	ss.str(""); ss << RPL_YOURHOST;
+	std::string yourhost = ":" + getServerName() + " " + ss.str() + " " + user->getNickname() + 
+	                       " :Your host is " + getServerName() + ", running version 1.0\r\n";
+	sendMessage(user->getFd(), yourhost);
+	
+	// RPL_CREATED (003)
+	ss.str(""); ss << RPL_CREATED;
+	std::string created = ":" + getServerName() + " " + ss.str() + " " + user->getNickname() + 
+	                      " :This server was created 2026-01-17\r\n";
+	sendMessage(user->getFd(), created);
+	
+	// RPL_MYINFO (004)
+	ss.str(""); ss << RPL_MYINFO;
+	std::string myinfo = ":" + getServerName() + " " + ss.str() + " " + user->getNickname() + 
+	                     " " + getServerName() + " 1.0 o o\r\n";
+	sendMessage(user->getFd(), myinfo);
+}
+

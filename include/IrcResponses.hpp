@@ -6,7 +6,7 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 00:00:00 by cagonzal          #+#    #+#             */
-/*   Updated: 2026/01/22 13:34:14 by cagonzal         ###   ########.fr       */
+/*   Updated: 2026/01/23 11:02:24 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,9 @@ class IrcResponses
 		static void sendErrorUserNotInChannel(User* user, const std::string& nick, const std::string& channel);
 		static void sendErrorChanOpPrivsNeeded(User* user, const std::string& channel);
 		static void sendErrorNoRecipient(User* user, const std::string& command);
+		
+		// Send welcome messages
+		static void sendWelcomeMessages(User* user);
 		
 		// Build IRC messages
 		static std::string buildPrivmsgToChannel(User* sender, const std::string& channel, const std::string& message);

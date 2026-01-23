@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/27 01:23:28 by p                 #+#    #+#             */
-/*   Updated: 2026/01/11 11:39:41 by p                ###   ########.fr       */
+/*   Created: 2026/01/10 11:38:20 by p                 #+#    #+#             */
+/*   Updated: 2026/01/23 11:01:38 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include "ServerUtils.hpp"
 
-void Server::rtrim_crlf(std::string &s)
+void ServerUtils::rtrimCrlf(std::string &s)
 {
     while (!s.empty())
     {
