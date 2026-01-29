@@ -44,8 +44,9 @@ int Commands::joinChannel(const std::string& channelName, User* new_client, Serv
 		if (!channel->isMember(new_client->getFd()))
 		{
 			if (channel->addMember(new_client) != 0)
-				std::cout << CGRE << "[joinChannel]" << CRST << " Error: User already in channel " << channelName << std::endl;
-			std::cout << CGRE << "[joinChannel]" << CRST << " User " << new_client->getFd() << " joined " << channelName << std::endl;
+				return 1;
+			else
+				return 0;
 		}
 		else
 		{
@@ -203,6 +204,7 @@ void Commands::setChannelMode(const std::string& channelName, const std::string&
 		IrcResponses::sendErrorNoSuchChannel(user, channelName);
 		return;
 	}
+
 	if (!chan->isMember(user->getFd()))
 	{
 		IrcResponses::sendErrorNotOnChannel(user, channelName);

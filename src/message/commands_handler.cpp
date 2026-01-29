@@ -212,6 +212,8 @@ void Commands::commandTopic(msg_handler::t_command& command, Server& server)
 	}
 	else
 	{
+		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Trying to set topic. isTopicProtected flag is set to: " << chan->isTopicProtected() << " and chan->isOperator(command.user) is set to " << chan->isOperator(command.user) << std::endl;
+
 		// Set topic
 		if (chan->isTopicProtected() && !chan->isOperator(command.user))
 		{

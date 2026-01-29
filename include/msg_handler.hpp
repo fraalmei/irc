@@ -5,7 +5,7 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/06 17:33:06 by p                 #+#    #+#             */
+/*   Created: 2025/11/06 17:33:06 by samartin          #+#    #+#             */
 /*   Updated: 2026/01/22 13:58:32 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
@@ -42,7 +42,6 @@ class	msg_handler
 		static int			handle_buffer(std::string buffer, User *user);
 		static t_command	parse_msg(User* user);
 		static void 		execute_command(t_command command, Server &server);
-		static int			aunthenticateUser(User *user, Server *server);
 		static int			print_command(t_command command);
 
 
@@ -51,13 +50,9 @@ private:
 	~msg_handler();
 
 	// Parse user authentication steps
-	static int			authenticate(User *user, Server *server);
 	static int			handle_password(msg_handler::t_command command, Server *server);
 	static int			handle_nickname(msg_handler::t_command command);
 	static int			handle_username(msg_handler::t_command command);
-
-	// Other command handlers can be added here
-	static int			kick(const std::string channelName, User *kicker, User *kicked, Server &server);
 };
 
 // IRC Response Codes

@@ -18,17 +18,17 @@
 class Channel;
 class User;
 
-/// @brief Utilidades para operaciones comunes con canales
+/// @brief Utilities for common operations with channels
 class ChannelUtils
 {
 	public:
-		/// @brief Normaliza nombre de canal agregando # si no lo tiene
+		/// @brief Normalizes the channel name adding # if it doesn't start with it
 		static std::string normalizeChannelName(const std::string& name);
 		
-		/// @brief Envía un mensaje a todos los miembros de un canal
+		/// @brief Sends a message to all channel members
 		static void broadcastToChannel(Channel* channel, const std::string& message);
 		
-		/// @brief Envía un mensaje a todos los miembros excepto uno
+		/// @brief Sends a message to all members of a chennel excepting one
 		static void broadcastToChannelExcept(Channel* channel, const std::string& message, User* except);
 		
 	private:

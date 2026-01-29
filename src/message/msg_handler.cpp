@@ -5,7 +5,7 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/11 11:38:21 by p                 #+#    #+#             */
+/*   Created: 2026/01/11 11:38:21 by samartin          #+#    #+#             */
 /*   Updated: 2026/01/29 12:44:42 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
@@ -127,12 +127,15 @@ msg_handler::t_command msg_handler::parse_msg(User* user)
 					// Esta es la parte "no-canónica" del AFD, donde el parser salta la lectura basada en '>>'
 					// y lee el resto de la línea.
 					std::getline(ss, rest_of_line); 
+					std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Stream content: '" << ss.str() << "'" << std::endl;
+					std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Rest line: '" << rest_of_line << "'" << std::endl;
+
 					
 					// El parámetro final incluye el espacio antes y después (si hay)
 					// y el resto del contenido de la línea.
-					if (!rest_of_line.empty() && rest_of_line[0] == ' ')
-						trailing_part += rest_of_line.substr(1); // Quita el espacio extra de getline
-					else
+					// if (!rest_of_line.empty() && rest_of_line[0] == ' ')
+					// 	trailing_part += rest_of_line.substr(1); // Quita el espacio extra de getline
+					// else
 						trailing_part += rest_of_line;
 					command.params.push_back(trailing_part);
 					state = 3; // Final de la lógica, cualquier otra cosa es basura

@@ -13,10 +13,9 @@
 #include "Server.hpp"
 
 /// @brief server socket initializer function
-/// función para inicializar el socket del servidor
 void	Server::init_server_socket()
 {
-	int					en = 1;
+	int	en = 1;
 
 	// server address struct
 	struct sockaddr_in	add;
@@ -27,44 +26,43 @@ void	Server::init_server_socket()
 	set_server_fd( socket( AF_INET, SOCK_STREAM, 0 ));	// create the server socket
 	if(get_server_fd() == -1)	// check if the socket is created
 	{
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error al crear el socket." << std::endl;
+		std::cout << "Error creating socket." << std::endl;
 		exit(1);
 	}
-	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Servidor iniciado en el puerto " << _port << std::endl;
 
 	if(setsockopt(get_server_fd(), SOL_SOCKET, SO_REUSEADDR, &en, sizeof(en)) == -1)	// set the socket option (SO_REUSEADDR) to reuse the address
 	{
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error en setsockopt()." << std::endl;
+		std::cout << "Error in setsockopt()." << std::endl;
 		close ( get_server_fd() );
 		exit (1);
 	}
 	if ( fcntl( get_server_fd(), F_SETFL, O_NONBLOCK ) == -1 )	// set the socket option (O_NONBLOCK) for non-blocking socket
 	{
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error en fcntl()." << std::endl;
+		std::cout << "Error in fcntl()." << std::endl;
 		close ( get_server_fd() );
 		exit (1);
 	}
 	if ( bind( get_server_fd(), (struct sockaddr *)&add, sizeof(add)) == -1 )	// bind the socket to the address
 	{
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error en bind()." << std::endl;
+		std::cout << "Error in bind()." << std::endl;
 		close( get_server_fd() );
 		exit(1);
 	}
 	if ( listen( get_server_fd(), BACKLOG ) == -1 )	// listen for incoming connections and making the socket a passive socket
 	{
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error en listen()." << std::endl;
+		std::cout << "Error in listen()." << std::endl;
 		close ( get_server_fd() );
 		exit (1);
 	}
 	
 	struct pollfd		NewPoll;
-	NewPoll.fd = get_server_fd();		// add the server socket to the pollfd
+	NewPoll.fd = get_server_fd();	// add the server socket to the pollfd
 	NewPoll.events = POLLIN;		// set the event to POLLIN for reading data
 	NewPoll.revents = 0;			// set the revents to 0
 	_fds.push_back(NewPoll);		// add the server socket to the pollfd
 
-	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Servidor iniciado en el puerto " << _port << std::endl;
-	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Servidor iniciado con contraseña: '" << _password << "'" << std::endl;
+	std::cout << "Server started on port " << _port << std::endl;
+	std::cout << "Server started with password: '" << _password << "'" << std::endl;
 
 }
 
@@ -100,7 +98,6 @@ void Server::ClearClients(int fd)	// clear the clients
 	{
 		if (_fds[i].fd == fd)
 		{
-			std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Encontrado cliente a limpiar en lista." << std::endl;
 			_fds.erase(_fds.begin() + i);
 			break;
 		}
@@ -109,7 +106,6 @@ void Server::ClearClients(int fd)	// clear the clients
 	std::map<int, User*>::iterator it = _clients.find(fd);
 	if (it != _clients.end())
 	{
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << "Encontrado cliente a limpiar en mapa." << std::endl;
 		delete it->second;
 		_clients.erase(it);
 	}

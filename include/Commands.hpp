@@ -17,10 +17,10 @@
 
 class Server;
 
-/// @brief Declaraciones de todas las funciones de comandos IRC
+/// @brief All IRC command declarations
 namespace Commands
 {
-	// Funciones de validación (entry points)
+	// Validation functions (entry points)
 	void commandJoin(msg_handler::t_command& command, Server& server);
 	void commandPrivmsg(msg_handler::t_command& command, Server& server);
 	void commandPart(msg_handler::t_command& command, Server& server);
@@ -30,7 +30,7 @@ namespace Commands
 	void commandTopic(msg_handler::t_command& command, Server& server);
 	void commandMode(msg_handler::t_command& command, Server& server);
 
-	// Funciones de ejecución de lógica
+	// Logic execution functions
 	int joinChannel(const std::string& channelName, User* user, Server& server);
 	void sendMessage(const std::string& target, const std::string& message, User* user, Server& server);
 	void leaveChannel(const std::string& channelName, const std::string& partMsg, User* user, Server& server);

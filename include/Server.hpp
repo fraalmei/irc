@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42madrid.com>   #+#  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/03 20:53:45 by p                 #+#    #+#             */
-/*   Updated: 2026/01/17 20:39:51 by p                ###   ########.fr       */
+/*   Created: 2025-04-03 20:53:45 by samartin          #+#    #+#             */
+/*   Updated: 2026-01-29 18:49:13 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,6 @@
 class User;
 class Channel;
 
-/* typedef struct s_command
-{
-	User*					user;
-	std::string				command;
-	std::list <std::string>	params;
-}	t_command;
- */
 class Server
 {
 	public:

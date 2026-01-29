@@ -19,7 +19,7 @@
 
 class User;
 
-/// @brief Utilidades para construir y enviar respuestas IRC sin duplicar código
+/// @brief Build and send replies to clients
 class IrcResponses
 {
 	public:
