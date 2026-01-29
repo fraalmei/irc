@@ -6,7 +6,7 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 14:30:00 by cagonzal          #+#    #+#             */
-/*   Updated: 2026/01/29 10:21:48 by cagonzal         ###   ########.fr       */
+/*   Updated: 2026/01/29 12:26:19 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,9 +111,9 @@ void Commands::sendMessage(const std::string& target, const std::string& message
 			IrcResponses::sendErrorCannotSendToChan(user, actualTarget);
 			return;
 		}
-		// Send to all members including sender
+		// Send to all members except sender (client shows its own message)
 		std::string msg = IrcResponses::buildPrivmsgToChannel(user, actualTarget, message);
-		ChannelUtils::broadcastToChannel(chan, msg);
+		ChannelUtils::broadcastToChannelExcept(chan, msg, user);
 	}
 	else
 	{
