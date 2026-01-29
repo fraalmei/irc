@@ -29,7 +29,6 @@ void Commands::commandJoin(msg_handler::t_command& command, Server& server)
 		IrcResponses::sendErrorNeedMoreParams(command.user, "JOIN");
 		return;
 	}
-	
 	std::string channelName = ChannelUtils::normalizeChannelName(command.params[0]);
 	Commands::joinChannel(channelName, command.user, server);
 }
@@ -170,6 +169,9 @@ void Commands::commandInvite(msg_handler::t_command& command, Server& server)
 	// Send invite message to target
 	std::string invite_msg = ":" + command.user->getNickname() + "!" + command.user->getUsername() + "@localhost INVITE " + targetNick + " :" + channelName + "\r\n";
 	send(target->getFd(), invite_msg.c_str(), invite_msg.length(), 0);
+
+	// Add to invite list in the channel
+	chan->addInvitation(target);
 }
 
 void Commands::commandTopic(msg_handler::t_command& command, Server& server)

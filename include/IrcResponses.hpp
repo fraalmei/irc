@@ -32,7 +32,7 @@ class IrcResponses
 		static void sendErrorUserNotInChannel(User* user, const std::string& nick, const std::string& channel);
 		static void sendErrorChanOpPrivsNeeded(User* user, const std::string& channel);
 		static void sendErrorNoRecipient(User* user, const std::string& command);
-		
+		static void	sendErrorCannotJoinChannel(User* user,  const std::string& channel);
 		// Send welcome messages
 		static void sendWelcomeMessages(User* user);
 		

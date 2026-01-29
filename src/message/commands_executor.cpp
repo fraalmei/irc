@@ -41,10 +41,19 @@ int Commands::joinChannel(const std::string& channelName, User* new_client, Serv
 	else
 	{
 		std::cout << CGRE << "[joinChannel]" << CRST << " Found channel: " << channel->getName() << std::endl;
+		if (channel->isInviteOnly() && !channel->isInvited(new_client))
+		{
+			IrcResponses::sendErrorCannotJoinChannel(new_client, channelName);
+			return 1;
+		}
 		if (!channel->isMember(new_client->getFd()))
 		{
 			if (channel->addMember(new_client) != 0)
+			{
+				if (channel->isInviteOnly())
+				channel->removeInvitation(new_client);
 				return 1;
+			}
 			else
 				return 0;
 		}

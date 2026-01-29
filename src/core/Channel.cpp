@@ -19,10 +19,6 @@ int Channel::addMember(const User* user)
 	if (isMember(user->getNickname()))
 		return -1; // Error: User is already a member
 	_members.push_back(const_cast<User*>(user)); // Add the user to the members list
-	for (std::vector<User*>::iterator it = _members.begin(); it != _members.end(); ++it)
-		if ((*it)->getNickname() == user->getNickname())
-			return -1; // Return -1 to indicate that the user is already a member
-	_members.push_back(const_cast<User*>(user)); // Add the user to the members list
 	return 0; // Success
 }
 
@@ -30,16 +26,20 @@ int Channel::addMember(const User* user, const std::string& password)
 {
 	if (password == this->_password)
 	{
-		_members.push_back(const_cast<User*>(user)); // Add the user to the members list
-		for (std::vector<User*>::iterator it = _members.begin(); it != _members.end(); ++it)
-		{
-			if ((*it)->getNickname() == user->getNickname())
-				return -1; // Return -1 to indicate that the user is already a member
-		}
+		if (isMember(user->getNickname()))
+			return -1; // Error: User is already a member
 		_members.push_back(const_cast<User*>(user)); // Add the user to the members list
 		return 0; // Success
 	}
 	return 1; // Return 1 to indicate failure
+}
+
+int addInvitation(const User* user)
+{
+	if (isInvited(user->getNickname()))
+		return -1; // Error: User is already in invite list
+	_invitedUsers.push_back(const_cast<User*>(user));
+	return 0;
 }
 
 void Channel::removeMember(const std::string &nickname)
@@ -57,6 +57,15 @@ void Channel::removeMember(const std::string &nickname)
 			}
 			return;
 		}
+	}
+}
+
+void removeInvitation(const User* user)
+{
+	for (std::vector<User*>::iterator it = _invitedUsers.begin(); it != _invitedUsers.end(); ++it)
+	{
+		if (*it == user)
+			_invitedUsers.erase(it);
 	}
 }
 
@@ -79,6 +88,13 @@ bool Channel::isMember(const int &fd) const
 bool Channel::isAdminMember(const std::string &nickname) const
 {
 	for (std::vector<User*>::const_iterator it = _adminMembers.begin(); it != _adminMembers.end(); ++it)
+		if ((*it)->getNickname() == nickname)
+			return true;
+	return false;
+}
+bool Channel::isInvited(const std::string &nickname) const
+{
+	for (std::vector<User*>::const_iterator it = _invitedUsers.begin(); it != _invitedUsers.end(); ++it)
 		if ((*it)->getNickname() == nickname)
 			return true;
 	return false;

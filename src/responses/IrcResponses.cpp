@@ -88,6 +88,14 @@ void IrcResponses::sendErrorNoRecipient(User* user, const std::string& command)
 	sendMessage(user->getFd(), err);
 }
 
+void	sendErrorCannotJoinChannel(User* user,  const std::string& channel)
+{
+	std::stringstream ss;
+	ss << ERR_INVITEONLYCHAN;
+	std::string err = ":" + getServerName() + " " + ss.str() + " " + user->getNickname() + " :Cannot join channel (+i)\r\n";
+	sendMessage(user->getFd(), err);
+}
+
 std::string IrcResponses::buildPrivmsgToChannel(User* sender, const std::string& channel, const std::string& message)
 {
 	return ":" + sender->getNickname() + "!" + sender->getUsername() + "@localhost PRIVMSG " + channel + " :" + message + "\r\n";

@@ -30,6 +30,7 @@ class Channel
 	
 		std::vector<User*>	_members; // List of the user sockets
 		std::vector<User*>	_adminMembers; // List of the users who are admin in this channel
+		std::vector<User*>	_invitedUsers; // List of the users who are invited to this channel if it is in +i mode
 	
 		unsigned int		_userLimit; // User limit = 0 = No Limit
 	
@@ -48,11 +49,14 @@ class Channel
 		// Member management
 		int			addMember(const User* user);
 		int			addMember(const User* user, const std::string& password);
+		int			addInvitation(const User* user);
 		void		removeMember(const std::string &nickname);
 		void		removeMember(User* user);
+		void		removeInvitation(const User* user);
 		bool		isMember(const std::string &nickname) const;
 		bool		isMember(const int &fd) const;
 		bool		isAdminMember(const std::string &nickname) const;
+		bool		isInvited(const std::string &nickname) const;
 		bool		isOperator(User* user) const;
 		void		addOperator(User* user);
 		void		removeOperator(User* user);
@@ -61,6 +65,7 @@ class Channel
 		const		std::string &getName() const{ return _name; }
 		const		std::vector<User*> &getMembers() const{ return _members; }
 		const		std::vector<User*> &getAdminMembers() const{ return _adminMembers; }
+		const		std::vector<User*> &getInvitedUsers() const{ return _invitedUsers; }
 		const		std::string &getTopic() const{ return _topic; }
 		const		std::string &getPassword() const{ return _password; }
 		unsigned int	getUserLimit() const{ return _userLimit; }
