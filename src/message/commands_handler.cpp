@@ -6,7 +6,7 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 14:30:00 by cagonzal          #+#    #+#             */
-/*   Updated: 2026/01/22 14:51:06 by cagonzal         ###   ########.fr       */
+/*   Updated: 2026/01/29 10:08:06 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,8 +239,10 @@ void Commands::commandMode(msg_handler::t_command& command, Server& server)
 	std::string target = command.params[0];
 	if (target[0] == '#')
 	{
+		// Channel mode
 		std::string channelName = ChannelUtils::normalizeChannelName(target);
-		Commands::setChannelMode(channelName, command.params.size() > 1 ? command.params[1] : "", command.params, command.user, server);
+		std::string modeStr = command.params.size() > 1 ? command.params[1] : "";
+		Commands::setChannelMode(channelName, modeStr, command.params, command.user, server);
 	}
 	else
 	{

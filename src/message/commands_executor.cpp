@@ -6,7 +6,7 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 14:30:00 by cagonzal          #+#    #+#             */
-/*   Updated: 2026/01/22 14:03:25 by cagonzal         ###   ########.fr       */
+/*   Updated: 2026/01/29 10:21:48 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,6 +194,8 @@ void Commands::kickUser(const std::string& channelName, const std::string& targe
 
 void Commands::setChannelMode(const std::string& channelName, const std::string& modeStr, const std::vector<std::string>& params, User* user, Server& server)
 {
+	std::cout << CYEL << "[MODE DEBUG] Channel: " << channelName << ", Mode: '" << modeStr << "', Params: " << params.size() << CRST << std::endl;
+	
 	Channel* chan = server.getChannelByName(channelName);
 	
 	if (!chan)
@@ -213,6 +215,7 @@ void Commands::setChannelMode(const std::string& channelName, const std::string&
 		std::string modes = "+";
 		if (chan->isInviteOnly()) modes += "i";
 		if (chan->isTopicProtected()) modes += "t";
+		std::cout << CGRE << "[MODE DEBUG] Showing modes: " << modes << CRST << std::endl;
 		std::string mode_line = ":" + std::string(ME) + " 324 " + user->getNickname() + " " + channelName + " " + modes + "\r\n";
 		send(user->getFd(), mode_line.c_str(), mode_line.length(), 0);
 		return;
@@ -238,6 +241,8 @@ void Commands::setChannelMode(const std::string& channelName, const std::string&
 	}
 	
 	bool set = (sign == '+');
+	std::cout << CYEL << "[MODE DEBUG] Applying mode: " << mode << " " << (set ? "ON" : "OFF") << CRST << std::endl;
+	
 	if (mode == "i")
 	{
 		chan->setInviteOnly(set);
