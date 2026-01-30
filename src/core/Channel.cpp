@@ -34,7 +34,7 @@ int Channel::addMember(const User* user, const std::string& password)
 	return 1; // Return 1 to indicate failure
 }
 
-int addInvitation(const User* user)
+int Channel::addInvitation(const User* user)
 {
 	if (isInvited(user->getNickname()))
 		return -1; // Error: User is already in invite list
@@ -60,7 +60,7 @@ void Channel::removeMember(const std::string &nickname)
 	}
 }
 
-void removeInvitation(const User* user)
+void Channel::removeInvitation(const User* user)
 {
 	for (std::vector<User*>::iterator it = _invitedUsers.begin(); it != _invitedUsers.end(); ++it)
 	{

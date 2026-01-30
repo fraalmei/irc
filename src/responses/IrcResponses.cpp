@@ -6,7 +6,7 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 00:00:00 by cagonzal          #+#    #+#             */
-/*   Updated: 2026/01/23 11:01:38 by cagonzal         ###   ########.fr       */
+/*   Updated: 2026/01/30 08:49:34 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void IrcResponses::sendErrorNoRecipient(User* user, const std::string& command)
 	sendMessage(user->getFd(), err);
 }
 
-void	sendErrorCannotJoinChannel(User* user,  const std::string& channel)
+void	IrcResponses::sendErrorCannotJoinChannel(User* user,  const std::string& channel)
 {
 	std::stringstream ss;
 	ss << ERR_INVITEONLYCHAN;
