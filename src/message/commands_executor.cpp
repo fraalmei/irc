@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands_executor.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 14:30:00 by cagonzal          #+#    #+#             */
-/*   Updated: 2026/01/30 09:33:46 by samartin         ###   ########.fr       */
+/*   Updated: 2026/01/30 16:22:11 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ int Commands::joinChannel(const std::string& channelName, User* new_client, Serv
 		Channel* newChannel = new Channel(channelName);
 		newChannel->addMember(new_client);
 		newChannel->addOperator(new_client);
+		newChannel->setInviteOnly(false);
+		newChannel->setTopicProtected(false);
 		server.getChannelList()[channelName] = newChannel;
 		channel = newChannel;
 	}
