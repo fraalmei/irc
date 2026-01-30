@@ -6,7 +6,7 @@
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 14:30:00 by cagonzal          #+#    #+#             */
-/*   Updated: 2026/01/29 12:26:19 by cagonzal         ###   ########.fr       */
+/*   Updated: 2026/01/30 08:48:14 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int Commands::joinChannel(const std::string& channelName, User* new_client, Serv
 	else
 	{
 		std::cout << CGRE << "[joinChannel]" << CRST << " Found channel: " << channel->getName() << std::endl;
-		if (channel->isInviteOnly() && !channel->isInvited(new_client))
+		if (channel->isInviteOnly() && !channel->isInvited(new_client->getNickname()))
 		{
 			IrcResponses::sendErrorCannotJoinChannel(new_client, channelName);
 			return 1;
