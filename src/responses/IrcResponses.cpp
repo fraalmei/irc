@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcResponses.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 00:00:00 by cagonzal          #+#    #+#             */
-/*   Updated: 2026/01/30 08:49:34 by cagonzal         ###   ########.fr       */
+/*   Updated: 2026/01/30 08:54:00 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void	IrcResponses::sendErrorCannotJoinChannel(User* user,  const std::string& ch
 {
 	std::stringstream ss;
 	ss << ERR_INVITEONLYCHAN;
-	std::string err = ":" + getServerName() + " " + ss.str() + " " + user->getNickname() + " :Cannot join channel (+i)\r\n";
+	std::string err = ":" + getServerName() + " " + ss.str() + " " + user->getNickname() + " " + channel + " :Cannot join channel (+i)\r\n";
 	sendMessage(user->getFd(), err);
 }
 
