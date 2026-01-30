@@ -41,9 +41,9 @@ class Channel
 	public:
 
 		// Constructors and Destructor
-		Channel(std::string name) : _name(name), _topic(""), _password(""), _userLimit(0) {} // Public channel
-		Channel(std::string name, std::string topic) : _name(name), _topic(topic), _password(""), _userLimit(0) {} // Public channel
-		Channel(std::string name, std::string topic, std::string password) : _name(name), _topic(topic), _password(password), _userLimit(0) {} // Private channel
+		Channel(std::string name) : _name(name), _topic(""), _password(""), _userLimit(0), _inviteOnly(false) {} // Public channel
+		Channel(std::string name, std::string topic) : _name(name), _topic(topic), _password(""), _userLimit(0), _inviteOnly(false) {} // Public channel
+		Channel(std::string name, std::string topic, std::string password) : _name(name), _topic(topic), _password(password), _userLimit(0), _inviteOnly(false) {} // Private channel
 		~Channel() {}
 		
 		// Member management

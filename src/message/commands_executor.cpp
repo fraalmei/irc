@@ -47,6 +47,7 @@ int Commands::joinChannel(const std::string& channelName, User* new_client, Serv
 		}
 		if (channel->getUserLimit() > 0 && channel->getMembers().size() >= channel->getUserLimit())
 		{
+
 			IrcResponses::sendErrorCannotJoinSize(new_client, channelName);
 			return 1;
 		}
@@ -54,12 +55,8 @@ int Commands::joinChannel(const std::string& channelName, User* new_client, Serv
 		{
 			if (channel->addMember(new_client) != 0)
 				return 1;
-			else
-			{
-				if (channel->isInviteOnly())
-					channel->removeInvitation(new_client);
-				return 0;
-			}
+			if (channel->isInviteOnly())
+				channel->removeInvitation(new_client);
 		}
 		else
 		{

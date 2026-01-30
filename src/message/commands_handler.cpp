@@ -29,8 +29,10 @@ void Commands::commandJoin(msg_handler::t_command& command, Server& server)
 		IrcResponses::sendErrorNeedMoreParams(command.user, "JOIN");
 		return;
 	}
+	
 	std::string channelName = ChannelUtils::normalizeChannelName(command.params[0]);
-	Commands::joinChannel(channelName, command.user, server);
+	//if (server.getChannelByName(channelName)->getPassword() != "" && command.params.size() > 2 && server.getChannelByName(channelName)->getPassword() == command.params[1])
+		Commands::joinChannel(channelName, command.user, server);
 }
 
 void Commands::commandPrivmsg(msg_handler::t_command& command, Server& server)
