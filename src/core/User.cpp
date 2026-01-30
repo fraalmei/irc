@@ -26,6 +26,7 @@ bool User::isAdminOfChannel(const Channel &channel) const
 
 int User::addToBuffer(const std::string &message)
 {
+	_buffer += message;
 	if (message.empty())
 		return 0;
 	if (message.length() == 1 && (message[0] == '\n' || message[0] == '\r'))

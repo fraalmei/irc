@@ -87,7 +87,6 @@ void	Server::handle_client_message(User *user)
 	std::string buffer(initbuffer);	// convert to std::string
 
 	user->addToBuffer(buffer);
-
 	while (!user->getBuffer().empty() && user->getBuffer().find("\r\n") != std::string::npos) {
 		msg_handler::t_command parsed_command = msg_handler::parse_msg(user);
 		if (parsed_command.user != NULL) {
