@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcResponses.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 00:00:00 by cagonzal          #+#    #+#             */
-/*   Updated: 2026/01/30 09:25:24 by samartin         ###   ########.fr       */
+/*   Updated: 2026/01/30 18:34:17 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,14 @@ void	IrcResponses::sendErrorCannotJoinSize(User* user,  const std::string& chann
 	std::stringstream ss;
 	ss << ERR_CHANNELISFULL;
 	std::string err = ":" + getServerName() + " " + ss.str() + " " + user->getNickname() + " " + channel + " :Cannot join channel (+l)\r\n";
+	sendMessage(user->getFd(), err);
+}
+
+void IrcResponses::sendErrorNeedPassword(User* user, const std::string& command)
+{
+	std::stringstream ss;
+	ss << ERR_NEEDMOREPARAMS;
+	std::string err = ":" + getServerName() + " " + ss.str() + " " + user->getNickname() + " " + command + " :Password required\r\n";
 	sendMessage(user->getFd(), err);
 }
 

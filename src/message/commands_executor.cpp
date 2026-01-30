@@ -6,7 +6,7 @@
 /*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 14:30:00 by cagonzal          #+#    #+#             */
-/*   Updated: 2026/01/30 16:22:11 by p                ###   ########.fr       */
+/*   Updated: 2026/01/30 17:53:13 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -303,6 +303,21 @@ void Commands::setChannelMode(const std::string& channelName, const std::string&
 		int limit;
 		ss >> limit;
 		chan->setUserLimit(limit);
+	}
+	else if (mode == "k")
+	{
+		if (params.size() < 3 && set)
+		{
+			IrcResponses::sendErrorNeedMoreParams(user, "MODE");
+			return;
+		}
+		else if (!set)
+		{
+			chan->setPassword("");
+			return;
+		}
+		std::string password = params[2];
+		chan->setPassword(password);
 	}
 	else
 	{

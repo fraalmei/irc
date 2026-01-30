@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   IrcResponses.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 00:00:00 by cagonzal          #+#    #+#             */
-/*   Updated: 2026/01/30 09:21:43 by samartin         ###   ########.fr       */
+/*   Updated: 2026/01/30 18:34:12 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ class IrcResponses
 		static void sendErrorNoRecipient(User* user, const std::string& command);
 		static void	sendErrorCannotJoinInvite(User* user,  const std::string& channel);
 		static void	sendErrorCannotJoinSize(User* user,  const std::string& channel);
+		static void sendErrorNeedPassword(User* user, const std::string& command);
 		// Send welcome messages
 		static void sendWelcomeMessages(User* user);
 		

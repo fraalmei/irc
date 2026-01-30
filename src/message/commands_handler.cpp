@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands_handler.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 14:30:00 by cagonzal          #+#    #+#             */
-/*   Updated: 2026/01/30 09:00:57 by samartin         ###   ########.fr       */
+/*   Updated: 2026/01/30 18:34:23 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,39 @@
 
 void Commands::commandJoin(msg_handler::t_command& command, Server& server)
 {
+	std::cout << "Handling JOIN command" << std::endl;
 	if (command.params.empty())
 	{
 		IrcResponses::sendErrorNeedMoreParams(command.user, "JOIN");
 		return;
 	}
-	
+
 	std::string channelName = ChannelUtils::normalizeChannelName(command.params[0]);
-	//if (server.getChannelByName(channelName)->getPassword() != "" && command.params.size() > 2 && server.getChannelByName(channelName)->getPassword() == command.params[1])
+	std::cout << "JOIN 0: " << channelName << std::endl;
+	Channel* chan = server.getChannelByName(channelName);
+	std::cout << "JOIN 1: " << channelName << std::endl;
+	if (command.params.size() < 2 && chan && chan->getPassword() != "")
+	{
+		std::cout << "JOIN 2: " << channelName << std::endl;
+		IrcResponses::sendErrorNeedPassword(command.user, "JOIN");
+		return;
+	}
+	if (command.params.size() > 1 && chan->getPassword() != "")
+	{
+		std::cout << "JOIN 3: " << channelName << std::endl;
+		if (chan->getPassword() != command.params[1])
+		{
+			IrcResponses::sendErrorCannotJoinInvite(command.user, channelName);
+			return;
+		}
+		std::cout << "JOIN 4" << std::endl;
 		Commands::joinChannel(channelName, command.user, server);
+	}
+	else
+	{
+		std::cout << "JOIN no password" << std::endl;
+		Commands::joinChannel(channelName, command.user, server);
+	}
 }
 
 void Commands::commandPrivmsg(msg_handler::t_command& command, Server& server)
