@@ -29,7 +29,7 @@ En este proyecto, usamos sockets **TCP (SOCK_STREAM)**, lo cual significa que se
 6. **Desconexión:**
    Cuando un cliente se va, el socket se cierra y el servidor sigue funcionando para los demás clientes.
 
-## Uso de las funcionalidades de nuestro servidor
+## ⌨️ Uso de las funcionalidades de nuestro servidor
    En el lado del cliente, los comandos habitualmente se envían con `/`, mientras que el servidor los recibirá 'traducidos' por parte del cliente. Por ejemplo, escribiendo `/join #mychannel` en el cliente, el servidor recibirá el mensaje `user42: JOIN #mychannel :`. Al escribir un mensaje en una ventana de canal al que ya esté unido, el usuario puede escribir directamente `Hola a todo el mundo`, mientras que el servidor recibirá en ese caso `user42: PRVTMSG #mychannel :Hola a todo el mundo` y tratará el mensaje para enviarlo a todos los usuarios presentes en ese canal.
 
 1. **Conexión:**
@@ -44,13 +44,14 @@ En este proyecto, usamos sockets **TCP (SOCK_STREAM)**, lo cual significa que se
 
    Si el cliente envía correctamente los tres mensajes necesarios y el password coincide con el del servidor, el usuario será reconocido y podrá enviar comandos al servidor.
 
-2. **Canales:**
+2. **Entrar y salir de canales:**
    El resto de comandos requeridos para este proyecto están relacionados con canales y el comportamiento entre los usuarios y éstos. Los dos primeros son para cualquier usuario que quiera entrar o salir de un canal.
 
-   El comando JOIN sirve para entrar a un canal, si ese canal no existe, se crea uno nuevo con ese nombre y el usuario que lo ha creado recibe atributo de operador para ese canal.
+   El comando JOIN sirve para entrar a un canal, si ese canal no existe, se crea uno nuevo con ese nombre y el usuario que lo ha creado recibe atributo de operador para ese canal. La entrada al canal puede estar restringida por los modos del canal (ver más abajo).
    
    El comando PART sirve para abandonar un canal.
 
+3. **Afectar canales:**
    El resto de los comandos son para operadores para tener un control sobre los usuarios en ese canal.
 
    El comando KICK sirve para expulsar a un usuario del canal. Al no haber un comando BAN implementado, el usuario puede volver a entrar con un nuevo JOIN.
