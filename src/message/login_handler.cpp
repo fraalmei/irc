@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   login_handler.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42madrid.com>   #+#  +:+       +#+        */
+/*   By: samartin <samartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-11-06 18:26:30 by samartin          #+#    #+#             */
-/*   Updated: 2026-01-29 16:41:10 by samartin         ###   ########.fr       */
+/*   Created: 2025/11/06 18:26:30 by samartin          #+#    #+#             */
+/*   Updated: 2026/01/30 11:39:27 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ int	msg_handler::handle_nickname(msg_handler::t_command command)
 		return 1;
 	}
 	command.user->setNickname(command.params[0]);
-	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Nickname set to: '" << command.user->getNickname() << "'" << std::endl;
 	return 0;
 }
 
@@ -55,18 +54,14 @@ int	msg_handler::handle_username(msg_handler::t_command command)
 {
 	// 
 	if (command.user->getUsername() != "")
-	{
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Usuario ya autenticado con username: " << command.user->getUsername() << std::endl;
 		return 1;
-	}
 	if (command.params.empty())
 	{
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " ERROR: No se han proporcionado parámetros para el comando USER." << std::endl;
 		std::string err = std::string(":") + ME + " 461 USER :Not enough parameters\r\n";
 		send(command.user->getFd(), err.c_str(), err.size(), 0);
 		return 1;
 	}
 	command.user->setUsername(command.params[0]);
-	std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Username set to: '" << command.user->getUsername() << "'" << std::endl;
+	std::cout << " Username set to: '" << command.user->getUsername() << "'" << std::endl;
 	return 0;
 }
