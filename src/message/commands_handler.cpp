@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands_handler.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 14:30:00 by cagonzal          #+#    #+#             */
-/*   Updated: 2026/01/29 10:08:06 by cagonzal         ###   ########.fr       */
+/*   Updated: 2026/01/30 09:00:57 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,8 +214,6 @@ void Commands::commandTopic(msg_handler::t_command& command, Server& server)
 	}
 	else
 	{
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Trying to set topic. isTopicProtected flag is set to: " << chan->isTopicProtected() << " and chan->isOperator(command.user) is set to " << chan->isOperator(command.user) << std::endl;
-
 		// Set topic
 		if (chan->isTopicProtected() && !chan->isOperator(command.user))
 		{
@@ -250,7 +248,7 @@ void Commands::commandMode(msg_handler::t_command& command, Server& server)
 	}
 	else
 	{
-		// User mode - not implemented
+		// Other modes are not to be recognized
 		std::string err = ":" + std::string(ME) + " 501 " + command.user->getNickname() + " :Unknown MODE flag\r\n";
 		send(command.user->getFd(), err.c_str(), err.size(), 0);
 	}

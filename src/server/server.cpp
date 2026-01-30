@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42madrid.com>   #+#  +:+       +#+        */
+/*   By: samartin <samartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-04-03 20:53:11 by samartin          #+#    #+#             */
-/*   Updated: 2026-01-29 16:35:48 by samartin         ###   ########.fr       */
+/*   Created: 2025/04/03 20:53:11 by samartin          #+#    #+#             */
+/*   Updated: 2026/01/30 10:08:19 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@ void	Server::handle_new_connection()
 	int			new_fd = accept( get_server_fd(), ( sockaddr* )&client_addr, &addrlen );
 	if (new_fd == -1)
 	{
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error in accept()." << std::endl;
+		std::cout << " Error in accept()." << std::endl;
 		return;
 	}
 	if (fcntl( new_fd, F_SETFL, O_NONBLOCK ) == -1 )	// set the socket option (O_NONBLOCK) for non-blocking socket
 	{
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Error in fcntl()." << std::endl;
+		std::cout << " Error in fcntl()." << std::endl;
 		close ( new_fd );
 		return;
 	}
@@ -89,7 +89,6 @@ void	Server::handle_client_message(User *user)
 	user->addToBuffer(buffer);
 
 	while (!user->getBuffer().empty() && user->getBuffer().find("\r\n") != std::string::npos) {
-		std::cout << CGRE << "[" << __FUNCTION__ << "]" << CRST << " Processing buffer: '" << user->getBuffer() << "'" << std::endl;
 		msg_handler::t_command parsed_command = msg_handler::parse_msg(user);
 		if (parsed_command.user != NULL) {
 			msg_handler::execute_command(parsed_command, *this);

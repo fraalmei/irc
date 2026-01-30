@@ -5,12 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/12 17:27:10 by p                 #+#    #+#             */
+/*   Created: 2025/06/12 17:27:10 by samartin          #+#    #+#             */
 /*   Updated: 2025/10/31 14:29:50 by cagonzal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// filepath: /home/arksh/Documentos/42 Madrid/irc/srcs/channel/public.cpp
 #include "Channel.hpp"
 #include <algorithm>
 

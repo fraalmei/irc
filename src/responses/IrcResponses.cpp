@@ -6,7 +6,7 @@
 /*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 00:00:00 by cagonzal          #+#    #+#             */
-/*   Updated: 2026/01/30 08:58:47 by samartin         ###   ########.fr       */
+/*   Updated: 2026/01/30 09:25:24 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,11 +88,19 @@ void IrcResponses::sendErrorNoRecipient(User* user, const std::string& command)
 	sendMessage(user->getFd(), err);
 }
 
-void	IrcResponses::sendErrorCannotJoinChannel(User* user,  const std::string& channel)
+void	IrcResponses::sendErrorCannotJoinInvite(User* user,  const std::string& channel)
 {
 	std::stringstream ss;
 	ss << ERR_INVITEONLYCHAN;
 	std::string err = ":" + getServerName() + " " + ss.str() + " " + user->getNickname() + " " + channel + " :Cannot join channel (+i)\r\n";
+	sendMessage(user->getFd(), err);
+}
+
+void	IrcResponses::sendErrorCannotJoinSize(User* user,  const std::string& channel)
+{
+	std::stringstream ss;
+	ss << ERR_CHANNELISFULL;
+	std::string err = ":" + getServerName() + " " + ss.str() + " " + user->getNickname() + " " + channel + " :Cannot join channel (+l)\r\n";
 	sendMessage(user->getFd(), err);
 }
 

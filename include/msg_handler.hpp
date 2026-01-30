@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 17:33:06 by samartin          #+#    #+#             */
-/*   Updated: 2026/01/22 13:58:32 by cagonzal         ###   ########.fr       */
+/*   Updated: 2026/01/30 09:24:42 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ private:
 #define ERR_NOTONCHANNEL 442
 #define ERR_CHANOPRIVSNEEDED 482
 #define ERR_USERNOTINCHANNEL 441
+#define ERR_CHANNELISFULL 471
 #define ERR_UNKNOWNMODE 472
 #define ERR_INVITEONLYCHAN 473
 #define RPL_TOPIC 332

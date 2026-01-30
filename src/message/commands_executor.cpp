@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   commands_executor.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cagonzal <cagonzal@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: samartin <samartin@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/22 14:30:00 by cagonzal          #+#    #+#             */
-/*   Updated: 2026/01/30 08:48:14 by cagonzal         ###   ########.fr       */
+/*   Updated: 2026/01/30 09:33:46 by samartin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,21 +29,23 @@ int Commands::joinChannel(const std::string& channelName, User* new_client, Serv
 
 	if (channel == NULL)
 	{
-		std::cout << CGRE << "[joinChannel]" << CRST << " " << channelName << " not found" << std::endl;
-		// Crear nuevo canal público
+		// Create new public channel
 		Channel* newChannel = new Channel(channelName);
 		newChannel->addMember(new_client);
 		newChannel->addOperator(new_client);
 		server.getChannelList()[channelName] = newChannel;
 		channel = newChannel;
-		std::cout << CGRE << "[joinChannel]" << CRST << " Created channel: " << channelName << std::endl;
 	}
 	else
 	{
-		std::cout << CGRE << "[joinChannel]" << CRST << " Found channel: " << channel->getName() << std::endl;
 		if (channel->isInviteOnly() && !channel->isInvited(new_client->getNickname()))
 		{
-			IrcResponses::sendErrorCannotJoinChannel(new_client, channelName);
+			IrcResponses::sendErrorCannotJoinInvite(new_client, channelName);
+			return 1;
+		}
+		if (channel->getUserLimit() > 0 && channel->getMembers().size() >= channel->getUserLimit())
+		{
+			IrcResponses::sendErrorCannotJoinSize(new_client, channelName);
 			return 1;
 		}
 		if (!channel->isMember(new_client->getFd()))
@@ -59,7 +61,6 @@ int Commands::joinChannel(const std::string& channelName, User* new_client, Serv
 		}
 		else
 		{
-			std::cout << CGRE << "[joinChannel]" << CRST << " Error: User already in channel " << channelName << std::endl;
 			std::stringstream ss;
 			ss << ERR_NOTONCHANNEL;
 			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + new_client->getNickname() + " " + channelName + " :You're not on that channel\r\n";
@@ -204,8 +205,7 @@ void Commands::kickUser(const std::string& channelName, const std::string& targe
 
 void Commands::setChannelMode(const std::string& channelName, const std::string& modeStr, const std::vector<std::string>& params, User* user, Server& server)
 {
-	std::cout << CYEL << "[MODE DEBUG] Channel: " << channelName << ", Mode: '" << modeStr << "', Params: " << params.size() << CRST << std::endl;
-	
+
 	Channel* chan = server.getChannelByName(channelName);
 	
 	if (!chan)
@@ -226,7 +226,6 @@ void Commands::setChannelMode(const std::string& channelName, const std::string&
 		std::string modes = "+";
 		if (chan->isInviteOnly()) modes += "i";
 		if (chan->isTopicProtected()) modes += "t";
-		std::cout << CGRE << "[MODE DEBUG] Showing modes: " << modes << CRST << std::endl;
 		std::string mode_line = ":" + std::string(ME) + " 324 " + user->getNickname() + " " + channelName + " " + modes + "\r\n";
 		send(user->getFd(), mode_line.c_str(), mode_line.length(), 0);
 		return;
@@ -252,7 +251,7 @@ void Commands::setChannelMode(const std::string& channelName, const std::string&
 	}
 	
 	bool set = (sign == '+');
-	std::cout << CYEL << "[MODE DEBUG] Applying mode: " << mode << " " << (set ? "ON" : "OFF") << CRST << std::endl;
+	std::cout << CYEL << "Applying mode: " << mode << " " << (set ? "ON" : "OFF") << " over channel " << channelName << CRST << std::endl;
 	
 	if (mode == "i")
 	{
@@ -288,6 +287,23 @@ void Commands::setChannelMode(const std::string& channelName, const std::string&
 			chan->addOperator(target_user);
 		else
 			chan->removeOperator(target_user);
+	}
+	else if (mode == "l")
+	{
+		if (params.size() < 3 && set)
+		{
+			IrcResponses::sendErrorNeedMoreParams(user, "MODE");
+			return;
+		}
+		else if (!set)
+		{
+			chan->setUserLimit(0);
+			return;
+		}
+		std::stringstream ss(params[2]);
+		int limit;
+		ss >> limit;
+		chan->setUserLimit(limit);
 	}
 	else
 	{
