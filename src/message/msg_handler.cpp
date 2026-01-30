@@ -125,7 +125,6 @@ msg_handler::t_command msg_handler::parse_msg(User* user)
 			// State 3 (Trailing Param) is the accept state and process no more tokens
 		}
 	}
-	msg_handler::print_command(command);
 	return command;
 }
 
