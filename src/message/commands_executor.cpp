@@ -51,13 +51,13 @@ int Commands::joinChannel(const std::string& channelName, User* new_client, Serv
 		if (!channel->isMember(new_client->getFd()))
 		{
 			if (channel->addMember(new_client) != 0)
+				return 1;
+			else
 			{
 				if (channel->isInviteOnly())
-				channel->removeInvitation(new_client);
-				return 1;
-			}
-			else
+					channel->removeInvitation(new_client);
 				return 0;
+			}
 		}
 		else
 		{
