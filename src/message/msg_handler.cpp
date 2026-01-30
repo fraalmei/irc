@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   msg_handler.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: samartin <samartin@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: p <p@student.42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/11 11:38:21 by samartin          #+#    #+#             */
-/*   Updated: 2026/01/30 09:58:00 by samartin         ###   ########.fr       */
+/*   Updated: 2026/01/30 17:22:01 by p                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,11 +140,13 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 	{
 		if (handle_nickname(command))
 			return;
+		server.set_Authentication(command.user);
 	}
 	else if (!command.user->isAuthenticated() && command.command == "PASS")
 	{
 		if (handle_password(command, &server))
 			return;
+		server.set_Authentication(command.user);
 	}
 	else if (command.command == "CAP")
 	{
