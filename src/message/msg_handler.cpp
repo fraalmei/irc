@@ -138,7 +138,7 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 	}
 	else if (!command.user->isAuthenticated() && command.command == "NICK")
 	{
-		if (handle_nickname(command))
+		if (handle_nickname(command, &server))
 			return;
 		server.set_Authentication(command.user);
 	}

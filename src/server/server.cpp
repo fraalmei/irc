@@ -73,7 +73,6 @@ void	Server::handle_client_message(User *user)
 			// Real error or disconnection
 			std::cout << "Error in recv: " << strerror(errno) << std::endl;
 			ClearClients(user->getFd());
-			print_users();
 		}
 	}
 	else if (nbytes == 0)
@@ -81,7 +80,6 @@ void	Server::handle_client_message(User *user)
 		// Client disconnected
 		std::cout << "Client disconnected (nbytes == 0)." << std::endl;
 		ClearClients(user->getFd());
-		print_users();
 	}
 
 	std::string buffer(initbuffer);	// convert to std::string

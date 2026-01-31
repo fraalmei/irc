@@ -241,7 +241,7 @@ void Commands::commandTopic(msg_handler::t_command& command, Server& server)
 	else
 	{
 		// Set topic
-		if (chan->isTopicProtected() && !chan->isOperator(command.user))
+		if (chan->isTopicProtected() || !chan->isOperator(command.user))
 		{
 			IrcResponses::sendErrorChanOpPrivsNeeded(command.user, channelName);
 			return;

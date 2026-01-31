@@ -76,7 +76,7 @@ void IrcResponses::sendErrorChanOpPrivsNeeded(User* user, const std::string& cha
 {
 	std::stringstream ss;
 	ss << ERR_CHANOPRIVSNEEDED;
-	std::string err = ":" + getServerName() + " " + ss.str() + " " + user->getNickname() + " " + channel + " :You're not channel operator\r\n";
+	std::string err = ":" + getServerName() + " " + ss.str() + " " + user->getNickname() + " " + channel + " :You don't have the needed privileges\r\n";
 	sendMessage(user->getFd(), err);
 }
 

@@ -37,13 +37,40 @@ int	msg_handler::handle_password(msg_handler::t_command command, Server *server)
 	return 0;
 }
 
-int	msg_handler::handle_nickname(msg_handler::t_command command)
+int	msg_handler::handle_nickname(msg_handler::t_command command, Server * server)
 {
-	if (command.params.empty())
+	std::string nvalidstr = std::string(NICKFIRSTINVALID);
+
+		if (command.params.empty())
 	{
-		std::string err = std::string(":") + ME + " 431 NICK :No nickname given\r\n";
+		std::string err = std::string(":") + ME + " 431 :No nickname given\r\n";
 		send(command.user->getFd(), err.c_str(), err.size(), 0);
 		return 1;
+	}
+	if (nvalidstr.find(command.params[0][0]) != std::string::npos)
+	{
+		std::string err = std::string(":") + ME + " 432 " + command.params[0] + " :Erroneus nickname\r\n";
+		send(command.user->getFd(), err.c_str(), err.size(), 0);
+		return 1;
+	}
+	nvalidstr = std::string(NICKINVALID);
+	for (unsigned int i = 0; i < nvalidstr.length(); i++)
+	{
+		if (nvalidstr.find(command.params[0][i]) != std::string::npos)
+		{
+			std::string err = std::string(":") + ME + " 432 " + command.params[0] + " :Erroneus nickname\r\n";
+			send(command.user->getFd(), err.c_str(), err.size(), 0);
+			return 1;
+		}
+	}
+	for(std::map<int, User*>::const_iterator it = server->getConstClientList().begin(); it != server->getConstClientList().end(); ++it)
+	{
+		if (command.params[0] == (*it).second->getNickname())
+		{
+			std::string err = std::string(":") + ME + " 433 " + command.params[0] + " :Nickname is already in use\r\n";
+			send(command.user->getFd(), err.c_str(), err.size(), 0);
+			return 1;
+		}
 	}
 	command.user->setNickname(command.params[0]);
 	return 0;
