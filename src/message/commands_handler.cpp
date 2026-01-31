@@ -24,7 +24,6 @@
 
 void Commands::commandJoin(msg_handler::t_command& command, Server& server)
 {
-	std::cout << "Handling JOIN command" << std::endl;
 	if (command.params.empty())
 	{
 		IrcResponses::sendErrorNeedMoreParams(command.user, "JOIN");
@@ -32,29 +31,23 @@ void Commands::commandJoin(msg_handler::t_command& command, Server& server)
 	}
 
 	std::string channelName = ChannelUtils::normalizeChannelName(command.params[0]);
-	std::cout << "JOIN 0: " << channelName << std::endl;
 	Channel* chan = server.getChannelByName(channelName);
-	std::cout << "JOIN 1: " << channelName << std::endl;
 	if (command.params.size() < 2 && chan && chan->getPassword() != "")
 	{
-		std::cout << "JOIN 2: " << channelName << std::endl;
 		IrcResponses::sendErrorNeedPassword(command.user, "JOIN");
 		return;
 	}
 	if (command.params.size() > 1 && chan->getPassword() != "")
 	{
-		std::cout << "JOIN 3: " << channelName << std::endl;
 		if (chan->getPassword() != command.params[1])
 		{
 			IrcResponses::sendErrorCannotJoinInvite(command.user, channelName);
 			return;
 		}
-		std::cout << "JOIN 4" << std::endl;
 		Commands::joinChannel(channelName, command.user, server);
 	}
 	else
 	{
-		std::cout << "JOIN no password" << std::endl;
 		Commands::joinChannel(channelName, command.user, server);
 	}
 }
@@ -66,7 +59,7 @@ void Commands::commandPrivmsg(msg_handler::t_command& command, Server& server)
 		IrcResponses::sendErrorNoRecipient(command.user, "PRIVMSG");
 		return;
 	}
-	
+
 	std::string target = command.params[0];
 	std::string message = command.params[1];
 	Commands::sendMessage(target, message, command.user, server);

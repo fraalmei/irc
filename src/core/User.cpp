@@ -32,9 +32,6 @@ int User::addToBuffer(const std::string &message)
 	if (message.length() == 1 && (message[0] == '\n' || message[0] == '\r'))
 		return 0;
 	if (message[message.length() - 1] != '\n')
-	{
-		std::cout << " Mensaje incompleto, sin fin de línea." << std::endl;
 		return 0;
-	}
 	return _buffer.length();
 }
