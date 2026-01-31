@@ -25,7 +25,8 @@
 
 int Commands::joinChannel(const std::string& channelName, User* new_client, Server& server)
 {
-	Channel* channel = server.getChannelByName(channelName);
+	Channel*			channel = server.getChannelByName(channelName);
+	std::stringstream	ss;
 
 	if (channel == NULL)
 	{
@@ -60,7 +61,6 @@ int Commands::joinChannel(const std::string& channelName, User* new_client, Serv
 		}
 		else
 		{
-			std::stringstream ss;
 			ss << ERR_NOTONCHANNEL;
 			std::string err = ":" + std::string(ME) + " " + ss.str() + " " + new_client->getNickname() + " " + channelName + " :You're not on that channel\r\n";
 			send(new_client->getFd(), err.c_str(), err.length(), 0);
@@ -82,15 +82,29 @@ int Commands::joinChannel(const std::string& channelName, User* new_client, Serv
 		if (!names_list.empty()) names_list += " ";
 		names_list += (*it)->getNickname();
 	}
-	std::stringstream ss;
+	ss.clear();
 	ss << RPL_NAMREPLY;
 	std::string namreply = ":" + std::string(ME) + " " + ss.str() + " " + new_client->getNickname() + " = " + channel->getName() + " :" + names_list + "\r\n";
 	send(new_client->getFd(), namreply.c_str(), namreply.length(), 0);
-
-	ss.str(""); ss << RPL_ENDOFNAMES;
+	ss.str("");
+	ss.clear();
+	ss << RPL_ENDOFNAMES;
 	std::string endofnames = ":" + std::string(ME) + " " + ss.str() + " " + new_client->getNickname() + " " + channel->getName() + " :End of /NAMES list\r\n";
 	send(new_client->getFd(), endofnames.c_str(), endofnames.length(), 0);
 
+	// Show topic
+	if (channel->getTopic().empty())
+	{
+		std::string no_topic = ":" + std::string(ME) + " 331 " + new_client->getNickname() + " " + channelName + " :No topic is set\r\n";
+		send(new_client->getFd(), no_topic.c_str(), no_topic.length(), 0);
+	}
+	else
+	{
+		ss.clear();
+		ss << RPL_TOPIC;
+		std::string topic_line = ":" + std::string(ME) + " " + ss.str() + " " + new_client->getNickname() + " " + channelName + " :" + channel->getTopic() + "\r\n";
+		send(new_client->getFd(), topic_line.c_str(), topic_line.length(), 0);
+	}
 	return 0;
 }
 
