@@ -1,68 +1,96 @@
-# IRC Server
+*This project has been created as part of the 42 curriculum by fraalmei, cagonzal, and samartin*
 
-Este proyecto consiste en la implementación de un servidor IRC (Internet Relay Chat) en C++98, utilizando sockets y el protocolo TCP/IP. Para la evaluación, se utiliza un cliente de IRC de uso extendido, como el HexChat que está actualmente instalado en los Mac de los clusters de 42.
+# Description: IRC Server
+This project consists of the implementation of an IRC (Internet Relay Chat) server in C++98, using sockets and the TCP/IP protocol. For evaluation purposes, a widely used IRC client is utilized, such as HexChat, which is currently installed on the Macs in the 42 clusters.
 
-## 🧠 ¿Qué es un socket?
+## What is a socket?
+A *socket* is an interface that allows communication between two programs over a network, such as the Internet or a local network.
 
-Un **socket** es una interfaz que permite la comunicación entre dos programas a través de una red, como Internet o una red local.  
-Podés imaginarlo como un "enchufe digital" que conecta a dos programas para que puedan enviarse mensajes entre sí.
+You can think of it as a "digital plug" that connects two programs so they can send messages to each other.
 
-En este proyecto, usamos sockets **TCP (SOCK_STREAM)**, lo cual significa que se establece una conexión estable entre cliente y servidor antes de intercambiar datos, garantizando el orden y entrega de los mensajes.
+In this project, we use *TCP sockets (SOCK_STREAM)*, which means a stable connection is established between the client and the server before exchanging data, ensuring the order and delivery of messages.
 
-## 🔧 ¿Cómo funciona nuestro servidor?
+## How does our server work?
+1. **Socket creation:**
+   The server creates a socket that will act as the entry point for client connections.
 
-1. **Creación del socket:**
-   El servidor crea un socket que actuará como punto de entrada para las conexiones de los clientes.
+2. **Binding to an IP and port:**
+   We use `bind()` to assign that socket to an address (such as 127.0.0.1) and a port (6667, the standard for IRC).
 
-2. **Enlace a una IP y puerto:**
-   Usamos `bind()` para asignar ese socket a una dirección (como `127.0.0.1`) y un puerto (`6667`, el típico de IRC).
+3. **Listening for connections:**
+   With `listen()`, the server enters a "waiting" state for new clients.
 
-3. **Escucha de conexiones:**
-   Con `listen()`, el servidor queda "a la espera" de nuevos clientes.
+4. **Accepting clients:**
+   Every time a client connects, we use `accept()` to establish a new dedicated connection for that specific client.
 
-4. **Acepta clientes:**
-   Cada vez que un cliente se conecta, usamos `accept()` para establecer una nueva conexión dedicada a ese cliente.
+5. **Communication:**
+   Through recv() and send(), the server receives messages from each client and responds to them.
 
-5. **Comunicación:**
-   A través de `recv()` y `send()`, el servidor recibe mensajes de cada cliente y les responde.
+6. **Disconnection:**
+   When a client leaves, the socket is closed, and the server continues to run for the remaining clients.
 
-6. **Desconexión:**
-   Cuando un cliente se va, el socket se cierra y el servidor sigue funcionando para los demás clientes.
 
-## ⌨️ Uso de las funcionalidades de nuestro servidor
-   En el lado del cliente, los comandos habitualmente se envían con `/`, mientras que el servidor los recibirá 'traducidos' por parte del cliente. Por ejemplo, escribiendo `/join #mychannel` en el cliente, el servidor recibirá el mensaje `user42: JOIN #mychannel :`. Al escribir un mensaje en una ventana de canal al que ya esté unido, el usuario puede escribir directamente `Hola a todo el mundo`, mientras que el servidor recibirá en ese caso `user42: PRVTMSG #mychannel :Hola a todo el mundo` y tratará el mensaje para enviarlo a todos los usuarios presentes en ese canal.
+# Instructions
 
-1. **Conexión:**
-   El software cliente debe intentar una conexión a través de TCP/IP a la IP donde esté corriendo el servidor a través del puerto que esté abierto para ese servicio. Tras detectar la nueva conexión, el servidor esperará desde el cliente los siguientes mensajes en cualquier orden:
+## Using the server's functionalities
+On the client side, commands are usually sent using `/`, while the server receives them "translated" by the client. For example, by typing `/join #mychannel` in the client, the server will receive the message `user42: JOIN #mychannel :`. When writing a message in a channel window that the user has already joined, they can simply type `Hello everyone`, while the server will receive `user42: PRIVMSG #mychannel :Hello everyone` and process the message to send it to all users present in that channel.
 
-   NICK <name>\r\n
-   USER <name>\r\n
-   PASS <password>\r\n
-   CAP <capabilities> (opcional)
+### Connection
+The client software must attempt a TCP/IP connection to the IP where the server is running via the open port for that service. After detecting the new connection, the server will expect the following messages from the client in any order:
 
-   Nuestro server podrá reconocer el mensaje de CAP para enviar su propio mensaje CAP básico,  no forma parte de este proyecto realizar la negociación de capacidades.
+NICK <name>\r\n
 
-   Si el cliente envía correctamente los tres mensajes necesarios y el password coincide con el del servidor, el usuario será reconocido y podrá enviar comandos al servidor.
+USER <name>\r\n
 
-2. **Entrar y salir de canales:**
-   El resto de comandos requeridos para este proyecto están relacionados con canales y el comportamiento entre los usuarios y éstos. Los dos primeros son para cualquier usuario que quiera entrar o salir de un canal.
+PASS <password>\r\n
 
-   El comando JOIN sirve para entrar a un canal, si ese canal no existe, se crea uno nuevo con ese nombre y el usuario que lo ha creado recibe atributo de operador para ese canal. La entrada al canal puede estar restringida por los modos del canal (ver más abajo).
-   
-   El comando PART sirve para abandonar un canal.
+CAP <capabilities> (optional)
 
-3. **Afectar canales:**
-   El resto de los comandos son para operadores para tener un control sobre los usuarios en ese canal.
+Our server can recognize the CAP message to send its own basic CAP response; however, performing capability negotiation is not part of this project.
 
-   El comando KICK sirve para expulsar a un usuario del canal. Al no haber un comando BAN implementado, el usuario puede volver a entrar con un nuevo JOIN.
+If the client correctly sends the three required messages and the password matches the server's, the user will be recognized and can start sending commands to the server.
 
-   El comando INVITE envía una notificación de invitación de parte de un operador que ya esté en un canal para entrar en ese canal. Puede ser necesaria esta invitación si el modo del canal ha cambiado a invite-only.
+### Joining and leaving channels
+The remaining commands required for this project are related to channels and the interaction between users and channels. The first two are for any user willing to enter or leave a channel.
 
-   El comando TOPIC cambia el mensaje automático que se envía a quien entra al canal.
+The JOIN command is used to enter a channel. If the channel does not exist, a new one is created with that name, and the creator receives operator status for that channel. Entry may be restricted by channel modes (see below).
 
-   El comando MODE cambia atributos del canal o de un usuario sobre ese canal. Tras el nombre del canal hay que añadir un flag con prefijo `+` o `-`:
-      +i / -i añade o elimina la restricción de haber recibido una invitación para poder entrar al canal.
-      +t / -t protege o permite cambios al usar el comando TOPIC para los propios operadores.
-      +k / -k añade o elimina la necesidad de usar un password para entrar al canal. Debe ir seguido del password como parámetro en caso de ser `+k`.
-      +o / -o otorga o retira la capacidad de operador. Debe ir seguido del usuario a quien se le otorga o retira el permiso.
-      +l / -l añade o elimina un límite de usuarios en el canal, no expulsa usuarios si ese nuevo límite ya se había sobrepasado, pero impide que entren nuevos si la cantidad actual de usuarios en el canal no es inferior al límite. Debe ir seguido de la cifra límite como parámetro en caso de ser `+l`.
+The PART command is used to leave a channel.
+
+Managing channels: The following commands are for operators to maintain control over users within a channel.
+
+The KICK command is used to eject a user from the channel. Since there is no BAN command implemented, the user can rejoin with a new JOIN.
+
+The INVITE command sends an invitation notification from an operator already in a channel to another user. This invitation may be required if the channel mode is set to "invite-only."
+
+The TOPIC command changes the automatic message sent to anyone joining the channel.
+
+The MODE command changes attributes of the channel or a user's status within it. A flag with a + or - prefix must follow the channel name:
++i / -i: Adds or removes the restriction of needing an invitation to join the channel.
++t / -t: Protects or allows topic changes for operators only.
++k / -k: Adds or removes the requirement of a password to join. Must be followed by the password as a parameter if it is `+k`.
++o / -o: Grants or revokes operator status. Must be followed by the target username.
++l / -l: Adds or removes a user limit for the channel. It does not kick users if the limit is already exceeded but prevents new ones from joining unless the current count is below the limit. Must be followed by the limit figure as a parameter if it is `+l`.
+
+
+# Resources
+
+## Protocol Descriptions
+
+**Primary: Modern IRC Protocol Description**
+   https://modern.ircdocs.horse/
+
+**Supplementary: Official 1993 Documentation, 2.1 specification**
+   https://www.ietf.org/rfc/rfc1459.txt
+
+## C++ Language Reference
+
+**Primary: CPlusPlus**
+   https://cplusplus.com/
+
+**Supplementary: W3Schools**
+   https://www.w3schools.com/cpp/
+
+## Use of AI
+
+Specific questions regarding C++ and the IRC protocol were directed to various AI services. No code snippets shown in example responses were copied directly into our codebase. Approximately one-third of this own document was drafted by AI.

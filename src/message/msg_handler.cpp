@@ -158,7 +158,7 @@ void msg_handler::execute_command(msg_handler::t_command command, Server &server
 		}
 		command.user->setCapability(command.params[0]);
 		// Respond to CAP negotiation
-		std::string cap_response = "CAP * NAK\r\n";
+		std::string cap_response = "CAP * LS :\r\n";
 		send(command.user->getFd(), cap_response.c_str(), cap_response.size(), 0);
 	}
 	else if (command.command == "JOIN")

@@ -64,7 +64,10 @@ void Channel::removeInvitation(const User* user)
 	for (std::vector<User*>::iterator it = _invitedUsers.begin(); it != _invitedUsers.end(); ++it)
 	{
 		if (*it == user)
+		{
 			_invitedUsers.erase(it);
+			break;
+		}
 	}
 }
 
